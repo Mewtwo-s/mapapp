@@ -2,16 +2,17 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {authenticate} from '../store'
 
+
 /**
  * COMPONENT
  */
 const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
-
   return (
     <div>
       <form onSubmit={handleSubmit} name={name}>
         <div>
+        <h3>{process.env.GOOGLE_MAPS_API_KEY}</h3>
           <label htmlFor="username">
             <small>Username</small>
           </label>

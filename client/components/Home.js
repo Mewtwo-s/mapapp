@@ -9,7 +9,7 @@ export const Home = props => {
 
   return (
     <div>
-      <h3>Welcome, {username}</h3>
+      <h3>{process.env.GOOGLE_MAPS_API_KEY}</h3>
     </div>
   )
 }
