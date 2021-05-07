@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {authenticate} from '../store'
-
+import MapComponent from './Map'
 
 /**
  * COMPONENT
@@ -10,6 +10,12 @@ const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
   return (
     <div>
+    <MapComponent
+	googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
+	loadingElement={<div style={{ height: '100%' }} />}
+	containerElement={<div style={{ height: '100vh', width: '100vh' }} />}
+	mapElement={<div style={{ height: '100%' }} />}
+/>
       <form onSubmit={handleSubmit} name={name}>
         <div>
         <h3>{process.env.GOOGLE_MAPS_API_KEY}</h3>
