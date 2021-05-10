@@ -11,13 +11,16 @@ import {
 const Map = withScriptjs(
   withGoogleMap(({ defaultCenter, markers }) => {
     const mapRef = useRef(null);
-    const [markerList, setMarkerList] = useState();
-    console.log('markerList', markerList);
+
+    const [currentPosition, setCurrentPosition] = useState();
     console.log('mapRef', mapRef);
+    console.log('currentPosition', currentPosition);
+    console.log('markers', markers);
 
     // Fit bounds function
     const fitBounds = () => {
       const bounds = new window.google.maps.LatLngBounds();
+      console.log('markers in fitBounds', markers);
       markers.map((item) => {
         bounds.extend(item.position);
         return item.id;
@@ -45,6 +48,7 @@ const Map = withScriptjs(
         {markers.map(({ position }, index) => (
           <Marker key={`marker_${index}`} position={position} />
         ))}
+        {/* {currentPosition && <Marker position={currentPosition} />} */}
       </GoogleMap>
     );
   })
