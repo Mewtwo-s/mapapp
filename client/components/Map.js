@@ -1,43 +1,53 @@
-import React, { Component } from 'react'
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps'
-import Test from './Test'
-const MapComponent = withScriptjs(withGoogleMap(props=> {
+import React, { useRef, useEffect, useState } from 'react';
+import {
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
+  Marker,
+} from 'react-google-maps';
+// =======================================================================
+//  GOOGLE MAPS
+// =======================================================================
+const Map = withScriptjs(
+  withGoogleMap(({ defaultCenter, markers }) => {
+    const mapRef = useRef(null);
+    const [markerList, setMarkerList] = useState();
+    console.log('markerList', markerList);
+    console.log('mapRef', mapRef);
 
-	const bounds = new window.google.maps.LatLngBounds()
-	console.log('bounds',bounds)
-	const place1 = {lat: 40.72999310526833, lng: -73.99265821567542};
-	const place2 = { lat: 40.731582188116306, lng: -73.99344165069101 }
-	const locations = [ place1, place2 ]
+    // Fit bounds function
+    const fitBounds = () => {
+      const bounds = new window.google.maps.LatLngBounds();
+      markers.map((item) => {
+        bounds.extend(item.position);
+        return item.id;
+      });
+      mapRef.current.fitBounds(bounds);
+    };
 
-	locations.map((location, i) => {
-		bounds.extend(new window.google.maps.LatLng(
-			location.lat,
-			location.lng
-		))
-	})
-GoogleMap.fitBounds(bounds)
+    // Fit bounds on mount, and when the markers change
+    useEffect(() => {
+      fitBounds();
+    }, [markers]);
 
-	return (
-		<div>
-		<GoogleMap 
-		
-			zoom={12}
-			center={{ lat: 40.6501, lng: -73.9442  }}
-		>
-		{/* <Marker
-				position={home}
-    	/> */}
-		 {/* new york */}
-		 <Marker 
-				position={{lat: 40.72999310526833, lng: -73.99265821567542}}
-		/>
+    const handleClick = (e) => {
+      console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
+      // const loc = {e.latlng.lat(), e.latLng.lng()}
+      // setMarkerList([...markerList]);
+    };
 
-		 </GoogleMap>
-		 <Test/>
-		</div>
-	)
-}))
+    return (
+      <GoogleMap
+        ref={mapRef}
+        onClick={(e) => handleClick(e)}
+        defaultCenter={defaultCenter}
+      >
+        {markers.map(({ position }, index) => (
+          <Marker key={`marker_${index}`} position={position} />
+        ))}
+      </GoogleMap>
+    );
+  })
+);
 
-
-	
-export default MapComponent
+export default Map;
