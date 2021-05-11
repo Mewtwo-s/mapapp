@@ -8,8 +8,7 @@ if(process.env.NODE_ENV ==='development'){
   environmentConfig = new Dotenv()
 }
 else{
-environmentConfig = new DefinePlugin({'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY)
-}
+environmentConfig = new DefinePlugin({'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY)}
 )
 }
 module.exports = {
@@ -37,6 +36,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new DefinePlugin(({}))
+   environmentConfig
   ]
 }
