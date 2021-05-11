@@ -15,18 +15,21 @@ const Map = withScriptjs(
     const mapRef = useRef(null);
 
 	const [currentLine, setCurrentLine] = useState();
-  const [topPlaces, getTopPlaces] = useState();
+  const [topPlaces, setTopPlaces] = useState();
   
   const getPlaces = async (lat, lng) => {
     try {
       const { data } = await Axios.get(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=cafe&input=coffee&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&rankby=distance&location=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
-      const places = data.results.filter(place => !place.types.includes("gas_station")).slice(0, 3);
+		 const places = data.results.filter(place => !place.types.includes("gas_station") && place.rating > 3.8).slice(0, 3);
+		setTopPlaces(places)
+		
       console.log(places);
     } catch (error) {
       console.log(error);
     }
   }
   
+
 
     // Fit bounds function
     const fitBounds = () => {
@@ -76,7 +79,10 @@ useEffect(()=>{
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
 
     };
-
+ 
+	//  const placesCoords = topPlaces.map(place => place.geometry.location)
+	//  console.log(placesCoords)
+	
     return (
       <GoogleMap
         ref={mapRef}
@@ -86,6 +92,12 @@ useEffect(()=>{
         {markers.map(({ position }, index) => (
           <Marker key={`marker_${index}`} position={position} />
         ))}
+
+			 {(topPlaces || []).map((place, index) => (
+				 <Marker icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" key={`marker_${index}`} position={place.geometry.location } />
+			 ))}
+
+
 
 		{currentPosition? <DirectionsRenderer directions={currentLine}/> :console.log('still loading')}
       </GoogleMap>
