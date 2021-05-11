@@ -2,7 +2,7 @@
 
 const db = require('./db')
 
-const User = require('./models/User')
+const User = require('./models/user')
 
 //associations could go here!
 
