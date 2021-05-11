@@ -6,6 +6,7 @@ import {
   Marker,
   DirectionsRenderer
 } from 'react-google-maps';
+import Axios from 'axios';
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -14,7 +15,18 @@ const Map = withScriptjs(
     const mapRef = useRef(null);
 
 	const [currentLine, setCurrentLine] = useState();
-    // console.log('markers', markers);
+  const [topPlaces, getTopPlaces] = useState();
+  
+  const getPlaces = async (lat, lng) => {
+    try {
+      const { data } = await Axios.get(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=cafe&input=coffee&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&rankby=distance&location=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
+      const places = data.results.filter(place => !place.types.includes("gas_station")).slice(0, 3);
+      console.log(places);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
 
     // Fit bounds function
     const fitBounds = () => {
@@ -34,24 +46,23 @@ const Map = withScriptjs(
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
 	if(!currentPosition) return 
-	const origin = { lat: 40.756795, lng: -73.954298 };
-	const destination = { lat: 41.756795, lng: -78.954298 };
-
+	const destination = { lat: 40.756795, lng: -73.954298 };
+  getPlaces(currentPosition.lat, currentPosition.lng);
 	directionsService.route(
 		{
-		  origin: origin,
-		  destination: currentPosition,
-		  travelMode: google.maps.TravelMode.DRIVING
+      origin: currentPosition,
+      destination: destination,
+      travelMode: google.maps.TravelMode.DRIVING
 		},
 		(result, status) => {
-		  if (status === google.maps.DirectionsStatus.OK) {
+      if (status === google.maps.DirectionsStatus.OK) {
 		
-			  setCurrentLine(result)
-		  } else {
-			console.error(`error fetching directions ${result}`);
-		  }
+    setCurrentLine(result)
+      } else {
+      console.error(`error fetching directions ${result}`);
+      }
 		}
-	  );
+  );
 
 }, [currentPosition])
 
