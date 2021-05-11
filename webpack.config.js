@@ -1,11 +1,14 @@
 const Dotenv = require('dotenv-webpack');
+const DefinePlugin = require('webpack').DefinePlugin;
+
+console.log('in heroku', process.env)
 
 let environmentConfig;
 if(process.env.NODE_ENV ==='development'){
   environmentConfig = new Dotenv()
 }
 else{
-environmentConfig = new Dotenv({systemvars:true})
+environmentConfig = new DefinePlugin({"process.env.GOOGLE_MAPS_API_KEY": `${process.env.HEROKU_CONFIG_VAR_GOOGLE_MAPS_API_KEY}`})
 }
 
 module.exports = {
@@ -33,6 +36,6 @@ module.exports = {
     ]
   },
   plugins: [
-    environmentConfig
+    new DefinePlugin(({}))
   ]
 }
