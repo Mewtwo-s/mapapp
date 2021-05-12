@@ -4,7 +4,7 @@ const DefinePlugin = require('webpack').DefinePlugin;
 console.log('in heroku', process.env)
 
 let environmentConfig;
-if(process.env.NODE_ENV ==='development'){
+if(process.env.NODE_ENV !=='production'){
   environmentConfig = new Dotenv()
 }
 else{
