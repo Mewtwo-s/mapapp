@@ -20,7 +20,7 @@ class Routes extends Component {
       <div>
         {isLoggedIn ? (
           <Switch>
-            <Route path="/map" component={MapComponent} />
+            <Route path="/map" component={MapContainer} />
             <Route path="/home" component={Home} />
             <Redirect to="/home" />
           </Switch>

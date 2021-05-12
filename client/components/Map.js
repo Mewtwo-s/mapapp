@@ -4,7 +4,8 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
-  DirectionsRenderer
+  DirectionsRenderer,
+ InfoWindow
 } from 'react-google-maps';
 import Axios from 'axios';
 // =======================================================================
@@ -15,7 +16,8 @@ const Map = withScriptjs(
     const mapRef = useRef(null);
 
 	const [currentLine, setCurrentLine] = useState();
-  const [topPlaces, setTopPlaces] = useState();
+   const [topPlaces, setTopPlaces] = useState();
+	const [selectedPlace, setselectedPlace] = useState(null);
   
   const getPlaces = async (lat, lng) => {
     try {
@@ -79,9 +81,8 @@ useEffect(()=>{
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
 
     };
- 
-	//  const placesCoords = topPlaces.map(place => place.geometry.location)
-	//  console.log(placesCoords)
+
+	
 	
     return (
       <GoogleMap
@@ -89,15 +90,44 @@ useEffect(()=>{
         onClick={(e) => handleClick(e)}
         defaultCenter={defaultCenter}
       >
+
         {markers.map(({ position }, index) => (
           <Marker key={`marker_${index}`} position={position} />
         ))}
 
-			 {(topPlaces || []).map((place, index) => (
-				 <Marker icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" key={`marker_${index}`} position={place.geometry.location } />
-			 ))}
+		
+			{(topPlaces || []).map((place, index) => {
+				return (
+					<Marker icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" key={`top-places-marker_${index}`} position={place.geometry.location}
 
+						onClick={() => {
+							setselectedPlace(place);
+						}}
+					>
+						{/* clicker */}
+						{(selectedPlace === place) && (
+							<InfoWindow
+								onCloseClick={() => {
+									setselectedPlace(null);
+								}}
+								position={
+									selectedPlace.geometry.location
+								}
+							>
+								<div>
+									<h3>{selectedPlace.name}</h3>
+									<h5>{selectedPlace.vicinity}</h5>
+									<p>{selectedPlace.opening_hours.open_now ? 'Open Now' : 'Closed Now'}</p>
+								</div>
+							</InfoWindow>
+						)}
 
+					</Marker>
+						
+					///>
+				 )
+				}
+			)}
 
 		{currentPosition? <DirectionsRenderer directions={currentLine}/> :console.log('still loading')}
       </GoogleMap>
