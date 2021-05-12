@@ -10,7 +10,7 @@ import {
 import Axios from 'axios';
 import {point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
-import centroid from '@turf/centroid';
+//import centroid from '@turf/centroid';
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -20,6 +20,7 @@ const Map = withScriptjs(
 
 	const [currentLine, setCurrentLine] = useState();
    const [topPlaces, setTopPlaces] = useState();
+   const [midPoint, setMidPoint] = useState();
 	const [selectedPlace, setselectedPlace] = useState(null);
   
   const getPlaces = async (lat, lng) => {
@@ -34,20 +35,18 @@ const Map = withScriptjs(
     }
   }
 
-  const findMidpoint = () => {
-    const initialLocations = [[ 40.67416, -73.96585],
-      [40.63026, -73.9636 ], [37.80182592881937, -122.39742309755147], [30.617206029970014, -96.33420309619648]];
+  const findMidpoint = (markers) => {
+    const initialLocations = markers.map(marker => [marker.position.lat, marker.position.lng]);
     let finalLocations = [];
     for (let i = 0; i < initialLocations.length; i++) {
       finalLocations.push(point([initialLocations[i][0], initialLocations[i][1]])
       )}
     const features = featureCollection(finalLocations);
     const centerCenter = center(features);
-    const centroidCenter = centroid(features);
-    console.log("the midpoints", centerCenter, centroidCenter);
+    //const centroidCenter = centroid(features);
+    setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
   }
-  
-  findMidpoint();
+
 
     // Fit bounds function
     const fitBounds = () => {
@@ -66,13 +65,14 @@ const Map = withScriptjs(
 
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
-	if(currentPosition) return 
-	const destination = { lat: 40.756795, lng: -73.954298 };
-  // getPlaces(currentPosition.lat, currentPosition.lng);
+	if(!currentPosition) return 
+	console.log('midpoint', midPoint);
+  console.log('currentLocation', currentPosition);
+  getPlaces(currentPosition.lat, currentPosition.lng);
 	directionsService.route(
 		{
       origin: currentPosition,
-      destination: destination,
+      destination: midPoint,
       travelMode: google.maps.TravelMode.DRIVING
 		},
 		(result, status) => {
@@ -85,12 +85,15 @@ useEffect(()=>{
 		}
   );
 
-}, [currentPosition])
+}, [midPoint, currentPosition])
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
 
       fitBounds();
+      findMidpoint(markers);
+      console.log('markers', markers);
+      console.log('midpoint', midPoint);
     }, [markers]);
 
     const handleClick = (e) => {
@@ -111,6 +114,8 @@ useEffect(()=>{
           <Marker key={`marker_${index}`} position={position} />
         ))}
 
+        {midPoint && <Marker icon="http://maps.google.com/mapfiles/ms/icons/pink-dot.png" position={midPoint} />}
+    
 		
 			{(topPlaces || []).map((place, index) => {
 				return (
