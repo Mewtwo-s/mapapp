@@ -20,6 +20,9 @@
   "author": "Amy, Iris, D, Hannah",
   "license": "MIT",
   "dependencies": {
+    "@turf/center": "^6.3.0",
+    "@turf/centroid": "^6.3.0",
+    "@turf/helpers": "^6.3.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "compression": "^1.7.3",

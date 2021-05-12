@@ -8,6 +8,9 @@ import {
  InfoWindow
 } from 'react-google-maps';
 import Axios from 'axios';
+import {point, featureCollection } from '@turf/helpers';
+import center from '@turf/center';
+import centroid from '@turf/centroid';
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -30,8 +33,21 @@ const Map = withScriptjs(
       console.log(error);
     }
   }
-  
 
+  const findMidpoint = () => {
+    const initialLocations = [[ 40.67416, -73.96585],
+      [40.63026, -73.9636 ], [37.80182592881937, -122.39742309755147], [30.617206029970014, -96.33420309619648]];
+    let finalLocations = [];
+    for (let i = 0; i < initialLocations.length; i++) {
+      finalLocations.push(point([initialLocations[i][0], initialLocations[i][1]])
+      )}
+    const features = featureCollection(finalLocations);
+    const centerCenter = center(features);
+    const centroidCenter = centroid(features);
+    console.log("the midpoints", centerCenter, centroidCenter);
+  }
+  
+  findMidpoint();
 
     // Fit bounds function
     const fitBounds = () => {
@@ -50,9 +66,9 @@ const Map = withScriptjs(
 
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
-	if(!currentPosition) return 
+	if(currentPosition) return 
 	const destination = { lat: 40.756795, lng: -73.954298 };
-  getPlaces(currentPosition.lat, currentPosition.lng);
+  // getPlaces(currentPosition.lat, currentPosition.lng);
 	directionsService.route(
 		{
       origin: currentPosition,
