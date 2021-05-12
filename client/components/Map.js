@@ -65,10 +65,10 @@ const Map = withScriptjs(
 
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
-	if(!currentPosition) return 
+	if(!midPoint || !midPoint.lat) return 
 	console.log('midpoint', midPoint);
   console.log('currentLocation', currentPosition);
-  getPlaces(currentPosition.lat, currentPosition.lng);
+  getPlaces(midPoint.lat, midPoint.lng);
 	directionsService.route(
 		{
       origin: currentPosition,
