@@ -10,6 +10,8 @@ import {
 import Axios from 'axios';
 import {point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
+import socket from '../socket'
+
 //import centroid from '@turf/centroid';
 // =======================================================================
 //  GOOGLE MAPS
@@ -73,6 +75,8 @@ const Map = withScriptjs(
 
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
+
+  socket.emit('new-message', currentPosition)
 	if(!midPoint || !midPoint.lat) return 
 	console.log('midpoint', midPoint);
   console.log('currentLocation', currentPosition);
