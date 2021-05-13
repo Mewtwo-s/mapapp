@@ -21,13 +21,13 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/map" component={MapContainer} />
-            <Route path="/home" component={Home} />
+            <Route exact path="/home" component={Home} />
             <Redirect to="/home" />
           </Switch>
         ) : (
           <Switch>
             <Route path="/map" component={MapContainer} />
-            <Route path="/" exact component={Login} />
+            <Route exact path="/" component={Login} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
           </Switch>
