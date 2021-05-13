@@ -8,14 +8,11 @@ const MapContainer = () => {
   //   { position: { lat: 40.67416, lng: -73.96585 } },
   //   { position: { lat: 40.63026, lng: -73.9636 } },
   // ]);
-  [35.64568301498501, -98.18051154877574]
   const [markers, setMarkers] = useState([
-    { position: { lat: 39.237992964409685, lng: -98.18051154877574 } }, 
-    { position: { lat: 35.64568301498501, lng: -98.18051154877574 } },
-    { position: { lat: 40.67416, lng: -73.9636 } },
-    { position: { lat: 37.80182592881937, lng: -122.39742309755147 } },
-    { position: { lat: 40.63026, lng: -73.9636 } },
-    { position: { lat: 30.617206029970014, lng: -96.33420309619648 } },
+    // { position: { lat: 40.67416, lng: -73.9636 } },
+    // { position: { lat: 37.80182592881937, lng: -122.39742309755147 } },
+    // { position: { lat: 40.63026, lng: -73.9636 } },
+    { position: { lat: 40.71590822862322, lng: -73.99917384606857 } },
   ]);
   const [currentPosition, setCurrentPosition] = useState();
 
