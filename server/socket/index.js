@@ -7,7 +7,7 @@ module.exports = (io) => {
       //socket.broadcast.emit('new-message', message)
 
       //send to all users
-      socket.emit(
+      io.emit(
         'new-message',
         message ? `${message.lat},${message.lng}` : message
       );
