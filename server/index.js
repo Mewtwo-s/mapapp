@@ -19,8 +19,6 @@ const init = async () => {
 
     // start listening for connections on the socket
     require('./socket')(io);
-    //must export app. Actually this doesn't seem to be necessary
-    // module.exports = app;
   } catch (ex) {
     console.log(ex);
   }

@@ -4,9 +4,6 @@ module.exports = (io) => {
 
     // add event listeners to the socket
     socket.on('new-message', (message, ...args) => {
-      //send to all except sender
-      //socket.broadcast.emit('new-message', message)
-
       //send to all users
       io.emit(
         'new-message',
@@ -20,6 +17,15 @@ module.exports = (io) => {
       const roomName = 'room_' + sessionId;
       socket.join(roomName);
       io.to(roomName).emit('joined_room', `User ${userId} joined ${roomName}`);
+    });
+
+    socket.on('position-update', (userId, sessionId, lat, lng) => {
+      console.log('server.position-update', userId, sessionId, lat, lng);
+      const roomName = 'room_' + sessionId;
+      io.to(roomName).emit(
+        'position-update',
+        `User ${userId} is now at (${lat}, ${lng})`
+      );
     });
 
     socket.on('disconnect', () => {

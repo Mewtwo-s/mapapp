@@ -10,8 +10,8 @@ socket.on('new-message', (message) => {
   console.log('client recieved message:', message);
 });
 
-socket.on('position-update', (uid, position, sessionId) => {
-  console.log('client uid just changed postion to x');
+socket.on('position-update', (uid, sessionId, lat, lng) => {
+  console.log(`client ${uid} changed position to (${lat}, ${lng})`);
   // dispatch({type:POSITION_UPDATED, userId: uid, position: position, sesssionId:sessionId; })
 });
 

@@ -89,7 +89,8 @@ const Map = withScriptjs(
 
     // useEffect for Direction: when current user position changed
     useEffect(() => {
-      socket.emit('new-message', currentPosition);
+      // socket.emit('new-message', currentPosition);
+      socket.emit('session-created', currentPosition, 99);
       if (!midPoint || !midPoint.lat) return;
       console.log('midpoint', midPoint);
       console.log('currentLocation', currentPosition);
@@ -120,7 +121,14 @@ const Map = withScriptjs(
 
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
-      socket.emit('session-created', e.latLng.lat(), 99);
+      // socket.emit('session-created', e.latLng.lat(), 99);
+      socket.emit(
+        'position-update',
+        e.latLng.lat(),
+        99,
+        e.latLng.lat(),
+        e.latLng.lng()
+      );
     };
 
     return (
