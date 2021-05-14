@@ -16,10 +16,9 @@ User.belongsToMany(Session,{through: userSession})
 
 
 // 
-User.hasMany(Session, {foreignKey:'hostId'
+User.hasMany(Session, {as: 'host', foreignKey: 'hostId'
 })
-Session.belongsTo(User,{foreignKey:'hostId'
-} )
+
 
 
 
