@@ -11,7 +11,7 @@ const userSession = db.define('userSession',{
 
     currentLat: {type: Sequelize.FLOAT},
     currentLng: {type: Sequelize.FLOAT},
-    accepted: {type: Sequelize.BOOLEAN},
+    accepted: {type: Sequelize.BOOLEAN, defaultValue: false},
 })
 
 

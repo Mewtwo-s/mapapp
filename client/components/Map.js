@@ -27,19 +27,14 @@ const Map = withScriptjs(
   
   const getPlaces = async (lat, lng) => {
     try {
-      // default - nearby
-      let { data } = await Axios.get(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=cafe&input=coffee&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&rankby=distance&location=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
-      console.log('nearby..', data)
-      // if no result from edge - textSearch
-      if(data.results.length === 0){
-        let result = await Axios.get(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/textsearch/json?&input=coffee&inputtype=textquery&type=cafe&fields=photos,formatted_address,name,opening_hours,rating&radius=1000&location=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
-        data = result.data;
-        console.log('cornfield data', data);
+      if(lat && lng){
+        const places = await (await Axios.post('/api/google', {lat:lat, lng:lng})).data
+        console.log('new way to get places..', places)
+        setTopPlaces(places)
+        
+        console.log(places);
       }
-		 const places = data.results.filter(place => !place.types.includes("gas_station") && place.rating > 3.8).slice(0, 3);
-		setTopPlaces(places)
-		
-      console.log(places);
+
     } catch (error) {
       console.log(error);
     }
