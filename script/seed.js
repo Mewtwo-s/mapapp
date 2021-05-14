@@ -42,9 +42,10 @@ phoneNum:'222-222-2222',
     Session.create(),
     Session.create()
   ])
-//, {through: Session, foreignKey: 'hostId'}
-  await users[2].addHost(sessions[0]);
-  await users[3].addHost(sessions[1]);
+  // await sessions[0].setHost(users[2]);
+  // await sessions[1].setHost(users[3]);
+  await users[3].addHost(sessions[0]);
+  await users[2].addHost(sessions[1]);
   await sessions[0].addUsers([users[0], users[2]], { through: {accepted: true}});
   await sessions[0].addUsers(users[1]);
   await sessions[1].addUsers(users[3], {through: {accepted: true}});

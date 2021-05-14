@@ -19,6 +19,9 @@ User.belongsToMany(Session,{through: userSession})
 User.hasMany(Session, {as: 'host', foreignKey: 'hostId'
 })
 
+// Session.hasOne(User, {as: 'host', foreignKey: 'hostId'
+// })
+
 
 
 
