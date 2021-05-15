@@ -1,6 +1,6 @@
 'use strict'
 
-const {db, models: {User} } = require('../server/db')
+const {db, models: {User, Session, UserSession} } = require('../server/db')
 
 /**
  * seed - this function clears the database, updates tables to
@@ -24,14 +24,45 @@ firstName:'joe',
 lastName:'joe',
 phoneNum:'888-888-8881',
 }),
+User.create({ email: 'hannah@mail.com', 
+  password: 'hannah123',
+firstName:'Hannah',
+lastName:'Smith',
+phoneNum:'111-111-1111',
+}),
+User.create({ email: 'iris@mail.com', 
+  password: 'iris123',
+firstName:'Iris',
+lastName:'Smith',
+phoneNum:'222-222-2222',
+}),
   ])
+
+  const sessions = await Promise.all([
+    Session.create(),
+    Session.create()
+  ])
+  // await sessions[0].setHost(users[2]);
+  // await sessions[1].setHost(users[3]);
+  await users[3].addHost(sessions[0]);
+  await users[2].addHost(sessions[1]);
+  await sessions[0].addUsers([users[0], users[2]], { through: {accepted: true}});
+  await sessions[0].addUsers(users[1]);
+  await sessions[1].addUsers(users[3], {through: {accepted: true}});
+  await sessions[1].addUsers(users[2]);
 
   console.log(`seeded ${users.length} users`)
   console.log(`seeded successfully`)
   return {
     users: {
-      cody: users[0],
-      murphy: users[1]
+      mac: users[0],
+      joe: users[1],
+      hannah: users[2],
+      iris: users[3]
+    },
+    sessions: {
+      session1: sessions[0],
+      session2: sessions[1]
     }
   }
 }
