@@ -11,13 +11,15 @@ import Axios from 'axios';
 import {point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
 import socket from '../socket'
+import {connect} from 'react-redux'
+import history from '../history'
 
 //import centroid from '@turf/centroid';
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
 const Map = withScriptjs(
-  withGoogleMap(({ defaultCenter, markers, currentPosition }) => {
+  withGoogleMap(({ email, defaultCenter, markers, currentPosition }) => {
     const mapRef = useRef(null);
 
 	const [currentLine, setCurrentLine] = useState();
@@ -29,10 +31,9 @@ const Map = withScriptjs(
     try {
       if(lat && lng){
         const places = await (await Axios.post('/api/google', {lat:lat, lng:lng})).data
-        console.log('new way to get places..', places)
+  
         setTopPlaces(places)
         
-        console.log(places);
       }
 
     } catch (error) {
@@ -71,10 +72,10 @@ const Map = withScriptjs(
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
 
-  socket.emit('new-message', currentPosition)
+
+  socket.emit('new-message', {location:currentPosition, email})
 	if(!midPoint || !midPoint.lat) return 
-	console.log('midpoint', midPoint);
-  console.log('currentLocation', currentPosition);
+
   getPlaces(midPoint.lat, midPoint.lng);
 	directionsService.route(
 		{
@@ -99,16 +100,13 @@ useEffect(()=>{
 
       fitBounds();
       findMidpoint(markers);
-      console.log('markers', markers);
-      console.log('midpoint', midPoint);
+
     }, [markers]);
 
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
 
     };
-
-	
 	
     return (
       <GoogleMap
@@ -163,4 +161,9 @@ useEffect(()=>{
   })
 );
 
-export default Map;
+const mapState = state => {
+  return {
+    isLoggedIn: !!state.auth.id
+  }
+}
+export default connect(mapState)(Map);

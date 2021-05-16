@@ -9,7 +9,8 @@ module.exports = (io) => {
       //send to all users
       io.emit(
         'new-message',
-        message ? `${message.lat},${message.lng}` : message
+        // message ? `${message.lat},${message.lng}` : message
+        message ? message: message
       );
       console.log('server receives message,', message);
     });

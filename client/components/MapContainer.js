@@ -2,8 +2,9 @@ import Map from './Map';
 import React, { useEffect, useState } from 'react';
 import {DirectionsRenderer
 } from 'react-google-maps';
+import {connect} from 'react-redux'
 
-const MapContainer = () => {
+const MapContainer = (props) => {
   // const [markers, setMarkers] = useState([
   //   { position: { lat: 40.67416, lng: -73.96585 } },
   //   { position: { lat: 40.63026, lng: -73.9636 } },
@@ -18,9 +19,9 @@ const MapContainer = () => {
 
  const getLocation = async ()=>{
 
-  await navigator.geolocation.getCurrentPosition(
+  await navigator.geolocation.watchPosition(
     function (position) {
-
+      console.log('USER location changed')
       const pos = {
         position: {
           lat: position.coords.latitude,
@@ -34,17 +35,17 @@ const MapContainer = () => {
     function (error) {
       console.error('Error with GEOLOCATION:', error.code, error.message);
     }
-  );
+  );}
 
-}
+
+
   useEffect(() => {
     getLocation()
   }, []);
 
-
-
   return (
     <Map
+      email={props.email}
       currentPosition={currentPosition}
       defaultCenter={{ lat: 6.4454594, lng: 3.449074 }}
       markers={markers}
@@ -60,4 +61,10 @@ const MapContainer = () => {
     />
   );
 };
-export default MapContainer;
+
+const mapState = state => {
+  return {
+    email: state.auth.email
+  }
+}
+export default connect(mapState)(MapContainer);

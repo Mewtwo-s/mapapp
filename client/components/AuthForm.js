@@ -7,9 +7,7 @@ import MapComponent from './Map'
  * COMPONENT
  */
 const AuthForm = props => {
-  const {name, displayName, handleSubmit, error} = props
-  console.log('here im prop', props)
- 
+  const {name, displayName, handleSubmit, error} = props 
   return (
     <div>
 
