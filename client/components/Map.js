@@ -22,11 +22,21 @@ const Map = withScriptjs(
   withGoogleMap(({ email, defaultCenter, markers, currentPosition }) => {
     const mapRef = useRef(null);
 
-	const [currentLine, setCurrentLine] = useState();
-   const [topPlaces, setTopPlaces] = useState();
-   const [midPoint, setMidPoint] = useState();
-	const [selectedPlace, setselectedPlace] = useState(null);
-  
+	  const [currentLine, setCurrentLine] = useState();
+    const [topPlaces, setTopPlaces] = useState();
+    const [midPoint, setMidPoint] = useState();
+    const [selectedPlace, setselectedPlace] = useState(null);
+    
+    // console.log('hit MAP component', markers)
+
+  useEffect(() => {
+    console.log('hit MAP component', markers)
+    fitBounds();
+    findMidpoint(markers);
+    console.log('recalculate midpoint', midPoint)
+
+  }, [JSON.stringify(markers)]);
+
   const getPlaces = async (lat, lng) => {
     try {
       if(lat && lng){
@@ -42,6 +52,7 @@ const Map = withScriptjs(
   }
 
   const findMidpoint = (markers) => {
+   
     const initialLocations = markers.map(marker => [marker.position.lat, marker.position.lng]);
     let finalLocations = [];
     for (let i = 0; i < initialLocations.length; i++) {
@@ -51,6 +62,7 @@ const Map = withScriptjs(
     const centerCenter = center(features);
     //const centroidCenter = centroid(features);
     setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
+  
   }
 
 
@@ -96,18 +108,12 @@ useEffect(()=>{
 }, [midPoint, currentPosition])
 
     // Fit bounds on mount, and when the markers change
-    useEffect(() => {
-
-      fitBounds();
-      findMidpoint(markers);
-
-    }, [markers]);
-
+  
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
 
     };
-	
+
     return (
       <GoogleMap
         ref={mapRef}

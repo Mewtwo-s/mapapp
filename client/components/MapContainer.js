@@ -5,14 +5,8 @@ import {DirectionsRenderer
 import {connect} from 'react-redux'
 
 const MapContainer = (props) => {
-  // const [markers, setMarkers] = useState([
-  //   { position: { lat: 40.67416, lng: -73.96585 } },
-  //   { position: { lat: 40.63026, lng: -73.9636 } },
-  // ]);
+
   const [markers, setMarkers] = useState([
-    // { position: { lat: 40.67416, lng: -73.9636 } },
-    // { position: { lat: 37.80182592881937, lng: -122.39742309755147 } },
-    // { position: { lat: 40.63026, lng: -73.9636 } },
     { position: { lat: 40.71590822862322, lng: -73.99917384606857 } },
   ]);
   const [currentPosition, setCurrentPosition] = useState();
@@ -21,14 +15,18 @@ const MapContainer = (props) => {
 
   await navigator.geolocation.watchPosition(
     function (position) {
-      console.log('USER location changed')
+ 
       const pos = {
         position: {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         },
       };
-      setMarkers([...markers, pos]);
+      console.log('old markers', markers)
+      markers.push(pos)
+      setMarkers(markers)
+      // setMarkers([...markers, pos]);
+      console.log('NEW markers', markers)
       setCurrentPosition(pos.position)
 
     },
