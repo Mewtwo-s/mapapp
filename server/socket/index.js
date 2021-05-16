@@ -12,20 +12,17 @@ module.exports = (io) => {
       console.log('server received message,', message, args);
     });
 
-    socket.on('session-created', (userId, sessionId) => {
-      console.log('server.session-created', userId, sessionId);
+    socket.on('join-room', (userId, sessionId) => {
+      console.log('SOCKET join-room', userId, sessionId);
       const roomName = 'room_' + sessionId;
       socket.join(roomName);
-      io.to(roomName).emit('joined_room', `User ${userId} joined ${roomName}`);
+      io.to(roomName).emit(userId, `User ${userId} joined ${roomName}`);
     });
 
-    socket.on('position-update', (userId, sessionId, lat, lng) => {
-      console.log('server.position-update', userId, sessionId, lat, lng);
+    socket.on('send-my-position', (userId, sessionId, lat, lng) => {
+      console.log('SOCKET send-my-position', userId, sessionId, lat, lng);
       const roomName = 'room_' + sessionId;
-      io.to(roomName).emit(
-        'position-update',
-        `User ${userId} is now at (${lat}, ${lng})`
-      );
+      io.to(roomName).emit('user-position-changed', userId, lat, lng);
     });
 
     socket.on('disconnect', () => {

@@ -11,15 +11,16 @@ import Axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
 import socket from '../socket';
-
-//import centroid from '@turf/centroid';
+import { connect } from 'react-redux';
+// import { joinRoom, sendPosition } from '../store/room';
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
 const Map = withScriptjs(
-  withGoogleMap(({ defaultCenter, markers, currentPosition }) => {
+  // withGoogleMap(({ defaultCenter, markers, currentPosition }) => {
+  withGoogleMap((props) => {
     const mapRef = useRef(null);
-
+    // console.log('Map props', props);
     const [currentLine, setCurrentLine] = useState();
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
@@ -61,31 +62,11 @@ const Map = withScriptjs(
       });
     };
 
-    const findMidpoint = (markers) => {
-      const initialLocations = markers.map((marker) => [
-        marker.position.lat,
-        marker.position.lng,
-      ]);
-      let finalLocations = [];
-      for (let i = 0; i < initialLocations.length; i++) {
-        finalLocations.push(
-          point([initialLocations[i][0], initialLocations[i][1]])
-        );
-      }
-      const features = featureCollection(finalLocations);
-      const centerCenter = center(features);
-      //const centroidCenter = centroid(features);
-      setMidPoint({
-        lat: centerCenter.geometry.coordinates[0],
-        lng: centerCenter.geometry.coordinates[1],
-      });
-    };
-
     // Fit bounds function
     const fitBounds = () => {
       const bounds = new window.google.maps.LatLngBounds();
 
-      markers.map((item) => {
+      props.markers.map((item) => {
         bounds.extend(item.position);
         return item.id;
       });
@@ -96,15 +77,18 @@ const Map = withScriptjs(
 
     // useEffect for Direction: when current user position changed
     useEffect(() => {
-      // socket.emit('new-message', currentPosition);
-      socket.emit('session-created', currentPosition, 99);
+      // ----
+      // Temp. This should be called when session is created / joined
+      // hard-coded session id for now
+      // props.join(props.user.id, 99);
+      // ----
       if (!midPoint || !midPoint.lat) return;
       console.log('midpoint', midPoint);
-      console.log('currentLocation', currentPosition);
+      console.log('currentLocation', props.currentPosition);
       getPlaces(midPoint.lat, midPoint.lng);
       directionsService.route(
         {
-          origin: currentPosition,
+          origin: props.currentPosition,
           destination: midPoint,
           travelMode: google.maps.TravelMode.DRIVING,
         },
@@ -116,15 +100,13 @@ const Map = withScriptjs(
           }
         }
       );
-    }, [midPoint, currentPosition]);
+    }, [midPoint, props.currentPosition]);
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
       fitBounds();
-      findMidpoint(markers);
-      console.log('markers', markers);
-      console.log('midpoint', midPoint);
-    }, [markers]);
+      findMidpoint(props.markers);
+    }, [props.markers]);
 
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
@@ -142,9 +124,9 @@ const Map = withScriptjs(
       <GoogleMap
         ref={mapRef}
         onClick={(e) => handleClick(e)}
-        defaultCenter={defaultCenter}
+        defaultCenter={props.defaultCenter}
       >
-        {markers.map(({ position }, index) => (
+        {props.markers.map(({ position }, index) => (
           <Marker key={`marker_${index}`} position={position} />
         ))}
 
@@ -190,14 +172,28 @@ const Map = withScriptjs(
           );
         })}
 
-        {currentPosition ? (
+        {props.currentPosition && (
           <DirectionsRenderer directions={currentLine} />
-        ) : (
-          console.log('still loading')
         )}
       </GoogleMap>
     );
   })
 );
 
+const mapState = (state) => {
+  return {
+    user: state.auth,
+    currentLocation: state.currentLocation,
+    currentSession: state.currentSession,
+    userPositions: state.userPositions,
+  };
+};
+// const mapDispatch = (dispatch) => {
+//   return {
+//     join: (uid, sessionId) => dispatch(joinRoom(uid, sessionId)),
+//     sendPosition: (uid, sessionId, lat, lng) =>
+//       dispatch(sendPosition(uid, sessionId, lat, lng)),
+//   };
+// };
+// export default connect(mapState, mapDispatch)(Map);
 export default Map;

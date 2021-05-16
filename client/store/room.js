@@ -1,51 +1,94 @@
 import socket from '../socket';
+import store from '../store';
+import { updateMyPosition } from './location';
 
-// room state:
-// [{userId:x, position: {lat, lng}}, ...]
-
-// actions
-// const JOINED_ROOM
-const POSITION_UPDATED = 'POSITION_UPDATED';
+const USER_POSITION_CHANGED = 'USER_POSITION_CHANGED';
 
 // action creators
-const positionUpdated = (positionInfo) => {
-  return { type: POSITION_UPDATED, positionInfo };
+export const userPositionChanged = (userId, lat, lng) => {
+  console.log('room.userPositionChanged', userId, lat, lng);
+  return { type: USER_POSITION_CHANGED, userId, lat, lng };
 };
 
 // thunks
-const createRoom = (userId, sessionId) => {
-  socket.emit('join-room', userId, sessionId);
-  // send position to database so users joining later can get updates on users already joined
+export const sessionStarted = (userId, sessionId) => {
+  console.log('sessionStarted', userId, sessionId);
+  return (dispatch) => {
+    dispatch(joinRoom(userId, sessionId));
+
+    // start watching my location
+    const watchSuccess = (pos) => {
+      console.log('watchSuccess', pos);
+      // save my updates to the store
+      dispatch(updateMyPosition(pos.coords.latitude, pos.coords.longitude));
+    };
+
+    const watchFail = (err) => {
+      console.error('WATCH ERROR.', err.code, err.message);
+    };
+    const id = navigator.geolocation.watchPosition(watchSuccess, watchFail);
+  };
 };
 
-const updatePosition = (userId, sessionId, lat, lng) => {
-  socket.emit('position-update', userId, sessionId, lat, lng);
-  // {userId: xxx, lat: xxx, lng: xxx}
-  dispatch(positionUpdated({ userId, lat, lng }));
+export const joinRoom = (userId, sessionId) => {
+  return (dispatch) => {
+    console.log('room.joinRoom', userId, sessionId);
+    socket.emit('join-room', userId, sessionId);
+    // send initial position to database
+  };
+};
+
+// send my current location to the room
+// export const sendMyPosition = (userId, sessionId, lat, lng) => {
+// export const sendMyPosition = (userId) => {
+export const sendMyPosition = () => {
+  return (dispatch) => {
+    console.log('sendMyPosition. store:', store.getState());
+    const userId = store.getState().auth.id;
+    const loc = store.getState().myLocation;
+
+    // temp until store.getState().session.id is available from store
+    const sessionId = 88; // store.session.id
+    if (loc) {
+      socket.emit('send-my-position', userId, sessionId, loc.lat, loc.lng);
+
+      // update locations list state with my position
+      // dispatch(
+      //   userPositionChanged(
+      //     userId,
+      //     store.getState().myLocation.lat,
+      //     store.getState().myLocation.lng
+      //   )
+      // );
+    }
+  };
 };
 
 /**
  * REDUCER
  */
 
-// [{userId:amy, position: {lat, lng}}, {userId:hannah, position: {lat, lng}}, {userId:d, position: {lat, lng}}...]
+// [{userId:2, lat: xx.xxx, lng: xx.xxx}}, {userId:4, lat: xx.xxx, lng: xx.xxx}, {userId:5, lat: xx.xxx, lng: xx.xxx}...]
 export default function (state = [], action) {
+  // console.log('room reducer', action);
   switch (action.type) {
-    case POSITION_UPDATED:
-      if (!state.find((user) => user.id === action.userId)) {
-        return [...state, action.positionInfo];
+    case USER_POSITION_CHANGED:
+      if (!state.find((info) => info.userId === action.userId)) {
+        // user is not already in the array, add them
+        console.log(`ROOM REDUCER. Adding User ${action.userId} to array`);
+        return [
+          ...state,
+          { userId: action.userId, lat: action.lat, lng: action.lng },
+        ];
       } else {
-        return state.map((user) => {
-          if (user.id === action.userId) {
-            return (user.position = action.position);
-          }
+        // user is already in array, just update their info
+        console.log(`ROOM REDUCER. Editing User ${action.userId}`);
+        return state.map((info) => {
+          return info.userId === action.userId
+            ? { userId: action.userId, lat: action.lat, lng: action.lng }
+            : info;
         });
       }
-    // if user not in array
-    //   add to array
-    //   return [...state, {user: , positoin: ...}]
-    // else
-    //   loop map thru array and edit user
     default:
       return state;
   }
