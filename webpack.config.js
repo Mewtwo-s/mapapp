@@ -8,7 +8,9 @@ if(process.env.NODE_ENV !=='production'){
 }
 else{
   console.log('!!!! DEV')
-environmentConfig = new DefinePlugin({'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY)}
+environmentConfig = new DefinePlugin({
+  'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY),
+}
 )
 }
 module.exports = {
