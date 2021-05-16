@@ -7,7 +7,7 @@ if(process.env.NODE_ENV !=='production'){
   environmentConfig = new Dotenv()
 }
 else{
-  console.log('!!!! DEV')
+  console.log('!!!! DEV', process)
 environmentConfig = new DefinePlugin({
   'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY),
 }
