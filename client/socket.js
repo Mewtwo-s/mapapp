@@ -7,7 +7,7 @@ socket.on('connect', () => {
 });
 
 socket.on('new-message', (message) => {
-  console.log('client recieves message:', message);
+  console.log('user changed location:', message);
 });
 
 export default socket;
