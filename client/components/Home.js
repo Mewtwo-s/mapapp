@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-
+import { Link } from 'react-router-dom';
 /**
  * COMPONENT
  */
@@ -9,7 +9,8 @@ export const Home = props => {
 
   return (
     <div>
-      <h3>hi</h3>
+      <h3>hi {props.email}</h3>
+      <Link to='/map'>Show Map</Link>
     </div>
   )
 }
