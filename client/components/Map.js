@@ -22,7 +22,7 @@ const Map = withScriptjs(
   withGoogleMap(({ email, defaultCenter, markers, currentPosition }) => {
     const mapRef = useRef(null);
 
-	  const [currentLine, setCurrentLine] = useState();
+	  const [currentLine, setCurrentLine] = useState([]);
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
@@ -30,7 +30,7 @@ const Map = withScriptjs(
     // console.log('hit MAP component', markers)
 
   useEffect(() => {
-    console.log('hit MAP component', markers)
+  
     fitBounds();
     findMidpoint(markers);
     console.log('recalculate midpoint', midPoint)
@@ -84,7 +84,7 @@ const Map = withScriptjs(
 // useEffect for Direction: when current user position changed
 useEffect(()=>{
 
-
+  
   socket.emit('new-message', {location:currentPosition, email})
 	if(!midPoint || !midPoint.lat) return 
 
@@ -98,14 +98,15 @@ useEffect(()=>{
 		(result, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
 		
-    setCurrentLine(result)
+    // setCurrentLine(result)
+    currentLine.push(result)
       } else {
       console.error(`error fetching directions ${result}`);
       }
 		}
   );
 
-}, [midPoint, currentPosition])
+}, [JSON.stringify(midPoint), currentPosition])
 
     // Fit bounds on mount, and when the markers change
   
@@ -161,7 +162,7 @@ useEffect(()=>{
 				}
 			)}
 
-		{currentPosition? <DirectionsRenderer directions={currentLine}/> :console.log('still loading')}
+		{/* {currentPosition? currentLine.map(line=><DirectionsRenderer directions={line}/>) :console.log('still loading')} */}
       </GoogleMap>
     );
   })
