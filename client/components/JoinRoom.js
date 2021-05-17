@@ -13,9 +13,26 @@ function JoinRoom(props) {
 
         console.log('new room generated')
     }
+
+    function handleJoin(evt){
+        alert( evt.target.email.value)
+
+    }
     return (
         <div>
             <button onClick={handleClick}>Generate Room Id</button>
+            <form onSubmit={handleJoin}>
+                <div>
+                <label htmlFor="email">
+                    <small>Join Existing Room</small>
+                </label>
+                <input name="email" type="text" />
+                <button type='submit'>Join</button>
+                </div>
+                <div>
+ 
+        </div>    
+      </form>
         </div>
     )
 }
