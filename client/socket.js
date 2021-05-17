@@ -20,7 +20,6 @@ socket.on('user-joined-room', (userId, message) => {
 
 socket.on('user-position-changed', (userId, lat, lng) => {
   console.log(`client ${userId} changed position to (${lat}, ${lng})`);
-  // make an action creator for this
   store.dispatch(userPositionChanged(userId, lat, lng));
 });
 

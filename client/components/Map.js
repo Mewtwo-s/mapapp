@@ -7,6 +7,7 @@ import {
   DirectionsRenderer,
   InfoWindow,
 } from 'react-google-maps';
+import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 import Axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
@@ -126,10 +127,12 @@ const Map = withScriptjs(
         onClick={(e) => handleClick(e)}
         defaultCenter={props.defaultCenter}
       >
+        {/* Hardcoded markers passed from MapContainer */}
         {props.markers.map(({ position }, index) => (
           <Marker key={`marker_${index}`} position={position} />
         ))}
 
+        {/* Draw midpoint marker */}
         {midPoint && (
           <Marker
             icon="http://maps.google.com/mapfiles/ms/icons/pink-dot.png"
@@ -137,6 +140,7 @@ const Map = withScriptjs(
           />
         )}
 
+        {/* Draw markers for top places */}
         {(topPlaces || []).map((place, index) => {
           return (
             <Marker
@@ -167,14 +171,35 @@ const Map = withScriptjs(
                 </InfoWindow>
               )}
             </Marker>
-
             ///>
           );
         })}
 
+        {/* Draw the route polyline */}
         {props.currentPosition && (
           <DirectionsRenderer directions={currentLine} />
         )}
+
+        {/* Draw marker for each connected user */}
+        {props.locations.map((loc) => {
+          return (
+            <MarkerWithLabel
+              key={`user_${loc.userId}`}
+              icon="http://maps.google.com/mapfiles/ms/icons/golfer.png"
+              position={{ lat: loc.lat, lng: loc.lng }}
+              labelAnchor={new google.maps.Point(0, 0)}
+              zIndex={100}
+              labelStyle={{
+                backgroundColor: 'black',
+                color: 'white',
+                fontSize: '16px',
+                padding: '2px',
+              }}
+            >
+              <div>{`user ${loc.userId}`}</div>
+            </MarkerWithLabel>
+          );
+        })}
       </GoogleMap>
     );
   })
@@ -183,11 +208,12 @@ const Map = withScriptjs(
 const mapState = (state) => {
   return {
     user: state.auth,
+    locations: state.locations,
     currentLocation: state.currentLocation,
     currentSession: state.currentSession,
-    userPositions: state.userPositions,
   };
 };
+
 // const mapDispatch = (dispatch) => {
 //   return {
 //     join: (uid, sessionId) => dispatch(joinRoom(uid, sessionId)),
@@ -195,5 +221,4 @@ const mapState = (state) => {
 //       dispatch(sendPosition(uid, sessionId, lat, lng)),
 //   };
 // };
-// export default connect(mapState, mapDispatch)(Map);
-export default Map;
+export default connect(mapState)(Map);

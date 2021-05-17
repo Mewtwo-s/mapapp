@@ -18,9 +18,8 @@ export const updateMyPosition = (lat, lng) => {
     console.log('location.updateMyPosition', lat, lng);
     // update state with my current position
     dispatch(myPositionUpdated(lat, lng));
-
     // send update to all users
-    dispatch(sendMyPosition(lat, lng));
+    dispatch(sendMyPosition());
   };
 };
 

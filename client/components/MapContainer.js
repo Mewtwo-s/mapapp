@@ -11,18 +11,6 @@ const MapContainer = (props) => {
   ]);
   const [currentPosition, setCurrentPosition] = useState();
 
-  // // ------
-  // // watch location and save updates to store
-  // const watchSuccess = (pos) => {
-  //   console.log('watchSuccess', pos);
-  //   props.updateMyPosition(pos.coords.latitude, pos.coords.longitude);
-  // };
-
-  // const watchFail = (err) => {
-  //   console.warn('WATCH ERROR.', err.code, err.message);
-  // };
-  // // -------
-
   const getLocation = async () => {
     await navigator.geolocation.getCurrentPosition(
       function (position) {

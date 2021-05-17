@@ -1,6 +1,7 @@
 import socket from '../socket';
 import store from '../store';
-import { updateMyPosition } from './location';
+import { updateMyPosition, myPositionUpdated } from './location';
+import { getCurrentPositionAsync } from '../helpers';
 
 const USER_POSITION_CHANGED = 'USER_POSITION_CHANGED';
 
@@ -13,7 +14,21 @@ export const userPositionChanged = (userId, lat, lng) => {
 // thunks
 export const sessionStarted = (userId, sessionId) => {
   console.log('sessionStarted', userId, sessionId);
-  return (dispatch) => {
+
+  return async (dispatch) => {
+    // set an initial location before we join the room. Not
+    // sure if this is the best place for this, but needs to
+    // happpen before we join the room
+    try {
+      console.log('SETTING initial location');
+      const { coords } = await getCurrentPositionAsync();
+      const { latitude, longitude } = coords;
+      dispatch(myPositionUpdated(latitude, longitude));
+    } catch (err) {
+      console.error('Error getting initial location.', err);
+    }
+
+    // join the room
     dispatch(joinRoom(userId, sessionId));
 
     // start watching my location
@@ -51,15 +66,6 @@ export const sendMyPosition = () => {
     const sessionId = 88; // store.session.id
     if (loc) {
       socket.emit('send-my-position', userId, sessionId, loc.lat, loc.lng);
-
-      // update locations list state with my position
-      // dispatch(
-      //   userPositionChanged(
-      //     userId,
-      //     store.getState().myLocation.lat,
-      //     store.getState().myLocation.lng
-      //   )
-      // );
     }
   };
 };
