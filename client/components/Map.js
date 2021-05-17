@@ -22,6 +22,7 @@ const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
+    const lines = []
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
@@ -87,7 +88,7 @@ const Map = withScriptjs(
 
     const directionsService = new google.maps.DirectionsService();
 
-    // useEffect for Direction: when current user position changed
+
     useEffect(() => {
       if (!midPoint || !midPoint.lat) return;
       console.log('midpoint', midPoint);
@@ -102,6 +103,8 @@ const Map = withScriptjs(
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
+            lines.push(result)
+            console.log('lines!!!', lines)
           } else {
             console.error(`error fetching directions ${result}`);
           }
@@ -120,6 +123,7 @@ const Map = withScriptjs(
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
     };
 
+    // console.log('my array of lines==>', lines)
     return (
       <GoogleMap
         ref={mapRef}
@@ -175,10 +179,10 @@ const Map = withScriptjs(
           );
         })}
 
-        {/* Draw the route polyline */}
+        {/* Draw the route polyline
         {props.currentPosition && (
           <DirectionsRenderer directions={currentLine} />
-        )}
+        )} */}
 
         {/* Draw labeled marker for each user in current session*/}
         {props.allLocations.map((loc) => {
@@ -207,7 +211,7 @@ const Map = withScriptjs(
 );
 
 const mapState = (state) => {
-  console.log('has to be right', state.allLocations)
+
   return {
     user: state.auth,
     allLocations: state.allLocations,
