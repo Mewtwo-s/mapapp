@@ -126,12 +126,12 @@ useEffect(()=>{
           <Marker key={`marker_${index}`} position={position} />
         ))}
 
-        {midPoint && <Marker icon="http://maps.google.com/mapfiles/ms/icons/pink-dot.png" position={midPoint} />}
+        {midPoint && <Marker icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png" position={midPoint} />}
     
 		
 			{(topPlaces || []).map((place, index) => {
 				return (
-					<Marker icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" key={`top-places-marker_${index}`} position={place.geometry.location}
+					<Marker icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png" key={`top-places-marker_${index}`} position={place.geometry.location}
 
 						onClick={() => {
 							setselectedPlace(place);
