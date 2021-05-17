@@ -21,8 +21,8 @@ import history from '../history'
 const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
-    // console.log('Map props', props);
     const [currentLine, setCurrentLine] = useState();
+    const lines = []
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
@@ -30,9 +30,10 @@ const Map = withScriptjs(
     useEffect(() => {
   
       fitBounds();
-      findMidpoint(props.markers);
+      // findMidpoint(props.markers);
       console.log('recalculate midpoint', midPoint)
-  
+
+
     }, [JSON.stringify(props.markers)]);
   
     const getPlaces = async (lat, lng) => {
@@ -53,17 +54,23 @@ const Map = withScriptjs(
 
     
   
-  const findMidpoint = (markers) => {
-   
-    const initialLocations = markers.map(marker => [marker.position.lat, marker.position.lng]);
+  const findMidpoint = (locations) => {
+    
+    const initialLocations = locations.map(loc => [loc.lat, loc.lng]);
+    console.log('in find midpoint', initialLocations)
     let finalLocations = [];
-    for (let i = 0; i < initialLocations.length; i++) {
-      finalLocations.push(point([initialLocations[i][0], initialLocations[i][1]])
-      )}
-    const features = featureCollection(finalLocations);
-    const centerCenter = center(features);
+    if(initialLocations.length>0){
+      for (let i = 0; i < initialLocations.length; i++) {
+        finalLocations.push(point([initialLocations[i][0], initialLocations[i][1]])
+        )}
+      
+      const features = featureCollection(finalLocations);
+    
+      const centerCenter = center(features);
+      setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
+    }
     //const centroidCenter = centroid(features);
-    setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
+
   
   }
 
@@ -81,7 +88,7 @@ const Map = withScriptjs(
 
     const directionsService = new google.maps.DirectionsService();
 
-    // useEffect for Direction: when current user position changed
+
     useEffect(() => {
       if (!midPoint || !midPoint.lat) return;
       console.log('midpoint', midPoint);
@@ -96,6 +103,8 @@ const Map = withScriptjs(
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
+            lines.push(result)
+            console.log('lines!!!', lines)
           } else {
             console.error(`error fetching directions ${result}`);
           }
@@ -106,14 +115,15 @@ const Map = withScriptjs(
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
       fitBounds();
-      findMidpoint(props.markers);
-    }, [props.markers]);
+      findMidpoint(props.allLocations);
+    }, [props.allLocations]);
 
     // for testing
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
     };
 
+    // console.log('my array of lines==>', lines)
     return (
       <GoogleMap
         ref={mapRef}
@@ -169,10 +179,10 @@ const Map = withScriptjs(
           );
         })}
 
-        {/* Draw the route polyline */}
+        {/* Draw the route polyline
         {props.currentPosition && (
           <DirectionsRenderer directions={currentLine} />
-        )}
+        )} */}
 
         {/* Draw labeled marker for each user in current session*/}
         {props.allLocations.map((loc) => {
@@ -194,12 +204,14 @@ const Map = withScriptjs(
             </MarkerWithLabel>
           );
         })}
+
       </GoogleMap>
     );
   })
 );
 
 const mapState = (state) => {
+
   return {
     user: state.auth,
     allLocations: state.allLocations,

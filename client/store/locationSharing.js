@@ -19,6 +19,7 @@ export const sessionStarted = (userId, sessionId) => {
     // sure if this is the best place for this, but needs to
     // happpen before we join the room
     try {
+      
       const { coords } = await getCurrentPositionAsync();
       const { latitude, longitude } = coords;
       dispatch(myLocationUpdated(latitude, longitude));

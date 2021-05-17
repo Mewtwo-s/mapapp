@@ -5,9 +5,7 @@ import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
-  const [markers, setMarkers] = useState([
-    { position: { lat: 40.71590822862322, lng: -73.99917384606857 } },
-  ]);
+  const [markers, setMarkers] = useState([]);
   const [currentPosition, setCurrentPosition] = useState();
 
  const getLocation = async ()=>{
