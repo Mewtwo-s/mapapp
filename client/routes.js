@@ -5,6 +5,7 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
+import InviteForm from './components/InviteForm'
 /**
  * COMPONENT
  */
@@ -22,6 +23,7 @@ class Routes extends Component {
           <Switch>
             <Route path="/map" component={MapContainer} />
             <Route exact path="/home" component={Home} />
+            <Route path='/emailInvite' component={InviteForm}/>
             <Redirect to="/home" />
           </Switch>
         ) : (

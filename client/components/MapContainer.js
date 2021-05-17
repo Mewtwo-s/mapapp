@@ -10,23 +10,31 @@ const MapContainer = (props) => {
   ]);
   const [currentPosition, setCurrentPosition] = useState();
 
-  const getLocation = async () => {
-    await navigator.geolocation.getCurrentPosition(
-      function (position) {
-        const pos = {
-          position: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          },
-        };
-        setMarkers([...markers, pos]);
-        setCurrentPosition(pos.position);
-      },
-      function (error) {
-        console.error('Error with GEOLOCATION:', error.code, error.message);
-      }
-    );
-  };
+ const getLocation = async ()=>{
+
+  await navigator.geolocation.watchPosition(
+    function (position) {
+ 
+      const pos = {
+        position: {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        },
+      };
+      console.log('old markers', markers)
+      markers.push(pos)
+      setMarkers(markers)
+      // setMarkers([...markers, pos]);
+      console.log('NEW markers', markers)
+      setCurrentPosition(pos.position)
+
+    },
+    function (error) {
+      console.error('Error with GEOLOCATION:', error.code, error.message);
+    }
+  );}
+
+
 
   useEffect(() => {
     getLocation();
@@ -43,7 +51,9 @@ const MapContainer = (props) => {
   }, [props.user]);
 
   return (
+    
     <Map
+      email={props.email}
       currentPosition={currentPosition}
       defaultCenter={{ lat: 6.4454594, lng: 3.449074 }}
       markers={markers}
