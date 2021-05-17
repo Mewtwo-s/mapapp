@@ -18,7 +18,7 @@ router.get('/allSessions/:userId', async (req, res, next) =>{
         next(err)
     }
 })
-
+//we should change this to ID
 router.get('/:sessionCode', async (req, res, next) =>{
     try {
         const session = await Session.findOne({

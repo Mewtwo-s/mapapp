@@ -14,5 +14,9 @@ const userSession = db.define('userSession',{
     accepted: {type: Sequelize.BOOLEAN, defaultValue: false},
 })
 
+userSession.prototype.setStatus = async function (status) {
+    this.accepted = status;
+    await this.save();
+  }
 
 module.exports = userSession 

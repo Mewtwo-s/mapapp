@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
 import InviteForm from './components/InviteForm'
+import Navbar from './components/Navbar'
+
 /**
  * COMPONENT
  */
@@ -16,9 +18,9 @@ class Routes extends Component {
 
   render() {
     const { isLoggedIn } = this.props;
-
     return (
-      <div>
+      <Router>
+        <Navbar />
         {isLoggedIn ? (
           <Switch>
             <Route path="/map" component={MapContainer} />
@@ -34,7 +36,7 @@ class Routes extends Component {
             <Route path="/signup" component={Signup} />
           </Switch>
         )}
-      </div>
+      </Router>
     );
   }
 }
@@ -60,4 +62,4 @@ const mapDispatch = (dispatch) => {
 
 // The `withRouter` wrapper makes sure that updates are not blocked
 // when the url changes
-export default withRouter(connect(mapState, mapDispatch)(Routes));
+export default connect(mapState, mapDispatch)(Routes);
