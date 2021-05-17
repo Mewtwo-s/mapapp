@@ -1,45 +1,46 @@
 import Map from './Map';
 import React, { useEffect, useState } from 'react';
-import {DirectionsRenderer
-} from 'react-google-maps';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux';
+import { DirectionsRenderer } from 'react-google-maps';
+import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
-
   const [markers, setMarkers] = useState([
     { position: { lat: 40.71590822862322, lng: -73.99917384606857 } },
   ]);
   const [currentPosition, setCurrentPosition] = useState();
 
- const getLocation = async ()=>{
-
-  await navigator.geolocation.watchPosition(
-    function (position) {
- 
-      const pos = {
-        position: {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        },
-      };
-      console.log('old markers', markers)
-      markers.push(pos)
-      setMarkers(markers)
-      // setMarkers([...markers, pos]);
-      console.log('NEW markers', markers)
-      setCurrentPosition(pos.position)
-
-    },
-    function (error) {
-      console.error('Error with GEOLOCATION:', error.code, error.message);
-    }
-  );}
-
-
+  const getLocation = async () => {
+    await navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const pos = {
+          position: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+        };
+        setMarkers([...markers, pos]);
+        setCurrentPosition(pos.position);
+      },
+      function (error) {
+        console.error('Error with GEOLOCATION:', error.code, error.message);
+      }
+    );
+  };
 
   useEffect(() => {
-    getLocation()
+    getLocation();
   }, []);
+
+  // TEMP: simulate starting or accepting a session
+  // This will trigger the room join and location watching
+  // wait until we have valid user data to start watching
+  useEffect(() => {
+    const sessionId = 88; // temp until we can pull from state
+    if (props.user.id) {
+      props.sessionStarted(props.user.id, sessionId);
+    }
+  }, [props.user]);
 
   return (
     <Map
@@ -60,9 +61,15 @@ const MapContainer = (props) => {
   );
 };
 
-const mapState = state => {
+const mapState = (state) => {
   return {
-    email: state.auth.email
-  }
-}
-export default connect(mapState)(MapContainer);
+    user: state.auth,
+  };
+};
+const mapDispatch = (dispatch) => {
+  return {
+    sessionStarted: (userId, sessionId) =>
+      dispatch(sessionStarted(userId, sessionId)),
+  };
+};
+export default connect(mapState, mapDispatch)(MapContainer);
