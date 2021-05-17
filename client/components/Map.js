@@ -132,7 +132,6 @@ const Map = withScriptjs(
           <Marker key={`marker_${index}`} position={position} />
         ))}
 
-<<<<<<< HEAD
         {/* Draw midpoint marker */}
         {midPoint && (
           <Marker
@@ -201,45 +200,7 @@ const Map = withScriptjs(
             </MarkerWithLabel>
           );
         })}
-=======
-        {midPoint && <Marker icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png" position={midPoint} />}
-    
-		
-			{(topPlaces || []).map((place, index) => {
-				return (
-					<Marker icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png" key={`top-places-marker_${index}`} position={place.geometry.location}
 
-						onClick={() => {
-							setselectedPlace(place);
-						}}
-					>
-						{/* clicker */}
-						{(selectedPlace === place) && (
-							<InfoWindow
-								onCloseClick={() => {
-									setselectedPlace(null);
-								}}
-								position={
-									selectedPlace.geometry.location
-								}
-							>
-								<div>
-									<h3>{selectedPlace.name}</h3>
-									<h5>{selectedPlace.vicinity}</h5>
-									<p>{selectedPlace.opening_hours.open_now ? 'Open Now' : 'Closed Now'}</p>
-								</div>
-							</InfoWindow>
-						)}
-
-					</Marker>
-						
-					///>
-				 )
-				}
-			)}
-
-		{/* {currentPosition? currentLine.map(line=><DirectionsRenderer directions={line}/>) :console.log('still loading')} */}
->>>>>>> 136c1586514ae6f28426649736accf037fb3dd53
       </GoogleMap>
     );
   })
