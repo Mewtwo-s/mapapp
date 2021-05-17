@@ -1,17 +1,25 @@
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    console.log(socket.id, ' has made a persistent connection to the server!');
+    console.info(`Client ${socket.id} has connected to the server!`);
 
-    socket.on('new-message', (message) => {
-      //send to all except sender
-      //socket.broadcast.emit('new-message', message)
-
-      //send to all users
-      io.emit(
-        'new-message',
-        message ? `${message.lat},${message.lng}` : message
+    socket.on('join-room', (userId, sessionId) => {
+      const roomName = 'room_' + sessionId;
+      socket.join(roomName);
+      console.info(`User ${userId} joins roomName`);
+      io.to(roomName).emit(
+        'user-joined-room',
+        userId,
+        `User ${userId} joined ${roomName}`
       );
-      console.log('server receives message,', message);
+    });
+
+    socket.on('send-my-location', (userId, sessionId, lat, lng) => {
+      const roomName = 'room_' + sessionId;
+      io.to(roomName).emit('user-location-changed', userId, lat, lng);
+    });
+
+    socket.on('disconnect', () => {
+      console.info('user disconnected: ' + socket.id);
     });
   });
 };
