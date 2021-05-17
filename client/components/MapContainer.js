@@ -42,6 +42,7 @@ const MapContainer = (props) => {
   }, []);
 
   return (
+    
     <Map
       email={props.email}
       currentPosition={currentPosition}
