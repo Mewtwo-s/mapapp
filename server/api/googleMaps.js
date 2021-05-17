@@ -1,10 +1,9 @@
-const  Axios = require('axios')
-const router = require('express').Router()
-module.exports = router
+const Axios = require('axios');
+const router = require('express').Router();
+module.exports = router;
 
 router.post('/', async (req, res, next) => {
   try {
-
        let { data } = await Axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=cafe&input=coffee&inputtype=textquery&fields=photos,formatted_address,name,opening_hours,rating&rankby=distance&location=${req.body.lat},${req.body.lng}&key=${process.env.GOOGLE_MAPS_BACKEND_KEY}`);
     // if no result from edge - textSearch
       if(data.results.length === 0){
@@ -16,7 +15,6 @@ router.post('/', async (req, res, next) => {
          
        res.send(places)
   } catch (err) {
-    next(err)
+    next(err);
   }
-})
-
+});
