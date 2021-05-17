@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import { Link } from 'react-router-dom';
 import JoinRoom from './JoinRoom'
-import Session from './Session'
+// import Session from './Session'
 import Axios from 'axios'
 
 /**
@@ -20,14 +20,11 @@ export const Home = props => {
       fetchAllSession()
   }, []);
 
-  console.log('here are all the sessions', sessions)
-
   return (
     <div>
-      <h3>hi {props.email}</h3>
-      <Link to='/map'>Show Map</Link>
-      {sessions.map(session=><Session code={session.code} id={session.id} key={session.id}/>)}
-      <JoinRoom />
+      {/* <Link to='/map'>Show Map</Link>
+      {sessions.map(session=><Session code={session.code} id={session.id} key={session.id}/>)} */}
+      <JoinRoom history= {props.history} />
     </div>
   )
 }

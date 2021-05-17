@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { models: { User, Session }} = require('../db')
+const { models: { User, Session, userSession }} = require('../db')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -27,9 +27,18 @@ router.post('/', async (req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
-    const session = await Session.findByPk(req.body.sessionId);
+    const session = await Session.findOne({
+      where: {
+        code: req.body.code}});
     const user = await User.findByPk(req.params.userId);
     await session.addUsers(user);
+    // const sessionUser = await userSession.findOne({
+    //   where: {
+    //     sessionId: session.id,
+    //     userId: user.id
+    //   }
+    // })
+    // sessionUser.setStatus(req.body.accepted);
     res.send(session);
   } catch (err) {
     next(err)
