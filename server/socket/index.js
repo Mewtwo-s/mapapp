@@ -1,21 +1,11 @@
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    console.log(`Client ${socket.id} has connected to the server!`);
-
-    // add event listeners to the socket
-    // socket.on('new-message', (message, ...args) => {
-    //   //send to all users
-    //   io.emit(
-    //     'new-message',
-    //     message ? `${message.lat},${message.lng}` : message
-    //   );
-    //   console.log('server received message,', message, args);
-    // });
+    console.info(`Client ${socket.id} has connected to the server!`);
 
     socket.on('join-room', (userId, sessionId) => {
-      console.log('SOCKET join-room', userId, sessionId);
       const roomName = 'room_' + sessionId;
       socket.join(roomName);
+      console.info(`User ${userId} joins roomName`);
       io.to(roomName).emit(
         'user-joined-room',
         userId,
@@ -23,14 +13,13 @@ module.exports = (io) => {
       );
     });
 
-    socket.on('send-my-position', (userId, sessionId, lat, lng) => {
-      console.log('SOCKET send-my-position', userId, sessionId, lat, lng);
+    socket.on('send-my-location', (userId, sessionId, lat, lng) => {
       const roomName = 'room_' + sessionId;
-      io.to(roomName).emit('user-position-changed', userId, lat, lng);
+      io.to(roomName).emit('user-location-changed', userId, lat, lng);
     });
 
     socket.on('disconnect', () => {
-      console.log('user disconnected: ' + socket.id);
+      console.info('user disconnected: ' + socket.id);
     });
   });
 };

@@ -2,8 +2,7 @@ import Map from './Map';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { DirectionsRenderer } from 'react-google-maps';
-import { updateMyPosition } from '../store/location';
-import { sessionStarted } from '../store/room';
+import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
   const [markers, setMarkers] = useState([
@@ -40,7 +39,6 @@ const MapContainer = (props) => {
     const sessionId = 88; // temp until we can pull from state
     if (props.user.id) {
       props.sessionStarted(props.user.id, sessionId);
-      // const id = navigator.geolocation.watchPosition(watchSuccess, watchFail);
     }
   }, [props.user]);
 
@@ -71,7 +69,6 @@ const mapDispatch = (dispatch) => {
   return {
     sessionStarted: (userId, sessionId) =>
       dispatch(sessionStarted(userId, sessionId)),
-    updateMyPosition: (lat, lng) => dispatch(updateMyPosition(lat, lng)),
   };
 };
 export default connect(mapState, mapDispatch)(MapContainer);

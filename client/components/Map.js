@@ -11,14 +11,12 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import Axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
-import socket from '../socket';
 import { connect } from 'react-redux';
-// import { joinRoom, sendPosition } from '../store/room';
+
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
 const Map = withScriptjs(
-  // withGoogleMap(({ defaultCenter, markers, currentPosition }) => {
   withGoogleMap((props) => {
     const mapRef = useRef(null);
     // console.log('Map props', props);
@@ -78,11 +76,6 @@ const Map = withScriptjs(
 
     // useEffect for Direction: when current user position changed
     useEffect(() => {
-      // ----
-      // Temp. This should be called when session is created / joined
-      // hard-coded session id for now
-      // props.join(props.user.id, 99);
-      // ----
       if (!midPoint || !midPoint.lat) return;
       console.log('midpoint', midPoint);
       console.log('currentLocation', props.currentPosition);
@@ -109,16 +102,9 @@ const Map = withScriptjs(
       findMidpoint(props.markers);
     }, [props.markers]);
 
+    // for testing
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
-      // socket.emit('session-created', e.latLng.lat(), 99);
-      socket.emit(
-        'position-update',
-        e.latLng.lat(),
-        99,
-        e.latLng.lat(),
-        e.latLng.lng()
-      );
     };
 
     return (
@@ -127,7 +113,8 @@ const Map = withScriptjs(
         onClick={(e) => handleClick(e)}
         defaultCenter={props.defaultCenter}
       >
-        {/* Hardcoded markers passed from MapContainer */}
+        {/* Hardcoded markers passed from MapContainer. 
+        Do we need these anymore? */}
         {props.markers.map(({ position }, index) => (
           <Marker key={`marker_${index}`} position={position} />
         ))}
@@ -180,8 +167,8 @@ const Map = withScriptjs(
           <DirectionsRenderer directions={currentLine} />
         )}
 
-        {/* Draw marker for each connected user */}
-        {props.locations.map((loc) => {
+        {/* Draw labeled marker for each user in current session*/}
+        {props.allLocations.map((loc) => {
           return (
             <MarkerWithLabel
               key={`user_${loc.userId}`}
@@ -208,17 +195,9 @@ const Map = withScriptjs(
 const mapState = (state) => {
   return {
     user: state.auth,
-    locations: state.locations,
-    currentLocation: state.currentLocation,
-    currentSession: state.currentSession,
+    allLocations: state.allLocations,
+    myLocation: state.myLocation,
   };
 };
 
-// const mapDispatch = (dispatch) => {
-//   return {
-//     join: (uid, sessionId) => dispatch(joinRoom(uid, sessionId)),
-//     sendPosition: (uid, sessionId, lat, lng) =>
-//       dispatch(sendPosition(uid, sessionId, lat, lng)),
-//   };
-// };
 export default connect(mapState)(Map);

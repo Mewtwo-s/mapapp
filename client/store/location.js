@@ -1,33 +1,31 @@
-import { sendMyPosition } from './room';
+import { sendMyLocation } from './locationSharing';
+
 // actions
-const MY_POSITION_UPDATED = 'MY_POSITION_UPDATED';
+const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
 
 // action creator
-export const myPositionUpdated = (lat, lng) => {
-  console.log('myPositionUpdated', lat, lng);
+export const myLocationUpdated = (lat, lng) => {
   return {
-    type: MY_POSITION_UPDATED,
+    type: MY_LOCATION_UPDATED,
     lat,
     lng,
   };
 };
 
 // thunk
-export const updateMyPosition = (lat, lng) => {
+export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
-    console.log('location.updateMyPosition', lat, lng);
     // update state with my current position
-    dispatch(myPositionUpdated(lat, lng));
+    dispatch(myLocationUpdated(lat, lng));
     // send update to all users
-    dispatch(sendMyPosition());
+    dispatch(sendMyLocation());
   };
 };
 
 // reducer
 export default function (state = {}, action) {
-  console.log('location reducer', action);
   switch (action.type) {
-    case MY_POSITION_UPDATED:
+    case MY_LOCATION_UPDATED:
       return { lat: action.lat, lng: action.lng };
     default:
       return state;
