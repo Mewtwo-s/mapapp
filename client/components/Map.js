@@ -11,7 +11,9 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import Axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
-import { connect } from 'react-redux';
+import socket from '../socket'
+import {connect} from 'react-redux'
+import history from '../history'
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -19,12 +21,20 @@ import { connect } from 'react-redux';
 const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
-    // console.log('Map props', props);
     const [currentLine, setCurrentLine] = useState();
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    
+    useEffect(() => {
+  
+      fitBounds();
+      // findMidpoint(props.markers);
+      console.log('recalculate midpoint', midPoint)
 
+
+    }, [JSON.stringify(props.markers)]);
+  
     const getPlaces = async (lat, lng) => {
       try {
         if (lat && lng) {
@@ -41,25 +51,28 @@ const Map = withScriptjs(
       }
     };
 
-    const findMidpoint = (markers) => {
-      const initialLocations = markers.map((marker) => [
-        marker.position.lat,
-        marker.position.lng,
-      ]);
-      let finalLocations = [];
+    
+  
+  const findMidpoint = (locations) => {
+    
+    const initialLocations = locations.map(loc => [loc.lat, loc.lng]);
+    console.log('in find midpoint', initialLocations)
+    let finalLocations = [];
+    if(initialLocations.length>0){
       for (let i = 0; i < initialLocations.length; i++) {
-        finalLocations.push(
-          point([initialLocations[i][0], initialLocations[i][1]])
-        );
-      }
+        finalLocations.push(point([initialLocations[i][0], initialLocations[i][1]])
+        )}
+      
       const features = featureCollection(finalLocations);
+    
       const centerCenter = center(features);
-      //const centroidCenter = centroid(features);
-      setMidPoint({
-        lat: centerCenter.geometry.coordinates[0],
-        lng: centerCenter.geometry.coordinates[1],
-      });
-    };
+      setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
+    }
+    //const centroidCenter = centroid(features);
+
+  
+  }
+
 
     // Fit bounds function
     const fitBounds = () => {
@@ -99,8 +112,8 @@ const Map = withScriptjs(
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
       fitBounds();
-      findMidpoint(props.markers);
-    }, [props.markers]);
+      findMidpoint(props.allLocations);
+    }, [props.allLocations]);
 
     // for testing
     const handleClick = (e) => {
@@ -122,7 +135,7 @@ const Map = withScriptjs(
         {/* Draw midpoint marker */}
         {midPoint && (
           <Marker
-            icon="http://maps.google.com/mapfiles/ms/icons/pink-dot.png"
+            icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
             position={midPoint}
           />
         )}
@@ -131,7 +144,7 @@ const Map = withScriptjs(
         {(topPlaces || []).map((place, index) => {
           return (
             <Marker
-              icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+              icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
               key={`top-places-marker_${index}`}
               position={place.geometry.location}
               onClick={() => {
@@ -193,10 +206,12 @@ const Map = withScriptjs(
 );
 
 const mapState = (state) => {
+  console.log('has to be right', state.allLocations)
   return {
     user: state.auth,
     allLocations: state.allLocations,
     myLocation: state.myLocation,
+    isLoggedIn: !!state.auth.id
   };
 };
 

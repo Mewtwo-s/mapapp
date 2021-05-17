@@ -5,28 +5,34 @@ import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
-  const [markers, setMarkers] = useState([
-    { position: { lat: 40.71590822862322, lng: -73.99917384606857 } },
-  ]);
+  const [markers, setMarkers] = useState([]);
   const [currentPosition, setCurrentPosition] = useState();
 
-  const getLocation = async () => {
-    await navigator.geolocation.getCurrentPosition(
-      function (position) {
-        const pos = {
-          position: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          },
-        };
-        setMarkers([...markers, pos]);
-        setCurrentPosition(pos.position);
-      },
-      function (error) {
-        console.error('Error with GEOLOCATION:', error.code, error.message);
-      }
-    );
-  };
+ const getLocation = async ()=>{
+
+  await navigator.geolocation.watchPosition(
+    function (position) {
+ 
+      const pos = {
+        position: {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        },
+      };
+      console.log('old markers', markers)
+      markers.push(pos)
+      setMarkers(markers)
+      // setMarkers([...markers, pos]);
+      console.log('NEW markers', markers)
+      setCurrentPosition(pos.position)
+
+    },
+    function (error) {
+      console.error('Error with GEOLOCATION:', error.code, error.message);
+    }
+  );}
+
+
 
   useEffect(() => {
     getLocation();
@@ -43,6 +49,7 @@ const MapContainer = (props) => {
   }, [props.user]);
 
   return (
+    
     <Map
       email={props.email}
       currentPosition={currentPosition}

@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const userSession = require('../db/models/userSession');
+const { models: { Session, User }} = require('../db')
 module.exports = router
 
 router.put('/:userId/:sessionId', async (req, res, next) => {
