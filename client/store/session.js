@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import {sessionStarted} from './locationSharing';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
@@ -41,6 +42,7 @@ export const joinSessionThunkCreator = (userId, code, history) => {
         const response = await Axios.put(`/api/users/add/${userId}`, {code: code, accepted: true});
         const session = response.data;
         dispatch(joinSession(session));
+        dispatch(sessionStarted(userId, session.id))
         history.push(`/map/${code}`);
     }
 }
@@ -50,6 +52,7 @@ export const createSessionThunkCreator = (hostId, history) => {
         const response = await Axios.post(`/api/sessions/`, {hostId: hostId});
         const session = response.data;
         dispatch(createSession(session));
+        dispatch(sessionStarted(userId, session.id))
     }
 }
 
