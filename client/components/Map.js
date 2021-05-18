@@ -8,7 +8,7 @@ import {
   InfoWindow,
 } from 'react-google-maps';
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
-import axios from 'axios';
+import Axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
 import socket from '../socket';
@@ -30,14 +30,24 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    // const [selection, setSelection] = useState('');
+    // selected place
+    const [selection, setSelection] = useState('');
+
+    console.log();
     console.log('Map props', props);
+
+    // clean this up??
+    useEffect(() => {
+      fitBounds();
+      // findMidpoint(props.markers);
+      console.log('recalculate midpoint', midPoint);
+    }, [JSON.stringify(props.markers)]);
 
     const getPlaces = async (lat, lng) => {
       try {
         if (lat && lng) {
           const places = await (
-            await axios.post('/api/google', { lat: lat, lng: lng })
+            await Axios.post('/api/google', { lat: lat, lng: lng })
           ).data;
           setTopPlaces(places);
         }
@@ -65,13 +75,14 @@ const Map = withScriptjs(
           lng: centerCenter.geometry.coordinates[1],
         });
       }
+      //const centroidCenter = centroid(features);
     };
 
     // Fit bounds function
     const fitBounds = () => {
       const bounds = new window.google.maps.LatLngBounds();
 
-      props.allLocations.map((item) => {
+      props.markers.map((item) => {
         bounds.extend(item.position);
         return item.id;
       });
@@ -91,6 +102,7 @@ const Map = withScriptjs(
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
       fitBounds();
+      // findMidpoint(props.allLocations);
     }, [props.allLocations]);
 
     useEffect(() => {
@@ -101,6 +113,11 @@ const Map = withScriptjs(
       }
     }, [props.session, props.myLocation]);
 
+    // for testing
+    const handleClick = (e) => {
+      console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
+    };
+
     function handleMagic() {
       findMidpoint(props.allLocations);
     }
@@ -109,6 +126,7 @@ const Map = withScriptjs(
 
     function placeSelected(loc) {
       props.activateSession(props.session.id, loc.lat, loc.lng);
+      handleSelectMidpoint(loc);
     }
 
     function getDirections(loc) {
@@ -129,6 +147,9 @@ const Map = withScriptjs(
       );
     }
 
+    function handleSelectMidpoint(loc) {
+      setSelection(loc);
+    }
 
     return (
       <div>
@@ -140,19 +161,25 @@ const Map = withScriptjs(
         <GoogleMap
           ref={mapRef}
           zoom={11}
+          onClick={(e) => handleClick(e)}
           defaultCenter={props.myLocation}
         >
-  
-          {props.session && (
+          {/* Hardcoded markers passed from MapContainer. 
+        Do we need these anymore? */}
+          {props.markers.map(({ position }, index) => (
+            <Marker key={`marker_${index}`} position={position} />
+          ))}
+
+          {/* Draw midpoint marker */}
+          {selection && (
             <Marker
               icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
-              position={{lat: props.session.lat, lng: props.session.lng,}}
+              position={midPoint}
             />
           )}
 
           {/* Draw markers for top places */}
-          
-          {props.session.status === "Pending" && (topPlaces || []).map((place, index) => {
+          {(topPlaces || []).map((place, index) => {
             return (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
@@ -162,6 +189,7 @@ const Map = withScriptjs(
                   setselectedPlace(place);
                 }}
               >
+                {/* clicker */}
                 {selectedPlace === place && (
                   <InfoWindow
                     onCloseClick={() => {
