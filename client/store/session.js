@@ -4,12 +4,20 @@ import { sessionStarted } from './locationSharing';
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
 const CREATE_SESSION = 'CREATE_SESSION';
+const ACTIVATE_SESSION = 'ACTIVATE_SESSION';
 
 //action creators
 const getSession = (session) => {
   return {
     type: GET_SESSION,
     session,
+  };
+};
+
+const activateSession = (sessionId) => {
+  return {
+    type: ACTIVATE_SESSION,
+    sessionId,
   };
 };
 
@@ -27,6 +35,15 @@ const createSession = (session) => {
 };
 
 //thunks
+export const activateSessionThunkCreator = (sessionId, lat, lng) => {
+  return async (dispatch) => {
+    const response = await Axios.put(`/api/sessions/${sessionId}`, {
+      status: 'Active',
+      lat,
+      lng,
+    });
+  };
+};
 
 export const getSessionThunkCreator = (userId, code) => {
   return async (dispatch) => {
@@ -66,6 +83,8 @@ export default function sessionReducer(session = {}, action) {
     case JOIN_SESSION:
       return action.session;
     case CREATE_SESSION:
+      return action.session;
+    case ACTIVATE_SESSION:
       return action.session;
     default:
       return session;

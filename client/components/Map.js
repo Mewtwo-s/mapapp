@@ -15,7 +15,10 @@ import socket from '../socket';
 import { connect } from 'react-redux';
 import history from '../history';
 import Place from './Place';
-import { getSessionThunkCreator } from '../store/session';
+import {
+  getSessionThunkCreator,
+  activateSessionThunkCreator,
+} from '../store/session';
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -112,6 +115,11 @@ const Map = withScriptjs(
 
     const directionsService = new google.maps.DirectionsService();
 
+    function placeSelected(loc) {
+      props.activateSession(props.session.id, loc.lat, loc.lng);
+      handleSelectMidpoint(loc);
+    }
+
     function handleSelectMidpoint(loc) {
       setSelection(loc);
       directionsService.route(
@@ -123,8 +131,6 @@ const Map = withScriptjs(
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
-            lines.push(result);
-            console.log('lines!!!', lines);
           } else {
             console.error(`error fetching directions ${result}`);
           }
@@ -218,7 +224,7 @@ const Map = withScriptjs(
         {topPlaces
           ? topPlaces.map((place) => (
               <Place
-                handle={handleSelectMidpoint}
+                handle={placeSelected}
                 key={place.place_id}
                 location={place.geometry.location}
                 name={place.name}
@@ -239,11 +245,15 @@ const mapState = (state) => {
     allLocations: state.allLocations,
     myLocation: state.myLocation,
     isLoggedIn: !!state.auth.id,
+    session: state.sessionReducer,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
+    activateSession: (sessionId, lat, lng) => {
+      dispatch(activateSessionThunkCreator(sessionId, lat, lng));
+    },
     getSession: (userId, sessionCode) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));
     },
