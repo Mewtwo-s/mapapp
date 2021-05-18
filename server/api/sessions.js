@@ -26,7 +26,7 @@ router.get('/:sessionCode', async (req, res, next) =>{
                  code: req.params.sessionCode},
                  include: {
                      model: User,
-                     attributes: ['id', 'firstName']
+                     attributes: ['id', 'firstName', 'photo']
                  }
                 });
         res.send(session);

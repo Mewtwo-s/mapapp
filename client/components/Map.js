@@ -14,6 +14,7 @@ import center from '@turf/center';
 import socket from '../socket'
 import {connect} from 'react-redux'
 import history from '../history'
+import Place from './Place'
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -22,10 +23,10 @@ const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
-    const lines = []
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    const [selection, setSelection] = useState('')
     
     useEffect(() => {
   
@@ -42,10 +43,9 @@ const Map = withScriptjs(
           const places = await (
             await Axios.post('/api/google', { lat: lat, lng: lng })
           ).data;
-          console.log('new way to get places..', places);
           setTopPlaces(places);
 
-          console.log(places);
+       
         }
       } catch (error) {
         console.log(error);
@@ -54,7 +54,7 @@ const Map = withScriptjs(
 
     
   
-  const findMidpoint = (locations) => {
+  const findMidpoint = async(locations) => {
     
     const initialLocations = locations.map(loc => [loc.lat, loc.lng]);
     console.log('in find midpoint', initialLocations)
@@ -67,12 +67,11 @@ const Map = withScriptjs(
       const features = featureCollection(finalLocations);
     
       const centerCenter = center(features);
-      setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
+      await setMidPoint({lat: centerCenter.geometry.coordinates[0], lng:centerCenter.geometry.coordinates[1]});
+     
     }
     //const centroidCenter = centroid(features);
-
-  
-  }
+}
 
 
     // Fit bounds function
@@ -86,36 +85,17 @@ const Map = withScriptjs(
       mapRef.current.fitBounds(bounds);
     };
 
-    const directionsService = new google.maps.DirectionsService();
-
 
     useEffect(() => {
-      if (!midPoint || !midPoint.lat) return;
-      console.log('midpoint', midPoint);
-      console.log('currentLocation', props.currentPosition);
-      getPlaces(midPoint.lat, midPoint.lng);
-      directionsService.route(
-        {
-          origin: props.currentPosition,
-          destination: midPoint,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            setCurrentLine(result);
-            lines.push(result)
-            console.log('lines!!!', lines)
-          } else {
-            console.error(`error fetching directions ${result}`);
-          }
-        }
-      );
-    }, [midPoint, props.currentPosition]);
+      if(midPoint){
+        getPlaces(midPoint.lat, midPoint.lng);
+      }
+    }, [midPoint]);
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
       fitBounds();
-      findMidpoint(props.allLocations);
+      // findMidpoint(props.allLocations);
     }, [props.allLocations]);
 
     // for testing
@@ -123,9 +103,39 @@ const Map = withScriptjs(
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
     };
 
-    // console.log('my array of lines==>', lines)
+    function handleMagic(){
+      findMidpoint(props.allLocations);
+    }
+
+    const directionsService = new google.maps.DirectionsService();
+
+    function handleSelectMidpoint(loc){
+     setSelection(loc)
+     directionsService.route(
+      {
+        origin: props.currentPosition,
+        destination: loc,
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          setCurrentLine(result);
+          lines.push(result)
+          console.log('lines!!!', lines)
+        } else {
+          console.error(`error fetching directions ${result}`);
+        }
+      }
+    );
+  
+    }
+
+  
+    
     return (
-      <GoogleMap
+      <div>
+      <button onClick={handleMagic}>MAGIC</button>
+       <GoogleMap
         ref={mapRef}
         onClick={(e) => handleClick(e)}
         defaultCenter={props.defaultCenter}
@@ -137,7 +147,7 @@ const Map = withScriptjs(
         ))}
 
         {/* Draw midpoint marker */}
-        {midPoint && (
+        {selection && (
           <Marker
             icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
             position={midPoint}
@@ -179,17 +189,17 @@ const Map = withScriptjs(
           );
         })}
 
-        {/* Draw the route polyline
+      
         {props.currentPosition && (
           <DirectionsRenderer directions={currentLine} />
-        )} */}
+        )} 
 
         {/* Draw labeled marker for each user in current session*/}
         {props.allLocations.map((loc) => {
           return (
             <MarkerWithLabel
               key={`user_${loc.userId}`}
-              icon="http://maps.google.com/mapfiles/ms/icons/golfer.png"
+              icon={props.user.photo}
               position={{ lat: loc.lat, lng: loc.lng }}
               labelAnchor={new google.maps.Point(0, 0)}
               zIndex={100}
@@ -206,6 +216,9 @@ const Map = withScriptjs(
         })}
 
       </GoogleMap>
+      {topPlaces?topPlaces.map(place=><Place handle={handleSelectMidpoint} key={place.place_id} location={place.geometry.location} name={place.name} open={place.opening_hours?place.opening_hours.open_now:null} price={place.price_level} rating={place.rating}/>):console.log('0 place found yet')}
+      </div>
+     
     );
   })
 );
