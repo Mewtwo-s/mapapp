@@ -19,7 +19,6 @@ export const sessionStarted = (userId, sessionId) => {
     // sure if this is the best place for this, but needs to
     // happpen before we join the room
     try {
-      
       const { coords } = await getCurrentPositionAsync();
       const { latitude, longitude } = coords;
       dispatch(myLocationUpdated(latitude, longitude));
@@ -57,9 +56,7 @@ export const sendMyLocation = () => {
   return (dispatch) => {
     const userId = store.getState().auth.id;
     const loc = store.getState().myLocation;
-
-    // TEMP until store.getState().session.id is available from store
-    const sessionId = 88;
+    const sessionId = store.getState().sessionReducer.id;
 
     if (loc) {
       socket.emit('send-my-location', userId, sessionId, loc.lat, loc.lng);

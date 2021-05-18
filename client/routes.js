@@ -1,12 +1,17 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
 import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
-import InviteForm from './components/InviteForm'
-import Navbar from './components/Navbar'
+import InviteForm from './components/InviteForm';
+import Navbar from './components/Navbar';
 
 /**
  * COMPONENT
@@ -23,14 +28,14 @@ class Routes extends Component {
         <Navbar />
         {isLoggedIn ? (
           <Switch>
-            <Route path="/map" component={MapContainer} />
+            <Route path="/map/:code" component={MapContainer} />
             <Route exact path="/home" component={Home} />
-            <Route path='/emailInvite' component={InviteForm}/>
+            <Route path="/emailInvite" component={InviteForm} />
             <Redirect to="/home" />
           </Switch>
         ) : (
           <Switch>
-            <Route path="/map" component={MapContainer} />
+            <Route path="/map/:code" component={MapContainer} />
             <Route exact path="/" component={Login} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
