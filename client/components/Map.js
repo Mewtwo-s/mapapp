@@ -131,7 +131,7 @@ const Map = withScriptjs(
     }
 
   
-
+    
     return (
       <div>
       <button onClick={handleMagic}>MAGIC</button>
@@ -199,7 +199,7 @@ const Map = withScriptjs(
           return (
             <MarkerWithLabel
               key={`user_${loc.userId}`}
-              icon="http://maps.google.com/mapfiles/ms/icons/golfer.png"
+              icon={props.user.photo}
               position={{ lat: loc.lat, lng: loc.lng }}
               labelAnchor={new google.maps.Point(0, 0)}
               zIndex={100}

@@ -58,7 +58,8 @@ const User = db.define('user', {
   },
   photo:{
     type: Sequelize.STRING,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 'http://maps.google.com/mapfiles/ms/icons/golfer.png'
   }
 
 })
