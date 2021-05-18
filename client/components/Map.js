@@ -140,10 +140,14 @@ const Map = withScriptjs(
 
     return (
       <div>
-        <button onClick={handleMagic}>MAGIC</button>
+        {props.session.status === 'Pending' &&
+          props.session.hostId === props.user.id && (
+            <button onClick={handleMagic}>Show Meetup Spots!</button>
+          )}
+
         <GoogleMap
           ref={mapRef}
-          defaultZoom={11}
+          zoom={11}
           onClick={(e) => handleClick(e)}
           defaultCenter={props.defaultCenter}
         >
