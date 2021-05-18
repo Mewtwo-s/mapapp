@@ -14,10 +14,10 @@ const getSession = (session) => {
   };
 };
 
-const activateSession = (sessionId) => {
+const activateSession = (session) => {
   return {
     type: ACTIVATE_SESSION,
-    sessionId,
+    session,
   };
 };
 
@@ -36,12 +36,16 @@ const createSession = (session) => {
 
 //thunks
 export const activateSessionThunkCreator = (sessionId, lat, lng) => {
+  console.log('activateSessionThunk', sessionId, lat, lng);
   return async (dispatch) => {
     const response = await Axios.put(`/api/sessions/${sessionId}`, {
       status: 'Active',
-      lat,
-      lng,
+      lat: lat,
+      lng: lng,
     });
+    const session = response.data;
+    console.log('session', session);
+    dispatch(activateSession(session));
   };
 };
 

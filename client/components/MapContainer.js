@@ -5,6 +5,7 @@ import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
+  console.log('MAP CONTAINER', props);
   const [markers, setMarkers] = useState([]);
   const [currentPosition, setCurrentPosition] = useState();
 
@@ -50,7 +51,7 @@ const MapContainer = (props) => {
       match={props.match}
       email={props.email}
       currentPosition={currentPosition}
-      defaultCenter={{ lat: 6.4454594, lng: 3.449074 }}
+      defaultCenter={currentPosition}
       markers={markers}
       googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
       loadingElement={<div className="loader" />}

@@ -30,6 +30,7 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    // selected place
     const [selection, setSelection] = useState('');
 
     console.log();
@@ -104,6 +105,14 @@ const Map = withScriptjs(
       // findMidpoint(props.allLocations);
     }, [props.allLocations]);
 
+    useEffect(() => {
+      console.log('GETTING DIRECTIONS??');
+      if (props.session.status === 'Active') {
+        console.log('YES GETTING DIRECTIONS');
+        getDirections({ lat: props.session.lat, lng: props.session.lng });
+      }
+    }, [props.session, props.myLocation]);
+
     // for testing
     const handleClick = (e) => {
       console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
@@ -120,11 +129,11 @@ const Map = withScriptjs(
       handleSelectMidpoint(loc);
     }
 
-    function handleSelectMidpoint(loc) {
-      setSelection(loc);
+    function getDirections(loc) {
+      console.log('in getDirections', loc);
       directionsService.route(
         {
-          origin: props.currentPosition,
+          origin: props.myLocation,
           destination: loc,
           travelMode: google.maps.TravelMode.DRIVING,
         },
@@ -138,6 +147,10 @@ const Map = withScriptjs(
       );
     }
 
+    function handleSelectMidpoint(loc) {
+      setSelection(loc);
+    }
+
     return (
       <div>
         {props.session.status === 'Pending' &&
@@ -149,7 +162,7 @@ const Map = withScriptjs(
           ref={mapRef}
           zoom={11}
           onClick={(e) => handleClick(e)}
-          defaultCenter={props.defaultCenter}
+          defaultCenter={props.myLocation}
         >
           {/* Hardcoded markers passed from MapContainer. 
         Do we need these anymore? */}
@@ -200,9 +213,7 @@ const Map = withScriptjs(
             );
           })}
 
-          {props.currentPosition && (
-            <DirectionsRenderer directions={currentLine} />
-          )}
+          {props.myLocation && <DirectionsRenderer directions={currentLine} />}
 
           {/* Draw labeled marker for each user in current session*/}
           {props.allLocations.map((loc) => {
@@ -225,7 +236,9 @@ const Map = withScriptjs(
             );
           })}
         </GoogleMap>
-        {topPlaces
+
+        {/* Draw place buttons */}
+        {props.session.status === 'Pending' && topPlaces
           ? topPlaces.map((place) => (
               <Place
                 handle={placeSelected}
