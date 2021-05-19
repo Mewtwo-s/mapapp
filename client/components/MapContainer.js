@@ -5,6 +5,7 @@ import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
+  // const isValidLocation = Object.keys(props.myLocation).length > 0;
   return (
     <Map
       history={props.history}
@@ -25,12 +26,13 @@ const MapContainer = (props) => {
 const mapState = (state) => {
   return {
     user: state.auth,
+    myLocation: state.myLocation,
   };
 };
-const mapDispatch = (dispatch) => {
-  return {
-    sessionStarted: (userId, sessionId) =>
-      dispatch(sessionStarted(userId, sessionId)),
-  };
-};
-export default connect(mapState, mapDispatch)(MapContainer);
+// const mapDispatch = (dispatch) => {
+//   return {
+//     sessionStarted: (userId, sessionId) =>
+//       dispatch(sessionStarted(userId, sessionId)),
+//   };
+// };
+export default connect(mapState)(MapContainer);
