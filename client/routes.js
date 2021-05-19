@@ -12,7 +12,7 @@ import { me } from './store';
 import MapContainer from './components/MapContainer';
 import InviteForm from './components/InviteForm';
 import Navbar from './components/Navbar';
-
+import Test from './components/Test'
 /**
  * COMPONENT
  */
@@ -28,9 +28,11 @@ class Routes extends Component {
         <Navbar />
         {isLoggedIn ? (
           <Switch>
+          <Route path="/test" component={Test} />
             <Route path="/map/:code" component={MapContainer} />
             <Route exact path="/home" component={Home} />
             <Route path="/emailInvite" component={InviteForm} />
+           
             <Redirect to="/home" />
           </Switch>
         ) : (

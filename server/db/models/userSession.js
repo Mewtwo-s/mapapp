@@ -7,16 +7,17 @@ const axios = require('axios');
 // started session
 // host set meetup location
 
-const userSession = db.define('userSession',{
+const UserSession = db.define('UserSession',{
 
     currentLat: {type: Sequelize.FLOAT},
     currentLng: {type: Sequelize.FLOAT},
+    placeName: {type:Sequelize.TEXT},
     accepted: {type: Sequelize.BOOLEAN, defaultValue: false},
 })
 
-userSession.prototype.setStatus = async function (status) {
+UserSession.prototype.setStatus = async function (status) {
     this.accepted = status;
     await this.save();
   }
 
-module.exports = userSession 
+module.exports = UserSession 

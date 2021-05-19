@@ -6,13 +6,13 @@ const User = require('./models/user')
 
 const Session = require('./models/session')
 
-const userSession = require('./models/userSession')
+const UserSession = require('./models/UserSession')
 
 //associations could go here!
 
 
-Session.belongsToMany(User,{through: userSession})
-User.belongsToMany(Session,{through: userSession})
+Session.belongsToMany(User,{through: UserSession})
+User.belongsToMany(Session,{through: UserSession})
 
 
 // 

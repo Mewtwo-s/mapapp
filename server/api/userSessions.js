@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const userSession = require('../db/models/userSession');
+const UserSession = require('../db/models/UserSession');
 const { models: { Session, User }} = require('../db')
 module.exports = router
 
 router.put('/:userId/:sessionId', async (req, res, next) => {
     try {
-      const usersession = await userSession.findOne({
+      const usersession = await UserSession.findOne({
           where: {
               userId: req.params.userId,
               sessionId: req.params.sessionId
