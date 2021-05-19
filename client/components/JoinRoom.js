@@ -33,41 +33,41 @@ export class JoinRoom extends React.Component{
     }
 
     render () {
-    return (
-        <div>
-            {this.state.sessionAction === null && 
+        return (
             <div>
-                <button onClick={this.handleCreate}>Create A New Session</button>
-                <button onClick={() => this.handleClick('join')}>Join A Session</button>
-            </div>}
-            {this.state.sessionAction === 'join' && 
-            <div>
-                <form onSubmit={this.handleJoin}>
+                <h4>{`Welcome ${this.props.user.firstName} !`}</h4>
+                {this.state.sessionAction === null && 
                 <div>
-                <label htmlFor="code">
-                    <small>Join Existing Room</small>
-                </label>
-                <input name="code" type="text" />
-                <button type='submit'>Join</button>
-                </div>
+                    <button onClick={this.handleCreate}>Create A New Session</button>
+                    <button onClick={() => this.handleClick('join')}>Join A Session</button>
+                </div>}
+                {this.state.sessionAction === 'join' && 
                 <div>
- 
-        </div>    
-      </form>
-            </div>}
-            {this.state.sessionAction === 'host' && 
-            <div>
-                <h3>Invite friends using the code: {this.props.session.code} </h3>
-                <Link to={`/map/${this.props.session.code}`}>
-                <button>Go to session</button>
-                </Link>
-            </div>}
-        </div>
-    )
-}
+                    <form onSubmit={this.handleJoin}>
+                        <div>
+                            <label htmlFor="code">
+                                <small>Join Existing Room</small>
+                            </label>
+                            <input name="code" type="text" />
+                            <button type='submit'>Join</button>
+                        </div>    
+                    </form>
+                </div>}
+
+                {this.state.sessionAction === 'host' && 
+                <div>
+                    <h3>Invite friends using the code: {this.props.session.code} </h3>
+                    <Link to={`/map/${this.props.session.code}`}>
+                    <button>Go to session</button>
+                    </Link>
+                </div>}
+            </div>
+        )
+    }
 }
 
 const mapState = (state) => {
+    console.log('state auth join session', state.auth)
     return {
       user: state.auth,
       session: state.sessionReducer

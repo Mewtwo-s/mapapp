@@ -6,25 +6,29 @@ import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
   return (
-    <Map
-      history={props.history}
-      match={props.match}
-      googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
-      loadingElement={<div className="loader" />}
-      containerElement={
-        <div
-          className="mapContainer"
-          style={{ height: '100vh', width: '100vh' }}
-        />
-      }
-      mapElement={<div className="map" style={{ height: '100%' }} />}
-    />
+    <>
+      <h4>Session Code: {props.session.code}</h4>
+      <Map
+        history={props.history}
+        match={props.match}
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
+        loadingElement={<div className="loader" />}
+        containerElement={
+          <div
+            className="mapContainer"
+            style={{ height: '100vh', width: '100%' }}
+          />
+        }
+        mapElement={<div className="map" style={{ height: '100%' }} />}
+      />
+    </>
   );
 };
 
 const mapState = (state) => {
   return {
     user: state.auth,
+    session: state.sessionReducer
   };
 };
 const mapDispatch = (dispatch) => {
