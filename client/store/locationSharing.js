@@ -1,7 +1,6 @@
 import socket from '../socket';
 import store from '../store';
-import { updateMyLocation, myLocationUpdated } from './location';
-import { getCurrentPositionAsync } from '../helpers';
+import { getMyLocation, watchMyLocation } from './location';
 
 const USER_POSITION_CHANGED = 'USER_POSITION_CHANGED';
 
@@ -16,7 +15,9 @@ export const userLocationChanged = (userId, lat, lng) => {
 // invitation to join one
 export const sessionStarted = (userId, sessionId) => {
   console.log('sessionStarted', userId, sessionId);
-  return (dispatch) => {
+  return async (dispatch) => {
+    // save my current location immediately to the redux store
+    dispatch(await getMyLocation());
     // join the room
     dispatch(joinRoom(userId, sessionId));
     // TO DO: send initial position to database...??
@@ -29,6 +30,8 @@ export const sessionStarted = (userId, sessionId) => {
 export const joinRoom = (userId, sessionId) => {
   return (dispatch) => {
     socket.emit('join-room', userId, sessionId);
+    // start tracking my location
+    dispatch(watchMyLocation());
   };
 };
 

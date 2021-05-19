@@ -17,12 +17,15 @@ export const myLocationUpdated = (lat, lng) => {
 
 // // one-time call to get my current position and save it to the store
 export const getMyLocation = () => {
+  console.log('location.getMyLocation()');
   return async (dispatch) => {
     try {
       const response = await getCurrentPositionAsync();
       console.log('response', response);
-      // const { latitude, longitude } = coords;
-      dispatch(myLocationUpdated(latitude, longitude));
+      console.log('coords', response.coords);
+      dispatch(
+        myLocationUpdated(response.coords.latitude, response.coords.longitude)
+      );
     } catch (err) {
       console.error('Error getting initial location.', err);
     }
@@ -31,11 +34,11 @@ export const getMyLocation = () => {
 
 // Start watching my location.
 export const watchMyLocation = () => {
+  console.log('location.watchMyLocation()');
   return (dispatch) => {
     // callback for when location check is successfull
     const watchSuccess = (pos) => {
       console.log('watchSuccess', pos);
-
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
     };
