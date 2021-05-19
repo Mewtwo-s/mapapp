@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import Axios from 'axios'
+import axios from 'axios'
 import {connect} from 'react-redux'
 import User from './User'
 
@@ -12,7 +12,7 @@ function InviteForm(props) {
     }
 
     const fetchAllSession = async () =>{
-        const {data} = await Axios.get(`/api/users`)
+        const {data} = await axios.get(`/api/users`)
         setUsers(data)
       }
       useEffect(() => {

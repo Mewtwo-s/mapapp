@@ -8,7 +8,7 @@ import {
   InfoWindow,
 } from 'react-google-maps';
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
-import Axios from 'axios';
+import axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
 import socket from '../socket';
@@ -33,21 +33,13 @@ const Map = withScriptjs(
     // selected place
     const [selection, setSelection] = useState('');
 
-    console.log();
-    console.log('Map props', props);
 
-    // clean this up??
-    useEffect(() => {
-      fitBounds();
-      // findMidpoint(props.markers);
-      console.log('recalculate midpoint', midPoint);
-    }, [JSON.stringify(props.markers)]);
 
     const getPlaces = async (lat, lng) => {
       try {
         if (lat && lng) {
           const places = await (
-            await Axios.post('/api/google', { lat: lat, lng: lng })
+            await axios.post('/api/google', { lat: lat, lng: lng })
           ).data;
           setTopPlaces(places);
         }
@@ -78,13 +70,30 @@ const Map = withScriptjs(
       //const centroidCenter = centroid(features);
     };
 
-    // Fit bounds function
+    function getDirections(loc) {
+      console.log('in getDirections', loc);
+      directionsService.route(
+        {
+          origin: props.myLocation,
+          destination: loc,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setCurrentLine(result);
+          } else {
+            console.error(`error fetching directions ${result}`);
+          }
+        }
+      );
+    }
+
     const fitBounds = () => {
       const bounds = new window.google.maps.LatLngBounds();
 
-      props.markers.map((item) => {
-        bounds.extend(item.position);
-        return item.id;
+      props.allLocations.map((item) => {
+        bounds.extend({lat:item.lat, lng:item.lng});
+        return item.userId;
       });
       mapRef.current.fitBounds(bounds);
     };
@@ -126,11 +135,11 @@ const Map = withScriptjs(
 
     function placeSelected(loc) {
       props.activateSession(props.session.id, loc.lat, loc.lng);
-      handleSelectMidpoint(loc);
+      getDirections(loc)
     }
 
     function getDirections(loc) {
-      console.log('in getDirections', loc);
+      console.log('in getDirections', props.myLocation);
       directionsService.route(
         {
           origin: props.myLocation,
@@ -147,10 +156,6 @@ const Map = withScriptjs(
       );
     }
 
-    function handleSelectMidpoint(loc) {
-      setSelection(loc);
-    }
-
     return (
       <div>
         {props.session.status === 'Pending' &&
@@ -161,25 +166,10 @@ const Map = withScriptjs(
         <GoogleMap
           ref={mapRef}
           zoom={11}
-          onClick={(e) => handleClick(e)}
-          defaultCenter={props.myLocation}
-        >
-          {/* Hardcoded markers passed from MapContainer. 
-        Do we need these anymore? */}
-          {props.markers.map(({ position }, index) => (
-            <Marker key={`marker_${index}`} position={position} />
-          ))}
-
-          {/* Draw midpoint marker */}
-          {selection && (
-            <Marker
-              icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
-              position={midPoint}
-            />
-          )}
-
+          onClick={(e) => handleClick(e)}>
+    
           {/* Draw markers for top places */}
-          {(topPlaces || []).map((place, index) => {
+          {props.session.status === "Pending" && (topPlaces || []).map((place, index) => {
             return (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
