@@ -17,7 +17,7 @@ export const sessionStarted = (userId, sessionId) => {
   console.log('sessionStarted', userId, sessionId);
   return async (dispatch) => {
     // save my current location immediately to the redux store
-    dispatch(await getMyLocation());
+    await dispatch(getMyLocation());
     // join the room
     dispatch(joinRoom(userId, sessionId));
     // TO DO: send initial position to database...??
@@ -28,6 +28,7 @@ export const sessionStarted = (userId, sessionId) => {
 // my socket Id to that room so all my communication is
 // shared with others in that room
 export const joinRoom = (userId, sessionId) => {
+  // to do: make sure socket is connected.
   return (dispatch) => {
     socket.emit('join-room', userId, sessionId);
     // start tracking my location

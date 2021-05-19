@@ -4,6 +4,7 @@ import { userLocationChanged, sendMyLocation } from './store/locationSharing';
 
 const socket = io(window.location.origin, { autoConnect: true });
 
+// TO DO: confirm socket connection via promise
 socket.on('connect', () => {
   console.log(`I'm connected to the server. My socket id is ${socket.id}`);
 });

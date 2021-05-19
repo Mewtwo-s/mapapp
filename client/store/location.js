@@ -23,7 +23,7 @@ export const getMyLocation = () => {
       const response = await getCurrentPositionAsync();
       console.log('response', response);
       console.log('coords', response.coords);
-      dispatch(
+      await dispatch(
         myLocationUpdated(response.coords.latitude, response.coords.longitude)
       );
     } catch (err) {
