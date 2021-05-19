@@ -11,47 +11,29 @@ export const userLocationChanged = (userId, lat, lng) => {
 };
 
 // thunks
+
+// Call when this user has created a session or accepted an
+// invitation to join one
 export const sessionStarted = (userId, sessionId) => {
   console.log('sessionStarted', userId, sessionId);
-
-  return async (dispatch) => {
-    // set an initial location before we join the room. Not
-    // sure if this is the best place for this, but needs to
-    // happpen before we join the room
-    try {
-      const { coords } = await getCurrentPositionAsync();
-      const { latitude, longitude } = coords;
-      dispatch(myLocationUpdated(latitude, longitude));
-    } catch (err) {
-      console.error('Error getting initial location.', err);
-    }
-
-    // TO DO: send initial position to database...
-
+  return (dispatch) => {
     // join the room
     dispatch(joinRoom(userId, sessionId));
-
-    // start watching my location
-    const watchSuccess = (pos) => {
-      console.log('watchSuccess', pos);
-      // save my updates to the store
-      dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
-    };
-
-    const watchFail = (err) => {
-      console.error('WATCH ERROR.', err.code, err.message);
-    };
-    const id = navigator.geolocation.watchPosition(watchSuccess, watchFail);
+    // TO DO: send initial position to database...??
   };
 };
 
+// Creates a 'room' associated with the current session. Adds
+// my socket Id to that room so all my communication is
+// shared with others in that room
 export const joinRoom = (userId, sessionId) => {
   return (dispatch) => {
     socket.emit('join-room', userId, sessionId);
   };
 };
 
-// send my current location to the room
+// send my current location to the room call this whenever
+// we want to send our location to others in the same room
 export const sendMyLocation = () => {
   return (dispatch) => {
     const userId = store.getState().auth.id;
@@ -68,7 +50,7 @@ export const sendMyLocation = () => {
  * REDUCER
  */
 
-// state is array of objects. E.g.
+// state is array of objects:
 //  [{userId:2, lat: xx.xxx, lng: xx.xxx}...]
 export default function (state = [], action) {
   switch (action.type) {

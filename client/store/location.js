@@ -1,4 +1,5 @@
 import { sendMyLocation } from './locationSharing';
+import { getCurrentPositionAsync } from '../helpers';
 
 // actions
 const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
@@ -13,6 +14,40 @@ export const myLocationUpdated = (lat, lng) => {
 };
 
 // thunk
+
+// // one-time call to get my current position and save it to the store
+export const getMyLocation = () => {
+  return async (dispatch) => {
+    try {
+      const response = await getCurrentPositionAsync();
+      console.log('response', response);
+      // const { latitude, longitude } = coords;
+      dispatch(myLocationUpdated(latitude, longitude));
+    } catch (err) {
+      console.error('Error getting initial location.', err);
+    }
+  };
+};
+
+// Start watching my location.
+export const watchMyLocation = () => {
+  return (dispatch) => {
+    // callback for when location check is successfull
+    const watchSuccess = (pos) => {
+      console.log('watchSuccess', pos);
+
+      // save my updates to the store
+      dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
+    };
+
+    // callback for when location check fails
+    const watchFail = (err) => {
+      console.error('WATCH ERROR.', err.code, err.message);
+    };
+    const id = navigator.geolocation.watchPosition(watchSuccess, watchFail);
+  };
+};
+
 export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
     // update state with my current position
