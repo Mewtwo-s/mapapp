@@ -33,8 +33,6 @@ const Map = withScriptjs(
     // selected place
     const [selection, setSelection] = useState('');
 
-
-
     const getPlaces = async (lat, lng) => {
       try {
         if (lat && lng) {
@@ -67,7 +65,6 @@ const Map = withScriptjs(
           lng: centerCenter.geometry.coordinates[1],
         });
       }
-      //const centroidCenter = centroid(features);
     };
 
     function getDirections(loc) {
@@ -92,7 +89,7 @@ const Map = withScriptjs(
       const bounds = new window.google.maps.LatLngBounds();
 
       props.allLocations.map((item) => {
-        bounds.extend({lat:item.lat, lng:item.lng});
+        bounds.extend({ lat: item.lat, lng: item.lng });
         return item.userId;
       });
       mapRef.current.fitBounds(bounds);
@@ -135,7 +132,7 @@ const Map = withScriptjs(
 
     function placeSelected(loc) {
       props.activateSession(props.session.id, loc.lat, loc.lng);
-      getDirections(loc)
+      getDirections(loc);
     }
 
     function getDirections(loc) {
@@ -163,45 +160,42 @@ const Map = withScriptjs(
             <button onClick={handleMagic}>Show Meetup Spots!</button>
           )}
 
-        <GoogleMap
-          ref={mapRef}
-          zoom={11}
-          onClick={(e) => handleClick(e)}>
-    
+        <GoogleMap ref={mapRef} zoom={11} onClick={(e) => handleClick(e)}>
           {/* Draw markers for top places */}
-          {props.session.status === "Pending" && (topPlaces || []).map((place, index) => {
-            return (
-              <Marker
-                icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-                key={`top-places-marker_${index}`}
-                position={place.geometry.location}
-                onClick={() => {
-                  setselectedPlace(place);
-                }}
-              >
-                {/* clicker */}
-                {selectedPlace === place && (
-                  <InfoWindow
-                    onCloseClick={() => {
-                      setselectedPlace(null);
-                    }}
-                    position={selectedPlace.geometry.location}
-                  >
-                    <div>
-                      <h3>{selectedPlace.name}</h3>
-                      <h5>{selectedPlace.vicinity}</h5>
-                      <p>
-                        {selectedPlace.opening_hours.open_now
-                          ? 'Open Now'
-                          : 'Closed Now'}
-                      </p>
-                    </div>
-                  </InfoWindow>
-                )}
-              </Marker>
-              ///>
-            );
-          })}
+          {props.session.status === 'Pending' &&
+            (topPlaces || []).map((place, index) => {
+              return (
+                <Marker
+                  icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                  key={`top-places-marker_${index}`}
+                  position={place.geometry.location}
+                  onClick={() => {
+                    setselectedPlace(place);
+                  }}
+                >
+                  {/* clicker */}
+                  {selectedPlace === place && (
+                    <InfoWindow
+                      onCloseClick={() => {
+                        setselectedPlace(null);
+                      }}
+                      position={selectedPlace.geometry.location}
+                    >
+                      <div>
+                        <h3>{selectedPlace.name}</h3>
+                        <h5>{selectedPlace.vicinity}</h5>
+                        <p>
+                          {selectedPlace.opening_hours.open_now
+                            ? 'Open Now'
+                            : 'Closed Now'}
+                        </p>
+                      </div>
+                    </InfoWindow>
+                  )}
+                </Marker>
+                ///>
+              );
+            })}
 
           {props.myLocation && <DirectionsRenderer directions={currentLine} />}
 
