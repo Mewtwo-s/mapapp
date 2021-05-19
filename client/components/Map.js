@@ -30,8 +30,10 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    // const [selection, setSelection] = useState('');
-    console.log('Map props', props);
+    // selected place
+    const [selection, setSelection] = useState('');
+
+
 
     const getPlaces = async (lat, lng) => {
       try {
@@ -65,51 +67,8 @@ const Map = withScriptjs(
           lng: centerCenter.geometry.coordinates[1],
         });
       }
+      //const centroidCenter = centroid(features);
     };
-
-    // Fit bounds function
-    const fitBounds = () => {
-      const bounds = new window.google.maps.LatLngBounds();
-
-      props.allLocations.map((item) => {
-        bounds.extend(item.position);
-        return item.id;
-      });
-      mapRef.current.fitBounds(bounds);
-    };
-
-    useEffect(() => {
-      props.getSession(props.user.id, props.match.params.code);
-    }, []);
-
-    useEffect(() => {
-      if (midPoint) {
-        getPlaces(midPoint.lat, midPoint.lng);
-      }
-    }, [midPoint]);
-
-    // Fit bounds on mount, and when the markers change
-    useEffect(() => {
-      fitBounds();
-    }, [props.allLocations]);
-
-    useEffect(() => {
-      console.log('GETTING DIRECTIONS??');
-      if (props.session.status === 'Active') {
-        console.log('YES GETTING DIRECTIONS');
-        getDirections({ lat: props.session.lat, lng: props.session.lng });
-      }
-    }, [props.session, props.myLocation]);
-
-    function handleMagic() {
-      findMidpoint(props.allLocations);
-    }
-
-    const directionsService = new google.maps.DirectionsService();
-
-    function placeSelected(loc) {
-      props.activateSession(props.session.id, loc.lat, loc.lng);
-    }
 
     function getDirections(loc) {
       console.log('in getDirections', loc);
@@ -129,6 +88,73 @@ const Map = withScriptjs(
       );
     }
 
+    const fitBounds = () => {
+      const bounds = new window.google.maps.LatLngBounds();
+
+      props.allLocations.map((item) => {
+        bounds.extend({lat:item.lat, lng:item.lng});
+        return item.userId;
+      });
+      mapRef.current.fitBounds(bounds);
+    };
+
+    useEffect(() => {
+      props.getSession(props.user.id, props.match.params.code);
+    }, []);
+
+    useEffect(() => {
+      if (midPoint) {
+        getPlaces(midPoint.lat, midPoint.lng);
+      }
+    }, [midPoint]);
+
+    // Fit bounds on mount, and when the markers change
+    useEffect(() => {
+      fitBounds();
+      // findMidpoint(props.allLocations);
+    }, [props.allLocations]);
+
+    useEffect(() => {
+      console.log('GETTING DIRECTIONS??');
+      if (props.session.status === 'Active') {
+        console.log('YES GETTING DIRECTIONS');
+        getDirections({ lat: props.session.lat, lng: props.session.lng });
+      }
+    }, [props.session, props.myLocation]);
+
+    // for testing
+    const handleClick = (e) => {
+      console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
+    };
+
+    function handleMagic() {
+      findMidpoint(props.allLocations);
+    }
+
+    const directionsService = new google.maps.DirectionsService();
+
+    function placeSelected(loc) {
+      props.activateSession(props.session.id, loc.lat, loc.lng);
+      getDirections(loc)
+    }
+
+    function getDirections(loc) {
+      console.log('in getDirections', props.myLocation);
+      directionsService.route(
+        {
+          origin: props.myLocation,
+          destination: loc,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setCurrentLine(result);
+          } else {
+            console.error(`error fetching directions ${result}`);
+          }
+        }
+      );
+    }
 
     return (
       <div>
@@ -140,18 +166,9 @@ const Map = withScriptjs(
         <GoogleMap
           ref={mapRef}
           zoom={11}
-          defaultCenter={props.myLocation}
-        >
-  
-          {props.session && (
-            <Marker
-              icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
-              position={{lat: props.session.lat, lng: props.session.lng,}}
-            />
-          )}
-
+          onClick={(e) => handleClick(e)}>
+    
           {/* Draw markers for top places */}
-          
           {props.session.status === "Pending" && (topPlaces || []).map((place, index) => {
             return (
               <Marker
@@ -162,6 +179,7 @@ const Map = withScriptjs(
                   setselectedPlace(place);
                 }}
               >
+                {/* clicker */}
                 {selectedPlace === place && (
                   <InfoWindow
                     onCloseClick={() => {

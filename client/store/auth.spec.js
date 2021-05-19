@@ -13,7 +13,7 @@ const mockStore = configureMockStore(middlewares)
 
 describe('thunk creators', () => {
   let store
-  let mockAxios
+  let mockaxios
 
   const initialState = {user: {}}
 
@@ -28,12 +28,12 @@ describe('thunk creators', () => {
         setItem: () => {}
       }
     }
-    mockAxios = new MockAdapter(axios)
+    mockaxios = new MockAdapter(axios)
     store = mockStore(initialState)
   })
 
   afterEach(() => {
-    mockAxios.restore()
+    mockaxios.restore()
     store.clearActions()
   })
 
@@ -52,7 +52,7 @@ describe('thunk creators', () => {
       })
       it('eventually dispatches the SET_AUTH action', async () => {
         const fakeUser = {username: 'Cody'}
-        mockAxios.onGet('/auth/me').replyOnce(200, fakeUser)
+        mockaxios.onGet('/auth/me').replyOnce(200, fakeUser)
         await store.dispatch(me())
         const actions = store.getActions()
         expect(actions[0].type).to.be.equal('SET_AUTH')
@@ -71,7 +71,7 @@ describe('thunk creators', () => {
       })
       it('does not dispatch GET USER action', async () => {
         const fakeUser = {username: 'Cody'}
-        mockAxios.onGet('/auth/me').replyOnce(200, fakeUser)
+        mockaxios.onGet('/auth/me').replyOnce(200, fakeUser)
         await store.dispatch(me())
         const actions = store.getActions()
         expect(actions.length).to.equal(0)
@@ -81,7 +81,7 @@ describe('thunk creators', () => {
 
   describe('logout', () => {
     it('logout: eventually dispatches the SET_AUTH action withan empty object', async () => {
-      mockAxios.onPost('/auth/logout').replyOnce(204)
+      mockaxios.onPost('/auth/logout').replyOnce(204)
       await store.dispatch(logout())
       const actions = store.getActions()
       expect(actions[0].type).to.be.equal('SET_AUTH')
