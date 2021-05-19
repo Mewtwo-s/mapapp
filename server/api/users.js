@@ -1,6 +1,19 @@
 const router = require('express').Router()
 const { models: { User, Session, UserSession }} = require('../db')
+
 module.exports = router
+
+
+router.get('/test', async (req, res, next) => {
+  try {
+    res.send(await User.findAll({
+      where:{id:1}, 
+      include:UserSession})
+)
+  } catch (err) {
+    next(err)
+  }
+})
 
 router.get('/', async (req, res, next) => {
   try {
