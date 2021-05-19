@@ -49,6 +49,9 @@ export class JoinRoom extends React.Component{
                 </label>
                 <input name="code" type="text" />
                 <button type='submit'>Join</button>
+                <Link to={`/`}>
+                <button>Back</button>
+                </Link>
                 </div>
                 <div>
  
@@ -60,6 +63,9 @@ export class JoinRoom extends React.Component{
                 <h3>Invite friends using the code: {this.props.session.code} </h3>
                 <Link to={`/map/${this.props.session.code}`}>
                 <button>Go to session</button>
+                </Link>
+                <Link to={`/`}>
+                <button>Back</button>
                 </Link>
             </div>}
         </div>
