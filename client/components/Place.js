@@ -4,8 +4,8 @@ function Place(props) {
     const [selection, setSelection] = useState('')
     const {handle, location, name, open, price, rating} = props
     
-   async function onTrigger() {
-       handle(location)
+   async function onTrigger() { 
+       handle(location, name)
     }
     return (
         <div>

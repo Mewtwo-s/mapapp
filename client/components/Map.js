@@ -29,9 +29,9 @@ const Map = withScriptjs(
     const [currentLine, setCurrentLine] = useState();
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
-    const [selectedPlace, setselectedPlace] = useState(null);
+    const [selectedPlace, setselectedPlace] = useState();
     // selected place
-    const [selection, setSelection] = useState('');
+    const [meetupPointName, setMeetupPointName] = useState(null);
 
 
 
@@ -133,9 +133,11 @@ const Map = withScriptjs(
 
     const directionsService = new google.maps.DirectionsService();
 
-    function placeSelected(loc) {
+    function placeSelected(loc, name) {
       props.activateSession(props.session.id, loc.lat, loc.lng);
+      setMeetupPointName(name)
       getDirections(loc)
+      
     }
 
     function getDirections(loc) {
@@ -206,6 +208,8 @@ const Map = withScriptjs(
           {props.myLocation && <DirectionsRenderer directions={currentLine} />}
 
           {/* Draw labeled marker for each user in current session*/}
+          {meetupPointName?<h1>We are meeting @ {meetupPointName}</h1>:<h1>Meetup Spot Pending</h1>}
+          
           {props.allLocations.map((loc) => {
             return (
               <MarkerWithLabel
@@ -228,6 +232,7 @@ const Map = withScriptjs(
         </GoogleMap>
 
         {/* Draw place buttons */}
+        
         {props.session.status === 'Pending' && topPlaces
           ? topPlaces.map((place) => (
               <Place
