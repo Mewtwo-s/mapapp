@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const { models: { User, Session, userSession }} = require('../db')
+const runMailer = require('../../nodemailer');
 module.exports = router
+
 
 router.get('/', async (req, res, next) => {
   try {
@@ -21,6 +23,25 @@ router.post('/', async (req, res, next) => {
     const user = await User.create(req.body);
     res.status(201).send(user);
   } catch (err) {
+    next(err)
+  }
+})
+
+router.post('/invite', async(req, res, next) => {
+  try {
+    let user = await User.findOne({
+      where: {
+        email: req.body.email
+      }
+    })
+    const session = await Session.findByPk(req.body.sessionId);
+    if (!user) {
+      user = await User.create({email: req.body.email, firstName: 'test', lastName: 'test', password: 'test'});
+    }
+    await session.addUsers(user);
+    runMailer(req.body.hostName, req.body.email, session.code, user.firstName);
+    res.send(user);
+  } catch(err) {
     next(err)
   }
 })
