@@ -5,10 +5,6 @@ import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
-  console.log('MAP CONTAINER', props);
-  const [markers, setMarkers] = useState([]);
-  const [currentPosition, setCurrentPosition] = useState();
-
   return (
     <Map
       history={props.history}
