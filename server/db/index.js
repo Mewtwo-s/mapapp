@@ -6,13 +6,13 @@ const User = require('./models/user')
 
 const Session = require('./models/session')
 
-const UserSession = require('./models/UserSession')
+const userSession = require('./models/userSession')
 
 //associations could go here!
 
 
-Session.belongsToMany(User,{through: UserSession})
-User.belongsToMany(Session,{through: UserSession})
+Session.belongsToMany(User,{through: userSession})
+User.belongsToMany(Session,{through: userSession})
 
 
 // 
@@ -30,6 +30,6 @@ module.exports = {
   models: {
     User,
     Session,
-    UserSession
+    userSession,
   },
 }
