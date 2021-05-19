@@ -1,12 +1,21 @@
 import socket from '../socket';
 import store from '../store';
-import { getMyLocation, watchMyLocation } from './location';
+import {
+  getMyLocation,
+  watchMyLocation,
+  stopWatchingMyLocation,
+} from './location';
 
-const USER_POSITION_CHANGED = 'USER_POSITION_CHANGED';
+const USER_LOCATION_CHANGED = 'USER_LOCATION_CHANGED';
+const CLEAR_ALL_LOCATIONS = 'CLEAR_ALL_LOCATIONS';
 
 // action creators
 export const userLocationChanged = (userId, lat, lng) => {
-  return { type: USER_POSITION_CHANGED, userId, lat, lng };
+  return { type: USER_LOCATION_CHANGED, userId, lat, lng };
+};
+
+export const clearAllLocations = () => {
+  return { type: CLEAR_ALL_LOCATIONS };
 };
 
 // thunks
@@ -28,11 +37,21 @@ export const sessionStarted = (userId, sessionId) => {
 // my socket Id to that room so all my communication is
 // shared with others in that room
 export const joinRoom = (userId, sessionId) => {
+  console.log('JOIN ROOM');
   // to do: make sure socket is connected.
   return (dispatch) => {
     socket.emit('join-room', userId, sessionId);
     // start tracking my location
     dispatch(watchMyLocation());
+  };
+};
+
+export const leaveRoom = (userId, sessionId) => {
+  console.log('LEAVE ROOM');
+  return (dispatch) => {
+    socket.emit('leave-room', userId, sessionId);
+    // stop tracking my location??
+    dispatch(stopWatchingMyLocation());
   };
 };
 
@@ -58,7 +77,7 @@ export const sendMyLocation = () => {
 //  [{userId:2, lat: xx.xxx, lng: xx.xxx}...]
 export default function (state = [], action) {
   switch (action.type) {
-    case USER_POSITION_CHANGED:
+    case USER_LOCATION_CHANGED:
       if (!state.find((info) => info.userId === action.userId)) {
         // user is not in the array, add them
         return [
@@ -73,6 +92,8 @@ export default function (state = [], action) {
             : info;
         });
       }
+    case CLEAR_ALL_LOCATIONS:
+      return [];
     default:
       return state;
   }

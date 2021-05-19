@@ -147,7 +147,7 @@ const Map = withScriptjs(
             <button onClick={handleMagic}>Show Meetup Spots!</button>
           )}
 
-        {
+        {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
             {sessionIsValid && (
               <Marker
@@ -218,7 +218,7 @@ const Map = withScriptjs(
                 );
               })}
           </GoogleMap>
-        }
+        )}
         {/* Draw place buttons */}
         {props.session.status === 'Pending' && topPlaces
           ? topPlaces.map((place) => (

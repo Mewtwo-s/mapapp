@@ -6,13 +6,18 @@ const socket = io(window.location.origin, { autoConnect: true });
 
 // TO DO: confirm socket connection via promise
 socket.on('connect', () => {
-  console.log(`I'm connected to the server. My socket id is ${socket.id}`);
+  console.info(`I'm connected to the server. My socket id is ${socket.id}`);
 });
 
 socket.on('user-joined-room', (userId, message) => {
-  console.log(message);
+  console.info(message);
   // send out a position update so the new user knows who/where we are
   store.dispatch(sendMyLocation());
+});
+
+socket.on('user-left-room', (userId, message) => {
+  console.info(message);
+  // not sure there's anything else to do here...but i want the feedback
 });
 
 socket.on('user-location-changed', (userId, lat, lng) => {
