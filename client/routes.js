@@ -14,7 +14,7 @@ import MapContainer from './components/MapContainer';
 import InviteForm from './components/InviteForm'
 import Navbar from './components/Navbar'
 import PastSessions from './components/PastSessions';
-import GlobalStyles from './Globalstyles';
+import GlobalStyles from './GlobalStyles';
 
 
 import Test from './components/Test'
