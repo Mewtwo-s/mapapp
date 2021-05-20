@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const UserSession = require('../db/models/UserSession');
+const UserSession = require('../db/models/userSession');
 const { models: { Session, User }} = require('../db')
 module.exports = router
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { sessionStarted, clearAllLocations } from './locationSharing';
+// import socket from '../socket';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
@@ -14,7 +15,7 @@ const getSession = (session) => {
   };
 };
 
-const activateSession = (session) => {
+export const activateSession = (session) => {
   return {
     type: ACTIVATE_SESSION,
     session,
@@ -34,6 +35,7 @@ const createSession = (session) => {
   };
 };
 
+
 //thunks
 export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) => {
 
@@ -45,8 +47,8 @@ export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) =
       locationName: locationName
     });
     const session = response.data;
-
     dispatch(activateSession(session));
+    // socket.emit('updated-session', session)
   };
 };
 
