@@ -36,7 +36,7 @@ const createSession = (session) => {
 
 //thunks
 export const activateSessionThunkCreator = (sessionId, lat, lng) => {
-  console.log('activateSessionThunk', sessionId, lat, lng);
+
   return async (dispatch) => {
     const response = await axios.put(`/api/sessions/${sessionId}`, {
       status: 'Active',
@@ -44,20 +44,18 @@ export const activateSessionThunkCreator = (sessionId, lat, lng) => {
       lng: lng,
     });
     const session = response.data;
-    console.log('session', session);
+
     dispatch(activateSession(session));
   };
 };
 
 export const getSessionThunkCreator = (userId, code) => {
-  console.log('getSessionThunkCreator');
+
   return async (dispatch) => {
     try {
       const response = await axios.get(`/api/sessions/${code}`);
       const session = response.data;
-      console.log('SESSION', session);
       await dispatch(getSession(session));
-      await dispatch(sessionStarted(userId, session.id));
     } catch (err) {
       console.error('Error in getSessionThunkCreator:', err);
     }
@@ -65,25 +63,31 @@ export const getSessionThunkCreator = (userId, code) => {
 };
 
 export const joinSessionThunkCreator = (userId, code, history) => {
-  console.log('joinSessionThunkCreator');
+
   return async (dispatch) => {
-    const response = await axios.put(`/api/users/add/${userId}`, {
-      code: code,
-      accepted: true,
-    });
-    const session = response.data;
-    await dispatch(joinSession(session));
-    await dispatch(sessionStarted(userId, session.id));
-    history.push(`/map/${code}`);
+    try {
+      const response = await axios.put(`/api/users/add/${userId}`, {
+        code: code,
+        accepted: true,
+      });
+      const session = response.data;
+      await dispatch(joinSession(session));
+      history.push(`/map/${code}`);
+    } catch (err) {
+      console.error(err)
+    }
   };
 };
 
 export const createSessionThunkCreator = (hostId, history) => {
   return async (dispatch) => {
-    const response = await axios.post(`/api/sessions/`, { hostId: hostId });
-    const session = response.data;
-    await dispatch(createSession(session));
-    await dispatch(sessionStarted(hostId, session.id));
+    try {
+      const response = await axios.post(`/api/sessions/`, { hostId: hostId });
+      const session = response.data;
+      await dispatch(createSession(session));
+    } catch (err) {
+      console.error(err)
+    }
   };
 };
 

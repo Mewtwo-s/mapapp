@@ -19,7 +19,8 @@ import {
   getSessionThunkCreator,
   activateSessionThunkCreator,
 } from '../store/session';
-
+import {watchMyLocation} from '../store/location'
+import {joinRoom} from '../store/locationSharing'
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -31,7 +32,7 @@ const Map = withScriptjs(
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
     // const [selection, setSelection] = useState('');
-    console.log('Map props', props);
+
 
     const getPlaces = async (lat, lng) => {
       try {
@@ -48,7 +49,7 @@ const Map = withScriptjs(
 
     const findMidpoint = async (locations) => {
       const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
-      console.log('in find midpoint', initialLocations);
+   
       let finalLocations = [];
       if (initialLocations.length > 0) {
         for (let i = 0; i < initialLocations.length; i++) {
@@ -69,11 +70,11 @@ const Map = withScriptjs(
 
     // Fit bounds function
     const fitBounds = () => {
-      console.log('FIT BOUNDS');
+    
       const bounds = new window.google.maps.LatLngBounds();
 
       props.allLocations.map((item) => {
-        console.log('ITEM', item);
+
         bounds.extend({ lat: item.lat, lng: item.lng });
         return item.id;
       });
@@ -82,7 +83,16 @@ const Map = withScriptjs(
 
     useEffect(() => {
       props.getSession(props.user.id, props.match.params.code);
+
+      props.startWatch(props.user.id)
+
     }, []);
+
+    useEffect(() => {
+      if(props.session.id && props.myLocation.lat){
+        props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
+      }
+    }, [props.session.id]);
 
     useEffect(() => {
       if (midPoint) {
@@ -92,15 +102,15 @@ const Map = withScriptjs(
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
-      if (props.allLocations.length > 2) {
+      if (props.allLocations.length > 1) {
         fitBounds();
       }
     }, [props.allLocations]);
 
     useEffect(() => {
-      console.log('GETTING DIRECTIONS??');
+   
       if (props.session.status === 'Active') {
-        console.log('YES GETTING DIRECTIONS');
+      
         getDirections({ lat: props.session.lat, lng: props.session.lng });
       }
     }, [props.session, props.myLocation]);
@@ -112,12 +122,12 @@ const Map = withScriptjs(
     const directionsService = new google.maps.DirectionsService();
 
     function placeSelected(loc) {
-      console.log('PLACE SELECTED', loc);
+ 
       props.activateSession(props.session.id, loc.lat, loc.lng);
     }
 
     function getDirections(loc) {
-      console.log('in getDirections', loc);
+    
       directionsService.route(
         {
           origin: props.myLocation,
@@ -134,12 +144,14 @@ const Map = withScriptjs(
       );
     }
 
-    const myLocationIsValid = Object.keys(props.myLocation).length > 0;
+    const myLocationIsValid = props.myLocation.lat ;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
     const defCenter = myLocationIsValid
-      ? props.myLocation
+      ? {lat: props.myLocation.lat, lng:props.myLocation.lng}
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
+
+
     return (
       <div>
         {props.session.status === 'Pending' &&
@@ -192,13 +204,13 @@ const Map = withScriptjs(
                 );
               })}
 
-            {props.myLocation && (
+            {props.myLocation.lat && (
               <DirectionsRenderer directions={currentLine} />
             )}
 
             {/* Draw labeled marker for each user in current session*/}
             {props.allLocations.length > 0 &&
-              props.allLocations.map((loc) => {
+              props.allLocations.filter(loc=>loc.userId!=props.user.id).map((loc) => {
                 return (
                   <MarkerWithLabel
                     key={`user_${loc.userId}`}
@@ -217,9 +229,29 @@ const Map = withScriptjs(
                   </MarkerWithLabel>
                 );
               })}
+              
+       
+                 {parseFloat(props.myLocation.lat)? <MarkerWithLabel
+                    key={props.user.id}
+                    icon={props.user.photo}
+                    position={{ lat: parseFloat(props.myLocation.lat), lng: parseFloat(props.myLocation.lng) }}
+                    labelAnchor={new google.maps.Point(0, 0)}
+                    zIndex={100}
+                    labelStyle={{
+                      backgroundColor: 'black',
+                      color: 'white',
+                      fontSize: '16px',
+                      padding: '2px',
+                    }}
+                  >
+                    <div>{`your marker`}</div>
+                  </MarkerWithLabel>:console.log('location not reader')}
+          
+              
           </GoogleMap>
         )}
         {/* Draw place buttons */}
+        
         {props.session.status === 'Pending' && topPlaces
           ? topPlaces.map((place) => (
               <Place
@@ -232,7 +264,7 @@ const Map = withScriptjs(
                 rating={place.rating}
               />
             ))
-          : console.log('0 place found yet')}
+          :''}
       </div>
     );
   })
@@ -250,12 +282,18 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
+    startWatch: (userId) => {
+      dispatch(watchMyLocation(userId));
+    },
     activateSession: (sessionId, lat, lng) => {
       dispatch(activateSessionThunkCreator(sessionId, lat, lng));
     },
     getSession: (userId, sessionCode) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));
     },
+    userJoinRoom: (userId, sessionId, userLoc) => {
+      dispatch(joinRoom(userId, sessionId, userLoc))
+    }
   };
 };
 export default connect(mapState, mapDispatch)(Map);

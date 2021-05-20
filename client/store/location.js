@@ -1,7 +1,6 @@
 import { sendMyLocation } from './locationSharing';
-import { getCurrentPositionAsync } from '../helpers';
 import store from '../store';
-
+import socket from '../socket';
 // actions
 const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
 const LOCATION_WATCH_STOPPED = 'LOCATION_WATCH_STOPPED';
@@ -31,27 +30,9 @@ export const locationWatchStarted = (watchId) => {
 };
 
 // thunk
-
-// // one-time call to get my current position and save it to the store
-export const getMyLocation = () => {
-  console.log('location.getMyLocation()');
-  return async (dispatch) => {
-    console.log('dispatching async get location');
-    try {
-      const response = await getCurrentPositionAsync();
-      console.log('response', response);
-      console.log('coords', response.coords);
-      await dispatch(
-        myLocationUpdated(response.coords.latitude, response.coords.longitude)
-      );
-    } catch (err) {
-      console.error('Error getting initial location.', err);
-    }
-  };
-};
-
 // Start watching my location.
-export const watchMyLocation = () => {
+// we should add session ID into here
+export const watchMyLocation = (userId) => {
   console.log('location.watchMyLocation()');
   return (dispatch) => {
     // callback for when location check is successfull
@@ -59,11 +40,17 @@ export const watchMyLocation = () => {
       console.log('watchSuccess', pos);
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
+      socket.emit('user-location-changed', userId, pos.coords.latitude, pos.coords.longitude)
+      //also add those new coords to the DB
     };
 
     // callback for when location check fails
     const watchFail = (err) => {
-      console.error('WATCH ERROR.', err.code, err.message);
+      alert('Unable to detect your location');
+      console.error(err)
+      //make a db call to find their coords
+        //if coords exist, we emit them in updateMyLocation
+        //if coords don't exist, we take them off the map? show a field to input location?
     };
 
     // save the watchId so we can stop watching when needed
@@ -76,7 +63,7 @@ export const watchMyLocation = () => {
 };
 
 export const stopWatchingMyLocation = () => {
-  console.log(location.stopWatching);
+  console.log('STOP watching location' , location.stopWatching);
   return (dispatch) => {
     // get the watchId so we can stop the watching function
     const { watchId } = store.getState().myLocation;
@@ -89,6 +76,7 @@ export const stopWatchingMyLocation = () => {
 
 export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
+    console.log("updateMyLocation", lat,lng)
     // update state with my current position
     dispatch(myLocationUpdated(lat, lng));
     // send update to all users
@@ -99,10 +87,10 @@ export const updateMyLocation = (lat, lng) => {
 // reducer
 export default function (state = {}, action) {
   switch (action.type) {
-    case LOCATION_WATCH_STARTED:
-      return { ...state, watchId: action.watchId };
-    case LOCATION_WATCH_STOPPED:
-      return { ...state, watchId: null };
+    // case LOCATION_WATCH_STARTED:
+    //   return { ...state, watchId: action.watchId };
+    // case LOCATION_WATCH_STOPPED:
+    //   return { ...state, watchId: null };
     case MY_LOCATION_UPDATED:
       return { lat: action.lat, lng: action.lng };
     default:

@@ -6,8 +6,9 @@ import auth from './auth';
 import allLocations from './locationSharing';
 import myLocation from './location';
 import sessionReducer from './session'
+import userReducer from './user'
 
-const reducer = combineReducers({ auth, myLocation, allLocations, sessionReducer });
+const reducer = combineReducers({ auth, myLocation, allLocations, sessionReducer, userReducer });
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
 );

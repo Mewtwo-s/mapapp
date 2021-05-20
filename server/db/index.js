@@ -29,6 +29,7 @@ module.exports = {
   db,
   models: {
     User,
-    Session
+    Session,
+    userSession,
   },
 }

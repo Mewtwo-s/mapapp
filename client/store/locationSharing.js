@@ -1,10 +1,6 @@
 import socket from '../socket';
 import store from '../store';
-import {
-  getMyLocation,
-  watchMyLocation,
-  stopWatchingMyLocation,
-} from './location';
+import { stopWatchingMyLocation } from './location';
 
 const USER_LOCATION_CHANGED = 'USER_LOCATION_CHANGED';
 const CLEAR_ALL_LOCATIONS = 'CLEAR_ALL_LOCATIONS';
@@ -20,29 +16,18 @@ export const clearAllLocations = () => {
 
 // thunks
 
-// Call when this user has created a session or accepted an
-// invitation to join one
-export const sessionStarted = (userId, sessionId) => {
-  console.log('sessionStarted', userId, sessionId);
-  return async (dispatch) => {
-    // save my current location immediately to the redux store
-    await dispatch(getMyLocation());
-    // join the room
-    dispatch(joinRoom(userId, sessionId));
-    // TO DO: send initial position to database...??
-  };
-};
-
 // Creates a 'room' associated with the current session. Adds
 // my socket Id to that room so all my communication is
 // shared with others in that room
-export const joinRoom = (userId, sessionId) => {
-  console.log('JOIN ROOM');
+export const joinRoom = (userId, sessionId, userLoc ) => {
+  console.log(`USER ${userId} JOIN ROOM ${sessionId}`);
   // to do: make sure socket is connected.
   return (dispatch) => {
+    dispatch(userLocationChanged(userId, userLoc.lat, userLoc.lng));
     socket.emit('join-room', userId, sessionId);
+    socket.emit('send-my-location', userId, sessionId, userLoc.lat, userLoc.lng);
     // start tracking my location
-    dispatch(watchMyLocation());
+  
   };
 };
 
@@ -63,7 +48,7 @@ export const sendMyLocation = () => {
     const loc = store.getState().myLocation;
     const sessionId = store.getState().sessionReducer.id;
 
-    if (loc) {
+    if (loc.lat) {
       socket.emit('send-my-location', userId, sessionId, loc.lat, loc.lng);
     }
   };
