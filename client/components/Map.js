@@ -126,8 +126,8 @@ const Map = withScriptjs(
 
     const directionsService = new google.maps.DirectionsService();
 
-    function placeSelected(loc) {
-      props.activateSession(props.session.id, loc.lat, loc.lng);
+    function placeSelected(loc, name) {
+      props.activateSession(props.session.id, loc.lat, loc.lng, name);
     }
 
     function getDirections(loc) {
@@ -298,8 +298,8 @@ const mapDispatch = (dispatch) => {
     startWatch: (userId) => {
       dispatch(watchMyLocation(userId));
     },
-    activateSession: (sessionId, lat, lng) => {
-      dispatch(activateSessionThunkCreator(sessionId, lat, lng));
+    activateSession: (sessionId, lat, lng, name) => {
+      dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
     },
     getSession: (userId, sessionCode) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));

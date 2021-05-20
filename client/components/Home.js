@@ -52,7 +52,7 @@ export const Home = props => {
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
                 <Card>
                   {/* replace with place name */}
-                  <h5>Meetup Spot: name </h5>
+                  <h5>{`Meetup Spot: ${session.locationName}`}</h5>
                   <p>{`Session Code: ${session.code}`}</p>
                 </Card>
               </Link>
@@ -68,6 +68,7 @@ export const Home = props => {
               <Card>
                 {/* replace with place name */}
                 <h5>Meetup Spot: TBD </h5>
+                <p>{`Session Code: ${session.code}`}</p>
               </Card>
             </Link>
 

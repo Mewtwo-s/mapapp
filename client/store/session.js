@@ -35,13 +35,14 @@ const createSession = (session) => {
 };
 
 //thunks
-export const activateSessionThunkCreator = (sessionId, lat, lng) => {
+export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) => {
 
   return async (dispatch) => {
     const response = await axios.put(`/api/sessions/${sessionId}`, {
       status: 'Active',
       lat: lat,
       lng: lng,
+      locationName: locationName
     });
     const session = response.data;
 

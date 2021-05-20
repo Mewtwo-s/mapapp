@@ -41,7 +41,7 @@ router.get('/:sessionCode', async (req, res, next) => {
 router.put('/:sessionId', async (req, res, next) => {
   try {
     const session = await Session.findByPk(req.params.sessionId);
-    // console.log('ROUTE:', session)
+    console.log('session body', req.body)
     res.send(await session.update(req.body));
   } catch (err) {
     next(err);

@@ -10,13 +10,26 @@ const shortid = require('shortid');
 
 
 const Session = db.define('session',{
-    code: {type: Sequelize.STRING},
-    lat: {type: Sequelize.FLOAT},
-    lng: {type: Sequelize.FLOAT},
-    status: {type: Sequelize.ENUM('Pending', 'Active', 'Completed'),
-    defaultValue:'Pending'},
-    type: {type: Sequelize.ENUM('coffee', 'bar'),
-    defaultValue:'coffee'}
+    code: {
+        type: Sequelize.STRING
+    },
+    lat: {
+        type: Sequelize.FLOAT
+    },
+    lng: {
+        type: Sequelize.FLOAT
+    },
+    status: {
+        type: Sequelize.ENUM('Pending', 'Active', 'Completed'),
+        defaultValue:'Pending'
+    },
+    type: {
+        type: Sequelize.ENUM('coffee', 'bar'),
+        defaultValue:'coffee'
+    },
+    locationName: {
+        type: Sequelize.STRING
+    }
     })
 
     Session.beforeCreate((session) => {
