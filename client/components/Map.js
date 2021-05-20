@@ -199,7 +199,6 @@ const Map = withScriptjs(
                   </InfoWindow>
                 )}
               </Marker>
-              ///>
             );
           })}
 
@@ -221,6 +220,7 @@ const Map = withScriptjs(
                   padding: '2px',
                 }}
               >
+                {/* TODO: change to user name */}
                 <div>{`user ${loc.userId}`}</div>
               </MarkerWithLabel>
             );

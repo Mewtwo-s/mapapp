@@ -1,23 +1,24 @@
-import React, {useState, useEffect} from 'react'
-import {connect} from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { createSessionThunkCreator, joinSessionThunkCreator } from '../store/session';
 
-export class JoinRoom extends React.Component{
+export class JoinRoom extends React.Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
         this.handleJoin = this.handleJoin.bind(this);
         this.state = {
-            currentSession: null, 
+            currentSession: null,
             sessionAction: null
         };
         this.handleCreate = this.handleCreate.bind(this);
     }
 
-    handleClick(action){
-       this.setState({
-           sessionAction: action});
+    handleClick(action) {
+        this.setState({
+            sessionAction: action
+        });
     }
 
     async handleJoin(evt) {
@@ -28,7 +29,8 @@ export class JoinRoom extends React.Component{
     async handleCreate(evt) {
         evt.preventDefault();
         this.setState({
-            sessionAction: 'host'})
+            sessionAction: 'host'
+        })
         await this.props.createSession(this.props.user.id);
     }
 
@@ -69,15 +71,15 @@ export class JoinRoom extends React.Component{
 const mapState = (state) => {
     console.log('state auth join session', state.auth)
     return {
-      user: state.auth,
-      session: state.sessionReducer
+        user: state.auth,
+        session: state.sessionReducer
     }
-  }
+}
 
-  const mapDispatch = (dispatch, { history }) => {
-      return {
-          joinSession: (userId, code) => dispatch(joinSessionThunkCreator(userId, code, history)),
-          createSession: (userId) => dispatch(createSessionThunkCreator(userId, history))
-      }
-  }
+const mapDispatch = (dispatch, { history }) => {
+    return {
+        joinSession: (userId, code) => dispatch(joinSessionThunkCreator(userId, code, history)),
+        createSession: (userId) => dispatch(createSessionThunkCreator(userId, history))
+    }
+}
 export default connect(mapState, mapDispatch)(JoinRoom)
