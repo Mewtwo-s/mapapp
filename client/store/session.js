@@ -55,36 +55,39 @@ export const getSessionThunkCreator = (userId, code) => {
     try {
       const response = await axios.get(`/api/sessions/${code}`);
       const session = response.data;
-  
       await dispatch(getSession(session));
     } catch (err) {
       console.error('Error in getSessionThunkCreator:', err);
     }
   };
 };
-// user put in the code 
-// DB call assign user to a session
-// go to the map
+
 export const joinSessionThunkCreator = (userId, code, history) => {
 
   return async (dispatch) => {
-    const response = await axios.put(`/api/users/add/${userId}`, {
-      code: code,
-      accepted: true,
-    });
-    const session = response.data;
-    await dispatch(joinSession(session));
-
-    history.push(`/map/${code}`);
+    try {
+      const response = await axios.put(`/api/users/add/${userId}`, {
+        code: code,
+        accepted: true,
+      });
+      const session = response.data;
+      await dispatch(joinSession(session));
+      history.push(`/map/${code}`);
+    } catch (err) {
+      console.error(err)
+    }
   };
 };
 
 export const createSessionThunkCreator = (hostId, history) => {
   return async (dispatch) => {
-    const response = await axios.post(`/api/sessions/`, { hostId: hostId });
-    const session = response.data;
-    await dispatch(createSession(session));
-
+    try {
+      const response = await axios.post(`/api/sessions/`, { hostId: hostId });
+      const session = response.data;
+      await dispatch(createSession(session));
+    } catch (err) {
+      console.error(err)
+    }
   };
 };
 

@@ -1,5 +1,4 @@
 import { sendMyLocation } from './locationSharing';
-import { getCurrentPositionAsync } from '../helpers';
 import store from '../store';
 import socket from '../socket';
 // actions
@@ -31,43 +30,27 @@ export const locationWatchStarted = (watchId) => {
 };
 
 // thunk
-
-// // one-time call to get my current position and save it to the store
-// export const getMyLocation = () => {
-//   console.log('location.getMyLocation()');
-//   return async (dispatch) => {
-//     console.log('dispatching async get location');
-//     try {
-//       const response = await getCurrentPositionAsync();
-//       console.log('response', response);
-//       console.log('coords', response.coords);
-//       await dispatch(
-//         myLocationUpdated(response.coords.latitude, response.coords.longitude)
-//       );
-//     } catch (err) {
-//       console.error('Error getting initial location.', err);
-//     }
-//   };
-// };
-
-
-
 // Start watching my location.
+// we should add session ID into here
 export const watchMyLocation = (userId) => {
   console.log('location.watchMyLocation()');
   return (dispatch) => {
     // callback for when location check is successfull
     const watchSuccess = (pos) => {
       console.log('watchSuccess', pos);
-      console.log('my coords', pos.coords.latitude, pos.coords.longitude);
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
       socket.emit('user-location-changed', userId, pos.coords.latitude, pos.coords.longitude)
+      //also add those new coords to the DB
     };
 
     // callback for when location check fails
     const watchFail = (err) => {
-      alert('Unable to detect your location',);
+      alert('Unable to detect your location');
+      console.error(err)
+      //make a db call to find their coords
+        //if coords exist, we emit them in updateMyLocation
+        //if coords don't exist, we take them off the map? show a field to input location?
     };
 
     // save the watchId so we can stop watching when needed

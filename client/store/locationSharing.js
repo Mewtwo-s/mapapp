@@ -1,10 +1,6 @@
 import socket from '../socket';
 import store from '../store';
-import {
-  getMyLocation,
-  watchMyLocation,
-  stopWatchingMyLocation,
-} from './location';
+import { stopWatchingMyLocation } from './location';
 
 const USER_LOCATION_CHANGED = 'USER_LOCATION_CHANGED';
 const CLEAR_ALL_LOCATIONS = 'CLEAR_ALL_LOCATIONS';
@@ -19,19 +15,6 @@ export const clearAllLocations = () => {
 };
 
 // thunks
-
-// Call when this user has created a session or accepted an
-// invitation to join one
-// export const sessionStarted = (userId, sessionId) => {
-
-//   return async (dispatch) => {
-//     // save my current location immediately to the redux store
-//     await dispatch(getMyLocation());
-//     // join the room
-//     dispatch(joinRoom(userId, sessionId));
-//     // TO DO: send initial position to database...??
-//   };
-// };
 
 // Creates a 'room' associated with the current session. Adds
 // my socket Id to that room so all my communication is
