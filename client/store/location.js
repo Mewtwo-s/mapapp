@@ -59,6 +59,7 @@ export const watchMyLocation = (userId) => {
     // callback for when location check is successfull
     const watchSuccess = (pos) => {
       console.log('watchSuccess', pos);
+      console.log('my coords', pos.coords.latitude, pos.coords.longitude);
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
       socket.emit('user-location-changed', userId, pos.coords.latitude, pos.coords.longitude)
@@ -66,7 +67,7 @@ export const watchMyLocation = (userId) => {
 
     // callback for when location check fails
     const watchFail = (err) => {
-      console.error('WATCH ERROR.', err.code, err.message);
+      alert('Unable to detect your location',);
     };
 
     // save the watchId so we can stop watching when needed
@@ -79,7 +80,7 @@ export const watchMyLocation = (userId) => {
 };
 
 export const stopWatchingMyLocation = () => {
-  console.log(location.stopWatching);
+  console.log('STOP watching location' , location.stopWatching);
   return (dispatch) => {
     // get the watchId so we can stop the watching function
     const { watchId } = store.getState().myLocation;
@@ -92,6 +93,7 @@ export const stopWatchingMyLocation = () => {
 
 export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
+    console.log("updateMyLocation", lat,lng)
     // update state with my current position
     dispatch(myLocationUpdated(lat, lng));
     // send update to all users
@@ -102,10 +104,10 @@ export const updateMyLocation = (lat, lng) => {
 // reducer
 export default function (state = {}, action) {
   switch (action.type) {
-    case LOCATION_WATCH_STARTED:
-      return { ...state, watchId: action.watchId };
-    case LOCATION_WATCH_STOPPED:
-      return { ...state, watchId: null };
+    // case LOCATION_WATCH_STARTED:
+    //   return { ...state, watchId: action.watchId };
+    // case LOCATION_WATCH_STOPPED:
+    //   return { ...state, watchId: null };
     case MY_LOCATION_UPDATED:
       return { lat: action.lat, lng: action.lng };
     default:

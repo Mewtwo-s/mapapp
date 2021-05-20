@@ -6,7 +6,7 @@ const socket = io(window.location.origin, { autoConLnect: true });
 
 // TO DO: confirm socket connection via promise
 socket.on('connect', () => {
-  console.info(`I'm connected to the server. My socket id is ${socket.id}`);
+  console.info(`CLIENT connected to the server. My socket id is ${socket.id}`);
 });
 
 socket.on('user-joined-room', (userId, message) => {

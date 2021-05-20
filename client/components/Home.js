@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import JoinRoom from './JoinRoom'
 // import Session from './Session'
 import axios from 'axios'
+import {clearAllLocations} from '../store/locationSharing'
 
 /**
  * COMPONENT
@@ -17,7 +18,9 @@ export const Home = props => {
     setSessions(data)
   }
   useEffect(() => {
-      fetchAllSession()
+    props.clearAllLocationHome()  
+    fetchAllSession()
+      
   }, []);
 
   return (
@@ -39,4 +42,13 @@ const mapState = state => {
   }
 }
 
-export default connect(mapState)(Home)
+const mapDispatch = (dispatch) => {
+  return {
+    clearAllLocationHome: () => {
+      dispatch(clearAllLocations());
+    },
+   
+  };
+};
+
+export default connect(mapState, mapDispatch)(Home)

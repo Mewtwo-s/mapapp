@@ -83,13 +83,14 @@ const Map = withScriptjs(
 
     useEffect(() => {
       props.getSession(props.user.id, props.match.params.code);
+
       props.startWatch(props.user.id)
 
     }, []);
 
     useEffect(() => {
-      if(props.session.id && props.myLocation){
-        props.userJoinRoom(props.user.id,  props.session.id)
+      if(props.session.id && props.myLocation.lat){
+        props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
       }
     }, [props.session.id]);
 
@@ -101,7 +102,7 @@ const Map = withScriptjs(
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
-      if (props.allLocations.length > 2) {
+      if (props.allLocations.length > 1) {
         fitBounds();
       }
     }, [props.allLocations]);
@@ -143,11 +144,11 @@ const Map = withScriptjs(
       );
     }
 
-    const myLocationIsValid = Object.keys(props.myLocation).length > 0;
+    const myLocationIsValid = props.myLocation.lat ;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
     const defCenter = myLocationIsValid
-      ? props.myLocation
+      ? {lat: props.myLocation.lat, lng:props.myLocation.lng}
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
 
 
@@ -203,13 +204,13 @@ const Map = withScriptjs(
                 );
               })}
 
-            {props.myLocation && (
+            {props.myLocation.lat && (
               <DirectionsRenderer directions={currentLine} />
             )}
 
             {/* Draw labeled marker for each user in current session*/}
             {props.allLocations.length > 0 &&
-              props.allLocations.map((loc) => {
+              props.allLocations.filter(loc=>loc.userId!=props.user.id).map((loc) => {
                 return (
                   <MarkerWithLabel
                     key={`user_${loc.userId}`}
@@ -228,6 +229,25 @@ const Map = withScriptjs(
                   </MarkerWithLabel>
                 );
               })}
+              
+       
+                 {parseFloat(props.myLocation.lat)? <MarkerWithLabel
+                    key={props.user.id}
+                    icon={props.user.photo}
+                    position={{ lat: parseFloat(props.myLocation.lat), lng: parseFloat(props.myLocation.lng) }}
+                    labelAnchor={new google.maps.Point(0, 0)}
+                    zIndex={100}
+                    labelStyle={{
+                      backgroundColor: 'black',
+                      color: 'white',
+                      fontSize: '16px',
+                      padding: '2px',
+                    }}
+                  >
+                    <div>{`your marker`}</div>
+                  </MarkerWithLabel>:console.log('location not reader')}
+          
+              
           </GoogleMap>
         )}
         {/* Draw place buttons */}
@@ -271,8 +291,8 @@ const mapDispatch = (dispatch) => {
     getSession: (userId, sessionCode) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));
     },
-    userJoinRoom: (userId, sessionId) => {
-      dispatch(joinRoom(userId, sessionId))
+    userJoinRoom: (userId, sessionId, userLoc) => {
+      dispatch(joinRoom(userId, sessionId, userLoc))
     }
   };
 };

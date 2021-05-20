@@ -6,6 +6,7 @@ import { sessionStarted } from '../store/locationSharing';
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
+
   return (
     <Map
       history={props.history}
