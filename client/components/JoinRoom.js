@@ -7,6 +7,7 @@ import {
 } from '../store/session';
 import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
+import { Button, Label, FormGroup, Input } from '../GlobalStyles';
 
 export class JoinRoom extends React.Component {
     constructor(props) {
@@ -55,27 +56,31 @@ export class JoinRoom extends React.Component {
     await this.props.createSession(this.props.user.id);
   }
 
+ 
   render() {
+     const capFirstName = this.props.user.firstName.slice(0,1).toUpperCase() + this.props.user.firstName.slice(1).toLowerCase()
+
     return (
       <div>
-        <h4>{`Welcome ${this.props.user.firstName} !`}</h4>
+        <h4>{`Hello ${capFirstName} !`}</h4>
         {this.state.sessionAction === null && (
           <div>
-            <button onClick={this.handleCreate}>Create A New Session</button>
-            <button onClick={() => this.handleClick('join')}>
-              Join A Session
-            </button>
+            <h4> In the mood to hang out today ? </h4>
+            <Button onClick={this.handleCreate}>Create New Session</Button>
+            <Button onClick={() => this.handleClick('join')}>
+              Join a Session
+            </Button>
           </div>
         )}
         {this.state.sessionAction === 'join' && (
           <div>
             <form onSubmit={this.handleJoin}>
               <div>
-                <label htmlFor="code">
-                  <small>Join Existing Room</small>
-                </label>
-                <input name="code" type="text" />
-                <button type="submit">Join</button>
+                <Label style={{ color: '#0f3057'}} htmlFor="code">
+                  Join Existing Session
+                </Label>
+                <Input style={{ boder: "solid 10px #51adcf", backgroundColor: '#e4efe7'}}name="code" type="text" />
+                <Button type="submit">Join</Button>
               </div>
               <div></div>
             </form>
@@ -85,7 +90,7 @@ export class JoinRoom extends React.Component {
           <div>
             <h3>Invite friends using the code: {this.props.session.code} </h3>
             <Link to={`/map/${this.props.session.code}`}>
-              <button>Go to session</button>
+              <Button>Go to session</Button>
             </Link>
           </div>
         )}

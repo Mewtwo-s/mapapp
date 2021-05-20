@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   withScriptjs,
   withGoogleMap,
@@ -19,6 +20,7 @@ import {
   getSessionThunkCreator,
   activateSessionThunkCreator,
 } from '../store/session';
+import { Button, Container } from '../GlobalStyles';
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -112,7 +114,7 @@ const Map = withScriptjs(
     const directionsService = new google.maps.DirectionsService();
 
     function placeSelected(loc) {
-      console.log('PLACE SELECTED', loc);
+      //console.log('PLACE SELECTED', loc);
       props.activateSession(props.session.id, loc.lat, loc.lng);
     }
 
@@ -140,11 +142,13 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? props.myLocation
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
+
     return (
-      <div>
+      <Container>
+        
         {props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
-            <button onClick={handleMagic}>Show Meetup Spots!</button>
+            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
           )}
 
         {myLocationIsValid && (
@@ -198,7 +202,6 @@ const Map = withScriptjs(
               <DirectionsRenderer directions={currentLine} />
             )}
 
-
             {props.myLocation && <DirectionsRenderer directions={currentLine} />}
 
             {/* Draw labeled marker for each user in current session*/}
@@ -224,9 +227,11 @@ const Map = withScriptjs(
               })}
           </GoogleMap>
         )}
+
         {/* Draw place buttons */}
-        {props.session.status === 'Pending' && topPlaces
-          ? topPlaces.map((place) => (
+        <PlaceStyles>
+          {props.session.status === 'Pending' && topPlaces
+            ? topPlaces.map((place) => (
               <Place
                 handle={placeSelected}
                 key={place.place_id}
@@ -235,15 +240,20 @@ const Map = withScriptjs(
                 open={place.opening_hours ? place.opening_hours.open_now : null}
                 price={place.price_level}
                 rating={place.rating}
+                place={place.image}
               />
+              
             ))
-          : console.log('0 place found yet')}
-      </div>
+            : console.log('There are no fun places near by')}
+        </PlaceStyles>
+        
+      </Container>
     );
   })
 );
 
 const mapState = (state) => {
+  console.log('state',state) 
   return {
     user: state.auth,
     allLocations: state.allLocations,
@@ -263,4 +273,17 @@ const mapDispatch = (dispatch) => {
     },
   };
 };
+
+const PlaceStyles = styled.div`
+  max-width: 1400px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  @media screen and (max-width:600px){
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+`
 export default connect(mapState, mapDispatch)(Map);

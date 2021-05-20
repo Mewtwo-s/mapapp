@@ -29,10 +29,10 @@ router.get('/me', async (req, res, next) => {
     const user = await User.findByToken(req.headers.authorization)
     //get all sessions belongs to users
     const allSessions = await user.getSessions()
-    console.log(allSessions)
+    //console.log('allSessions', allSessions.map(session => session.dataValues))
     res.send({
       ...user.dataValues,
-      allSessions
+      allSessions: allSessions.map(session => session.dataValues)
     })
   } catch (err) {
     next(err)

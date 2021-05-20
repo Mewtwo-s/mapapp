@@ -54,6 +54,7 @@ export const getSessionThunkCreator = (userId, code) => {
   return async (dispatch) => {
     try {
       const response = await axios.get(`/api/sessions/${code}`);
+      console.log('response', response)
       const session = response.data;
       console.log('SESSION', session);
       await dispatch(getSession(session));

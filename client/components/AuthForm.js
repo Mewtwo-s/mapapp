@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import {connect} from 'react-redux'
 import {authenticate} from '../store'
 import MapComponent from './Map'
+import { FormGroup, Label, Input , Button } from '../GlobalStyles'
 
 
 /**
@@ -163,7 +164,6 @@ const mapDispatch = dispatch => {
         const photo = evt.target.photo.value
         dispatch(authenticate(email, password, formName, firstName,
           lastName, phoneNum, street, city, state, country, zipCode, photo  ))
-        
       }
       else{
         dispatch(authenticate(email, password, formName))
@@ -177,59 +177,7 @@ const FormContainer = styled.div`
   background-color:#51adcf;
   margin: 25px 25px;
   padding: 20px;
-  
 `
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: 1em;
-
-`;
-
-const Input = styled.input`
-  font-size: 16px;
-  border: solid 0.5px #dbdbdb;
-  border-radius: 3px;
-  color: orange;
-  padding: 7px 33px;
-  border-radius: 3px;
-  color: #999;
-  cursor: text;
-  font-size: 14px;
-  font-weight: 300;
-  text-align: left;
-  background: #fafafa;
- 
-  &:active,
-  &:focus {
-    text-align: left;
-  };
-
-  &:focus::-webkit-input-placeholder {
-  transition: opacity 0.4s 0.4s ease!important;
-  opacity: 0.40;
-  }
-`;
-
-const Label = styled.label`
-	margin-bottom: 0.25em;
-	color: white;
-`;
-
-const Button = styled.button`
-  backgroundcolor: white;
-  color: #51adcf;
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid #51adcf;
-  border-radius: 3px;
-  &:hover {
-    backgroundcolor: #a5ecd7;
-  } 
-`;
 
 export const Login = connect(mapLogin, mapDispatch)(AuthForm)
 export const Signup = connect(mapSignup, mapDispatch)(AuthForm)

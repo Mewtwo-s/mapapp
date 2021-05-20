@@ -12,6 +12,7 @@ import { me } from './store';
 import MapContainer from './components/MapContainer';
 import InviteForm from './components/InviteForm'
 import Navbar from './components/Navbar'
+import PastSessions from './components/PastSessions';
 import GlobalStyles from './Globalstyles';
 
 /**
@@ -30,7 +31,8 @@ class Routes extends Component {
           <Navbar />
           {isLoggedIn ? (
             <Switch>
-              <Route path="/map" component={MapContainer} />
+              <Route path="/map/:code" component={MapContainer} />
+              <Route path="/pastSessions" component={PastSessions} />
               <Route exact path="/home" component={Home} />
               <Route path='/emailInvite' component={InviteForm} />
               <Redirect to="/home" />
