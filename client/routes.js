@@ -37,7 +37,7 @@ class Routes extends Component {
             </Switch>
           ) : (
             <Switch>
-              <Route path="/map" component={MapContainer} />
+              {/* <Route path="/map" component={MapContainer} /> */}
               <Route exact path="/" component={Login} />
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />
