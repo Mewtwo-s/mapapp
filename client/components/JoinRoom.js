@@ -9,23 +9,24 @@ import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
 import { Button, Label, FormGroup, Input } from '../GlobalStyles';
 
-export class JoinRoom extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this);
-        this.handleJoin = this.handleJoin.bind(this);
-        this.state = {
-            currentSession: null,
-            sessionAction: null
-        };
-        this.handleCreate = this.handleCreate.bind(this);
-    }
 
-    handleClick(action) {
-        this.setState({
-            sessionAction: action
-        });
-    }
+export class JoinRoom extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleJoin = this.handleJoin.bind(this);
+    this.state = {
+      currentSession: null,
+      sessionAction: null,
+    };
+    this.handleCreate = this.handleCreate.bind(this);
+  }
+
+  handleClick(action) {
+    this.setState({
+      sessionAction: action,
+    });
+  }
 
   async handleJoin(evt) {
     evt.preventDefault();
@@ -55,7 +56,6 @@ export class JoinRoom extends React.Component {
     });
     await this.props.createSession(this.props.user.id);
   }
-
  
   render() {
      const capFirstName = this.props.user.firstName.slice(0,1).toUpperCase() + this.props.user.firstName.slice(1).toLowerCase()
@@ -70,6 +70,7 @@ export class JoinRoom extends React.Component {
             <Button onClick={() => this.handleClick('join')}>
               Join a Session
             </Button>
+
           </div>
         )}
         {this.state.sessionAction === 'join' && (
@@ -91,6 +92,7 @@ export class JoinRoom extends React.Component {
             <h3>Invite friends using the code: {this.props.session.code} </h3>
             <Link to={`/map/${this.props.session.code}`}>
               <Button>Go to session</Button>
+
             </Link>
           </div>
         )}

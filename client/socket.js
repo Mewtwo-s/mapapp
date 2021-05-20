@@ -2,11 +2,11 @@ import io from 'socket.io-client';
 import store from './store';
 import { userLocationChanged, sendMyLocation } from './store/locationSharing';
 
-const socket = io(window.location.origin, { autoConnect: true });
+const socket = io(window.location.origin, { autoConLnect: true });
 
 // TO DO: confirm socket connection via promise
 socket.on('connect', () => {
-  console.info(`I'm connected to the server. My socket id is ${socket.id}`);
+  console.info(`CLIENT connected to the server. My socket id is ${socket.id}`);
 });
 
 socket.on('user-joined-room', (userId, message) => {
@@ -20,8 +20,15 @@ socket.on('user-left-room', (userId, message) => {
   // not sure there's anything else to do here...but i want the feedback
 });
 
+const lastPersistedTimesObj = {};
+
 socket.on('user-location-changed', (userId, lat, lng) => {
+  if (!lastPersistedTimesObj[userId] || Date.now() - lastPersistedTimesObj[userId]> 1000*60){
+    lastPersistedTimesObj[userId] = Date.now()
+    //trigger a call to the db to add the location
+    //store.dispatch(addLocationsToUserThunk(userId, lat, lng, sessionId))
+  }
   store.dispatch(userLocationChanged(userId, lat, lng));
 });
-
+export { lastPersistedTimesObj };
 export default socket;

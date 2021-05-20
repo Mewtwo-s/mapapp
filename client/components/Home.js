@@ -5,14 +5,20 @@ import { Link } from 'react-router-dom';
 import JoinRoom from './JoinRoom'
 // import Session from './Session'
 import axios from 'axios'
+
 import sessionReducer from '../store/session';
 import { Container } from '../GlobalStyles';
+
+import {clearAllLocations} from '../store/locationSharing'
+
+
 /**
  * COMPONENT
  */
 export const Home = props => {
   // const {email} = props
   // const [sessions, setSessions] = useState([])
+
 
   // const fetchAllSession = async () =>{
   //   const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
@@ -23,7 +29,16 @@ export const Home = props => {
   //     fetchAllSession()
   // }, []);
 
-  const activeSessions = props.userSessions.filter( session => session.status === 'Active')
+  const fetchAllSession = async () =>{
+    const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
+    setSessions(data)
+  }
+  useEffect(() => {
+    props.clearAllLocationHome()  
+    fetchAllSession()
+      
+  }, []);
+
 
   return (
     <Container>
@@ -48,19 +63,6 @@ export const Home = props => {
   )
 }
 
-/**
- * CONTAINER
- */
-const mapState = state => {
-  return {
-    email: state.auth.email,
-    userId: state.auth.id,
-    userSessions : state.auth.allSessions
-  }
-}
-
-
-
 const Card = styled.div`
    
     border: solid 5px #51adcf;
@@ -75,5 +77,22 @@ const Card = styled.div`
         margin: 10px 10px;
     }
 `
+const mapState = state => {
+  return {
+    email: state.auth.email,
+    userId: state.auth.id,
+    userSessions : state.auth.allSessions
+  }
+}
 
-export default connect(mapState)(Home)
+const mapDispatch = (dispatch) => {
+  return {
+    clearAllLocationHome: () => {
+      dispatch(clearAllLocations());
+    },
+   
+  };
+};
+
+export default connect(mapState, mapDispatch)(Home)
+

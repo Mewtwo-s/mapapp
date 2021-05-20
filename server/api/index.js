@@ -3,7 +3,7 @@ module.exports = router
 
 router.use('/users', require('./users'))
 router.use('/sessions', require('./sessions'));
-router.use('/usersessions', require('./userSessions'));
+router.use('/usersessions', require('./UserSessions'));
 router.use('/google', require('./googleMaps'));
 
 router.use((req, res, next) => {
