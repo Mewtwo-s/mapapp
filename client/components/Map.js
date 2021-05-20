@@ -37,6 +37,7 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    const [joined, setJoin] = useState(false)
     // const [selection, setSelection] = useState('');
 
     const getPlaces = async (lat, lng) => {
@@ -87,16 +88,16 @@ const Map = withScriptjs(
     };
 
     useEffect(() => {
+      props.startWatch(props.user.id);
       props.getSession(props.user.id, props.match.params.code);
-      props.startWatch(props.user.id)
-
     }, []);
 
     useEffect(() => {
-      if(props.session.id && props.myLocation.lat){
-        props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
+      if(props.session.id && props.myLocation.lat && joined === false){
+          props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
+          setJoin(true)
       }
-    }, [props.session.id]);
+    }, [props.session.id, props.myLocation.lat]);
 
     useEffect(() => {
       if (midPoint) {

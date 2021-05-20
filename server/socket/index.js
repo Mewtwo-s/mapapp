@@ -22,7 +22,9 @@ module.exports = (io) => {
 
     socket.on('send-my-location', (userId, sessionId, lat, lng) => {
       const roomName = 'room_' + sessionId;
+      
       io.to(roomName).emit('user-location-changed', userId, lat, lng);
+      
     });
 
     // socket.on('updated-session', session => {
