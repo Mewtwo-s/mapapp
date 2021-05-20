@@ -10,9 +10,15 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
-import InviteForm from './components/InviteForm';
-import Navbar from './components/Navbar';
+
+import InviteForm from './components/InviteForm'
+import Navbar from './components/Navbar'
+import PastSessions from './components/PastSessions';
+import GlobalStyles from './Globalstyles';
+
+
 import Test from './components/Test'
+
 /**
  * COMPONENT
  */
@@ -25,24 +31,27 @@ class Routes extends Component {
     const { isLoggedIn } = this.props;
     return (
       <Router>
-        <Navbar />
-        {isLoggedIn ? (
-          <Switch>
-          <Route path="/test" component={Test} />
-            <Route path="/map/:code" component={MapContainer} />
-            <Route exact path="/home" component={Home} />
-            <Route path="/emailInvite" component={InviteForm} />
-           
-            <Redirect to="/home" />
-          </Switch>
-        ) : (
-          <Switch>
-            {/* <Route path="/map/:code" component={MapContainer} /> */}
-            <Route exact path="/" component={Login} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-          </Switch>
-        )}
+
+          <GlobalStyles/>
+          <Navbar />
+          {isLoggedIn ? (
+            <Switch>
+            <Route path="/test" component={Test} />
+              <Route path="/map/:code" component={MapContainer} />
+              <Route path="/pastSessions" component={PastSessions} />
+              <Route exact path="/home" component={Home} />
+              <Route path='/emailInvite' component={InviteForm} />
+              <Redirect to="/home" />
+            </Switch>
+          ) : (
+            <Switch>
+              {/* <Route path="/map" component={MapContainer} /> */}
+              <Route exact path="/" component={Login} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+            </Switch>
+          )}
+       
       </Router>
     );
   }

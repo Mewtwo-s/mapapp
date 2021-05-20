@@ -51,11 +51,13 @@ export const activateSessionThunkCreator = (sessionId, lat, lng) => {
 
 export const getSessionThunkCreator = (userId, code) => {
 
+
   return async (dispatch) => {
     try {
       const response = await axios.get(`/api/sessions/${code}`);
       const session = response.data;
       await dispatch(getSession(session));
+
     } catch (err) {
       console.error('Error in getSessionThunkCreator:', err);
     }
@@ -76,11 +78,13 @@ export const joinSessionThunkCreator = (userId, code, history) => {
     } catch (err) {
       console.error(err)
     }
+
   };
 };
 
 export const createSessionThunkCreator = (hostId, history) => {
   return async (dispatch) => {
+
     try {
       const response = await axios.post(`/api/sessions/`, { hostId: hostId });
       const session = response.data;
@@ -88,6 +92,7 @@ export const createSessionThunkCreator = (hostId, history) => {
     } catch (err) {
       console.error(err)
     }
+
   };
 };
 

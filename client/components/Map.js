@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   withScriptjs,
   withGoogleMap,
@@ -19,8 +20,13 @@ import {
   getSessionThunkCreator,
   activateSessionThunkCreator,
 } from '../store/session';
+
+import { Button, Container } from '../GlobalStyles';
+
+
 import {watchMyLocation} from '../store/location'
 import {joinRoom} from '../store/locationSharing'
+
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -32,7 +38,6 @@ const Map = withScriptjs(
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
     // const [selection, setSelection] = useState('');
-
 
     const getPlaces = async (lat, lng) => {
       try {
@@ -101,6 +106,7 @@ const Map = withScriptjs(
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
+
       if (props.allLocations.length > 1) {
         fitBounds();
       }
@@ -121,12 +127,11 @@ const Map = withScriptjs(
     const directionsService = new google.maps.DirectionsService();
 
     function placeSelected(loc) {
- 
       props.activateSession(props.session.id, loc.lat, loc.lng);
     }
 
     function getDirections(loc) {
-    
+
       directionsService.route(
         {
           origin: props.myLocation,
@@ -143,6 +148,7 @@ const Map = withScriptjs(
       );
     }
 
+
     const myLocationIsValid = props.myLocation.lat ;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
@@ -150,12 +156,12 @@ const Map = withScriptjs(
       ? {lat: props.myLocation.lat, lng:props.myLocation.lng}
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
 
-
     return (
-      <div>
+      <Container>
+        
         {props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
-            <button onClick={handleMagic}>Show Meetup Spots!</button>
+            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
           )}
 
         {myLocationIsValid && (
@@ -180,7 +186,7 @@ const Map = withScriptjs(
                       setselectedPlace(place);
                     }}
                   >
-                    {selectedPlace === place && (
+     {selectedPlace === place && (
                       <InfoWindow
                         onCloseClick={() => {
                           setselectedPlace(null);
@@ -206,6 +212,7 @@ const Map = withScriptjs(
             {props.myLocation.lat && (
               <DirectionsRenderer directions={currentLine} />
             )}
+
 
             {/* Draw labeled marker for each user in current session*/}
             {props.allLocations.length > 0 &&
@@ -250,9 +257,10 @@ const Map = withScriptjs(
           </GoogleMap>
         )}
         {/* Draw place buttons */}
-        
-        {props.session.status === 'Pending' && topPlaces
-          ? topPlaces.map((place) => (
+        <PlaceStyles>
+          {props.session.status === 'Pending' && topPlaces
+            ? topPlaces.map((place) => (
+
               <Place
                 handle={placeSelected}
                 key={place.place_id}
@@ -261,15 +269,21 @@ const Map = withScriptjs(
                 open={place.opening_hours ? place.opening_hours.open_now : null}
                 price={place.price_level}
                 rating={place.rating}
+                place={place.image}
               />
+              
             ))
-          :''}
-      </div>
+
+            : console.log('There are no fun places near by')}
+        </PlaceStyles>
+        
+      </Container>
     );
   })
 );
 
 const mapState = (state) => {
+  console.log('state',state) 
   return {
     user: state.auth,
     allLocations: state.allLocations,
@@ -295,4 +309,19 @@ const mapDispatch = (dispatch) => {
     }
   };
 };
+
+
+const PlaceStyles = styled.div`
+  max-width: 1400px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  @media screen and (max-width:600px){
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+`
+
 export default connect(mapState, mapDispatch)(Map);

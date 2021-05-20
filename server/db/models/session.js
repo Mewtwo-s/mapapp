@@ -1,14 +1,15 @@
 const Sequelize = require('sequelize')
 const db = require('../db')
 const axios = require('axios');
+const shortid = require('shortid');
 
 // after meetup location is generated, make database call, save to this table
 
 // started session
 // host set meetup location
 
-const Session = db.define('session',{
 
+const Session = db.define('session',{
     code: {type: Sequelize.STRING},
     lat: {type: Sequelize.FLOAT},
     lng: {type: Sequelize.FLOAT},
@@ -18,13 +19,13 @@ const Session = db.define('session',{
     defaultValue:'coffee'}
     })
 
-Session.beforeCreate( (game) => {
-    const generateRandomString = function(length=6){
-        return Math.random().toString(20).substr(2, length)
-        };
-    const code = generateRandomString();
-    game.code = code;
-  });
+    Session.beforeCreate((session) => {
+        const generateRandomString = function(length=6){
+            return Math.random().toString(20).substr(2, length)
+            };
+        const code = generateRandomString();
+        session.code = code;
+    });
 
 
   module.exports = Session;

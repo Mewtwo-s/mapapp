@@ -1,6 +1,8 @@
 import socket from '../socket';
 import store from '../store';
+
 import { stopWatchingMyLocation } from './location';
+
 
 const USER_LOCATION_CHANGED = 'USER_LOCATION_CHANGED';
 const CLEAR_ALL_LOCATIONS = 'CLEAR_ALL_LOCATIONS';
@@ -34,6 +36,7 @@ export const joinRoom = (userId, sessionId, userLoc ) => {
 export const leaveRoom = (userId, sessionId) => {
   console.log('LEAVE ROOM');
   return (dispatch) => {
+
     socket.emit('leave-room', userId, sessionId);
     // stop tracking my location??
     dispatch(stopWatchingMyLocation());

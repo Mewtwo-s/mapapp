@@ -31,6 +31,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+
 router.get('/friends/:userId', async (req, res, next) => {
   try {
 
@@ -115,6 +116,7 @@ router.get('/friends/:userId', async (req, res, next) => {
 // })
 
 
+
 router.post('/', async (req, res, next) => {
   try {
     const user = await User.create(req.body);
@@ -128,7 +130,10 @@ router.put('/add/:userId', async (req, res, next) => {
   try {
     const session = await Session.findOne({
       where: {
-        code: req.body.code}});
+        code: req.body.code
+      }
+    });
+
     const user = await User.findByPk(req.params.userId);
     await session.addUsers(user);
     // const sessionUser = await UserSession.findOne({

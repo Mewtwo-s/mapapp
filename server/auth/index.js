@@ -26,8 +26,15 @@ router.post('/signup', async (req, res, next) => {
 
 router.get('/me', async (req, res, next) => {
   try {
-    res.send(await User.findByToken(req.headers.authorization))
-  } catch (ex) {
-    next(ex)
+    const user = await User.findByToken(req.headers.authorization)
+    //get all sessions belongs to users
+    const allSessions = await user.getSessions()
+    //console.log('allSessions', allSessions.map(session => session.dataValues))
+    res.send({
+      ...user.dataValues,
+      allSessions: allSessions.map(session => session.dataValues)
+    })
+  } catch (err) {
+    next(err)
   }
 })
