@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-function runMailer (senderName, toEmail, code, toName) {
+function runMailer (senderName, toEmail, gameCode, toName, userCode) {
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -17,7 +17,10 @@ let transporter = nodemailer.createTransport({
     from: 'mapappproduction@gmail.com',
     to: toEmail,
     subject: 'Your friend invited you to meet',
-    text: `Hi ${toName}! Your friend ${senderName} wants to meet up! Join the session at https://mapapp999.herokuapp.com/map/${code}`
+    html: 
+        `
+        <p>Hi ${toName}! </p>
+        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://mapapp999.herokuapp.com/${userCode}/${gameCode}.">here</a></p>`
   };
 
   transporter.sendMail(mailOptions, function(err, data) {

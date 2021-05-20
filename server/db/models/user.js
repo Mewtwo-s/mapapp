@@ -60,11 +60,23 @@ const User = db.define('user', {
     type: Sequelize.STRING,
     allowNull: true,
     defaultValue: 'http://maps.google.com/mapfiles/ms/icons/golfer.png'
+  },
+  confirmationCode: {
+    type: Sequelize.STRING
   }
 
 })
 
 module.exports = User
+
+const generateRandomString = function(length=10){
+  return Math.random().toString(20).substr(2, length)
+  };
+
+User.beforeCreate( (user) => {
+  const confirmationCode = generateRandomString();
+  user.confirmationCode = confirmationCode;
+});
 
 /**
  * instanceMethods

@@ -8,8 +8,7 @@ const init = async () => {
     await db.sync();
     // start listening (and create a 'server' object representing our server)
     const server = app.listen(PORT, () =>
-      console.log(`Mixing it up on port ${PORT}`),
-      console.log(`this is my client id ${process.env.OAUTH_CLIENTID}`)
+      console.log(`Mixing it up on port ${PORT}`)
     );
 require('dotenv').config();
     // create socket server (io) and attach our express server to it

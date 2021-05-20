@@ -18,12 +18,12 @@ const Session = db.define('session',{
     defaultValue:'coffee'}
     })
 
-Session.beforeCreate( (game) => {
+Session.beforeCreate( (session) => {
     const generateRandomString = function(length=6){
         return Math.random().toString(20).substr(2, length)
         };
     const code = generateRandomString();
-    game.code = code;
+    session.code = code;
   });
 
 

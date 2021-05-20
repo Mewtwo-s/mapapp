@@ -12,6 +12,7 @@ import { me } from './store';
 import MapContainer from './components/MapContainer';
 import InviteForm from './components/InviteForm';
 import Navbar from './components/Navbar';
+import {AcceptWithAccount, AcceptWithoutAccount} from './components/CompleteJoinForm';
 
 /**
  * COMPONENT
@@ -32,10 +33,11 @@ class Routes extends Component {
             <Route exact path="/home" component={Home} />
             <Route path="/emailInvite" component={InviteForm} />
             <Redirect to="/home" />
+            <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
           </Switch>
         ) : (
           <Switch>
-            <Route path="/map/:code" component={MapContainer} />
+            <Route path="/accept/:userCode/:gameCode" component={AcceptWithoutAccount}/>
             <Route exact path="/" component={Login} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />

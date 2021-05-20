@@ -18,6 +18,19 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+router.get('/:confirmationCode', async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        confirmationCode: req.params.confirmationCode
+      }
+    })
+    res.send(user)
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.post('/', async (req, res, next) => {
   try {
     const user = await User.create(req.body);
@@ -39,7 +52,7 @@ router.post('/invite', async(req, res, next) => {
       user = await User.create({email: req.body.email, firstName: 'test', lastName: 'test', password: 'test'});
     }
     await session.addUsers(user);
-    runMailer(req.body.hostName, req.body.email, session.code, user.firstName);
+    runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
     res.send(user);
   } catch(err) {
     next(err)
