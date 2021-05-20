@@ -16,15 +16,6 @@ import {clearAllLocations} from '../store/locationSharing'
  * COMPONENT
  */
 export const Home = props => {
-  // const {email} = props
-   const [sessions, setSessions] = useState([])
-
-
-  // const fetchAllSession = async () =>{
-  //   const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
-  //   setSessions(data)
-  // }
-
   // useEffect(() => {
   //     fetchAllSession()
   // }, []);
@@ -33,11 +24,10 @@ export const Home = props => {
   //   const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
   //   setSessions(data)
   // }
-  // useEffect(() => {
-  //   props.clearAllLocationHome()  
-  //   fetchAllSession()
+  useEffect(() => {
+    props.clearAllLocationHome()  
       
-  // }, []);
+  }, []);
 
   const activeSessions = props.userSessions.filter(session => session.status === "Active")
   const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
