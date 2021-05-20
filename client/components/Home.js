@@ -17,7 +17,7 @@ import {clearAllLocations} from '../store/locationSharing'
  */
 export const Home = props => {
   // const {email} = props
-  // const [sessions, setSessions] = useState([])
+   const [sessions, setSessions] = useState([])
 
 
   // const fetchAllSession = async () =>{
@@ -29,17 +29,18 @@ export const Home = props => {
   //     fetchAllSession()
   // }, []);
 
-  const fetchAllSession = async () =>{
-    const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
-    setSessions(data)
-  }
-  useEffect(() => {
-    props.clearAllLocationHome()  
-    fetchAllSession()
+  // const fetchAllSession = async () =>{
+  //   const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
+  //   setSessions(data)
+  // }
+  // useEffect(() => {
+  //   props.clearAllLocationHome()  
+  //   fetchAllSession()
       
-  }, []);
+  // }, []);
 
-
+  const activeSessions = props.userSessions.filter(session => session.status === "Active")
+  const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
   return (
     <Container>
       <Link to='/pastSessions'> View Past Sessions </Link>
@@ -59,6 +60,20 @@ export const Home = props => {
             )
           })
         }
+      <h1>Pending Sessions</h1>
+      {
+        pendingSessions.map(session => {
+          return (
+            <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
+              <Card>
+                {/* replace with place name */}
+                <h5>Meetup Spot: TBD </h5>
+              </Card>
+            </Link>
+
+          )
+        })
+      }
     </Container>
   )
 }

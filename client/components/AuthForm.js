@@ -47,15 +47,15 @@ const AuthForm = props => {
                 </Label>
                 <Input name="lastName" type="text" />
               </div>
-              <div>
+              {/* <div>
                 <Label htmlFor="phoneNum">
                   <small>Phone Number</small>
                 </Label>
                 <Input name="phoneNum" type="text" />
-              </div>
+              </div> */}
           </FormGroup> 
           
-        <FormGroup>
+        {/* <FormGroup>
             <h4 style={{ color: 'white', marginBottom: '0px', marginTop: '1rem' }}>
               Default address:
           </h4>
@@ -96,7 +96,7 @@ const AuthForm = props => {
             </Label>
             <Input name="country" type="text" />
           </div>
-        </FormGroup>
+        </FormGroup> */}
         
         <FormGroup>
           <div>
