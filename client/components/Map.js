@@ -29,11 +29,9 @@ const Map = withScriptjs(
     const [currentLine, setCurrentLine] = useState();
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
-    const [selectedPlace, setselectedPlace] = useState();
-    // selected place
-    const [meetupPointName, setMeetupPointName] = useState(null);
-
-
+    const [selectedPlace, setselectedPlace] = useState(null);
+    // const [selection, setSelection] = useState('');
+    console.log('Map props', props);
 
     const getPlaces = async (lat, lng) => {
       try {
@@ -67,8 +65,56 @@ const Map = withScriptjs(
           lng: centerCenter.geometry.coordinates[1],
         });
       }
-      //const centroidCenter = centroid(features);
     };
+
+    // Fit bounds function
+    const fitBounds = () => {
+      console.log('FIT BOUNDS');
+      const bounds = new window.google.maps.LatLngBounds();
+
+      props.allLocations.map((item) => {
+        console.log('ITEM', item);
+        bounds.extend({ lat: item.lat, lng: item.lng });
+        return item.id;
+      });
+      mapRef.current.fitBounds(bounds);
+    };
+
+    useEffect(() => {
+      props.getSession(props.user.id, props.match.params.code);
+    }, []);
+
+    useEffect(() => {
+      if (midPoint) {
+        getPlaces(midPoint.lat, midPoint.lng);
+      }
+    }, [midPoint]);
+
+    // Fit bounds on mount, and when the markers change
+    useEffect(() => {
+      if (props.allLocations.length > 2) {
+        fitBounds();
+      }
+    }, [props.allLocations]);
+
+    useEffect(() => {
+      console.log('GETTING DIRECTIONS??');
+      if (props.session.status === 'Active') {
+        console.log('YES GETTING DIRECTIONS');
+        getDirections({ lat: props.session.lat, lng: props.session.lng });
+      }
+    }, [props.session, props.myLocation]);
+
+    function handleMagic() {
+      findMidpoint(props.allLocations);
+    }
+
+    const directionsService = new google.maps.DirectionsService();
+
+    function placeSelected(loc) {
+      console.log('PLACE SELECTED', loc);
+      props.activateSession(props.session.id, loc.lat, loc.lng);
+    }
 
     function getDirections(loc) {
       console.log('in getDirections', loc);
@@ -88,76 +134,12 @@ const Map = withScriptjs(
       );
     }
 
-    const fitBounds = () => {
-      const bounds = new window.google.maps.LatLngBounds();
-
-      props.allLocations.map((item) => {
-        bounds.extend({lat:item.lat, lng:item.lng});
-        return item.userId;
-      });
-      mapRef.current.fitBounds(bounds);
-    };
-
-    useEffect(() => {
-      props.getSession(props.user.id, props.match.params.code);
-    }, []);
-
-    useEffect(() => {
-      if (midPoint) {
-        getPlaces(midPoint.lat, midPoint.lng);
-      }
-    }, [midPoint]);
-
-    // Fit bounds on mount, and when the markers change
-    useEffect(() => {
-      fitBounds();
-      // findMidpoint(props.allLocations);
-    }, [props.allLocations]);
-
-    useEffect(() => {
-      console.log('GETTING DIRECTIONS??');
-      if (props.session.status === 'Active') {
-        console.log('YES GETTING DIRECTIONS');
-        getDirections({ lat: props.session.lat, lng: props.session.lng });
-      }
-    }, [props.session, props.myLocation]);
-
-    // for testing
-    const handleClick = (e) => {
-      console.log('handleClick', e, e.latLng.lat(), e.latLng.lng());
-    };
-
-    function handleMagic() {
-      findMidpoint(props.allLocations);
-    }
-
-    const directionsService = new google.maps.DirectionsService();
-
-    function placeSelected(loc, name) {
-      props.activateSession(props.session.id, loc.lat, loc.lng);
-      setMeetupPointName(name)
-      getDirections(loc)
-      
-    }
-
-    function getDirections(loc) {
-      console.log('in getDirections', props.myLocation);
-      directionsService.route(
-        {
-          origin: props.myLocation,
-          destination: loc,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            setCurrentLine(result);
-          } else {
-            console.error(`error fetching directions ${result}`);
-          }
-        }
-      );
-    }
-
+    const myLocationIsValid = Object.keys(props.myLocation).length > 0;
+    const sessionIsValid =
+      Object.keys(props.session).length > 0 && props.session.lat;
+    const defCenter = myLocationIsValid
+      ? props.myLocation
+      : { lat: 38.42595092237637, lng: -98.93746523313702 };
     return (
       <div>
         {props.session.status === 'Pending' &&
@@ -165,72 +147,78 @@ const Map = withScriptjs(
             <button onClick={handleMagic}>Show Meetup Spots!</button>
           )}
 
-        <GoogleMap
-          ref={mapRef}
-          zoom={11}
-          onClick={(e) => handleClick(e)}>
-    
-          {/* Draw markers for top places */}
-          {props.session.status === "Pending" && (topPlaces || []).map((place, index) => {
-            return (
+        {myLocationIsValid && (
+          <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
+            {sessionIsValid && (
               <Marker
-                icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-                key={`top-places-marker_${index}`}
-                position={place.geometry.location}
-                onClick={() => {
-                  setselectedPlace(place);
-                }}
-              >
-                {/* clicker */}
-                {selectedPlace === place && (
-                  <InfoWindow
-                    onCloseClick={() => {
-                      setselectedPlace(null);
+                icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
+                position={{ lat: props.session.lat, lng: props.session.lng }}
+              />
+            )}
+
+            {/* Draw markers for top places */}
+
+            {props.session.status === 'Pending' &&
+              (topPlaces || []).map((place, index) => {
+                return (
+                  <Marker
+                    icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                    key={`top-places-marker_${index}`}
+                    position={place.geometry.location}
+                    onClick={() => {
+                      setselectedPlace(place);
                     }}
-                    position={selectedPlace.geometry.location}
                   >
-                    <div>
-                      <h3>{selectedPlace.name}</h3>
-                      <h5>{selectedPlace.vicinity}</h5>
-                      <p>
-                        {selectedPlace.opening_hours.open_now
-                          ? 'Open Now'
-                          : 'Closed Now'}
-                      </p>
-                    </div>
-                  </InfoWindow>
-                )}
-              </Marker>
-              ///>
-            );
-          })}
+                    {selectedPlace === place && (
+                      <InfoWindow
+                        onCloseClick={() => {
+                          setselectedPlace(null);
+                        }}
+                        position={selectedPlace.geometry.location}
+                      >
+                        <div>
+                          <h3>{selectedPlace.name}</h3>
+                          <h5>{selectedPlace.vicinity}</h5>
+                          <p>
+                            {selectedPlace.opening_hours.open_now
+                              ? 'Open Now'
+                              : 'Closed Now'}
+                          </p>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </Marker>
+                  ///>
+                );
+              })}
 
-          {props.myLocation && <DirectionsRenderer directions={currentLine} />}
+            {props.myLocation && (
+              <DirectionsRenderer directions={currentLine} />
+            )}
 
-          {/* Draw labeled marker for each user in current session*/}
-          {meetupPointName?<h1>We are meeting @ {meetupPointName}</h1>:<h1>Meetup Spot Pending</h1>}
-          
-          {props.allLocations.map((loc) => {
-            return (
-              <MarkerWithLabel
-                key={`user_${loc.userId}`}
-                icon={props.user.photo}
-                position={{ lat: loc.lat, lng: loc.lng }}
-                labelAnchor={new google.maps.Point(0, 0)}
-                zIndex={100}
-                labelStyle={{
-                  backgroundColor: 'black',
-                  color: 'white',
-                  fontSize: '16px',
-                  padding: '2px',
-                }}
-              >
-                <div>{`user ${loc.userId}`}</div>
-              </MarkerWithLabel>
-            );
-          })}
-        </GoogleMap>
-
+            {/* Draw labeled marker for each user in current session*/}
+            {props.allLocations.length > 0 &&
+              props.allLocations.map((loc) => {
+                return (
+                  <MarkerWithLabel
+                    key={`user_${loc.userId}`}
+                    icon={props.user.photo}
+                    position={{ lat: loc.lat, lng: loc.lng }}
+                    labelAnchor={new google.maps.Point(0, 0)}
+                    zIndex={100}
+                    labelStyle={{
+                      backgroundColor: 'black',
+                      color: 'white',
+                      fontSize: '16px',
+                      padding: '2px',
+                    }}
+                  >
+                    <div>{`user ${loc.userId}`}</div>
+                  </MarkerWithLabel>
+                );
+              })}
+          </GoogleMap>
+        )}
         {/* Draw place buttons */}
         
         {props.session.status === 'Pending' && topPlaces

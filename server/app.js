@@ -1,8 +1,10 @@
+let sslRedirect = require('heroku-ssl-redirect').default;
+
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
-
+app.use(sslRedirect());
 module.exports = app;
 
 // logging middleware

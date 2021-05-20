@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sessionStarted } from './locationSharing';
+import { sessionStarted, clearAllLocations } from './locationSharing';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
@@ -50,23 +50,30 @@ export const activateSessionThunkCreator = (sessionId, lat, lng) => {
 };
 
 export const getSessionThunkCreator = (userId, code) => {
+  console.log('getSessionThunkCreator');
   return async (dispatch) => {
-    const response = await axios.get(`/api/sessions/${code}`);
-    const session = response.data;
-    dispatch(getSession(session));
-    dispatch(sessionStarted(userId, session.id));
+    try {
+      const response = await axios.get(`/api/sessions/${code}`);
+      const session = response.data;
+      console.log('SESSION', session);
+      await dispatch(getSession(session));
+      await dispatch(sessionStarted(userId, session.id));
+    } catch (err) {
+      console.error('Error in getSessionThunkCreator:', err);
+    }
   };
 };
 
 export const joinSessionThunkCreator = (userId, code, history) => {
+  console.log('joinSessionThunkCreator');
   return async (dispatch) => {
     const response = await axios.put(`/api/users/add/${userId}`, {
       code: code,
       accepted: true,
     });
     const session = response.data;
-    dispatch(joinSession(session));
-    dispatch(sessionStarted(userId, session.id));
+    await dispatch(joinSession(session));
+    await dispatch(sessionStarted(userId, session.id));
     history.push(`/map/${code}`);
   };
 };
@@ -75,8 +82,8 @@ export const createSessionThunkCreator = (hostId, history) => {
   return async (dispatch) => {
     const response = await axios.post(`/api/sessions/`, { hostId: hostId });
     const session = response.data;
-    dispatch(createSession(session));
-    dispatch(sessionStarted(hostId, session.id));
+    await dispatch(createSession(session));
+    await dispatch(sessionStarted(hostId, session.id));
   };
 };
 
