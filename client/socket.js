@@ -28,7 +28,7 @@ socket.on('user-left-room', (userId, message) => {
 });
 
 const lastSavedTimes = {};
-const saveInterval = 1000 * 5;
+const saveInterval = 1000 * 60;
 
 socket.on('user-location-changed', (userId, lat, lng) => {
   const elapsedTime = Date.now() - lastSavedTimes[userId];
