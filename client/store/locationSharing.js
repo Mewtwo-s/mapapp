@@ -50,7 +50,7 @@ export const sendMyLocation = () => {
     const userId = store.getState().auth.id;
     const loc = store.getState().myLocation;
     const sessionId = store.getState().sessionReducer.id;
-
+    console.log('send my location running', userId, loc, sessionId)
     if (loc.lat) {
       socket.emit('send-my-location', userId, sessionId, loc.lat, loc.lng);
     }

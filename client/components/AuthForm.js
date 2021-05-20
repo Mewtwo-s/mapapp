@@ -154,16 +154,16 @@ const mapDispatch = dispatch => {
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
-        const phoneNum = evt.target.phoneNum.value
-        // const preferTransportation = evt.target.preferTransportation.value
-        const street = evt.target.street.value
-        const city = evt.target.city.value
-        const state = evt.target.state.value
-        const country = evt.target.country.value
-        const zipCode = evt.target.zipCode.value
+        // const phoneNum = evt.target.phoneNum.value
+        // // const preferTransportation = evt.target.preferTransportation.value
+        // const street = evt.target.street.value
+        // const city = evt.target.city.value
+        // const state = evt.target.state.value
+        // const country = evt.target.country.value
+        // const zipCode = evt.target.zipCode.value
         const photo = evt.target.photo.value ||'http://maps.google.com/mapfiles/ms/icons/golfer.png'
         dispatch(authenticate(email, password, formName, firstName,
-          lastName, phoneNum, street, city, state, country, zipCode, photo  ))
+          lastName, photo  ))
       }
       else{
         dispatch(authenticate(email, password, formName))

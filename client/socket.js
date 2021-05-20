@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import store from './store';
 import { userLocationChanged, sendMyLocation } from './store/locationSharing';
+import { activateSession } from './store/session';
 
 const socket = io(window.location.origin, { autoConLnect: true });
 
@@ -8,6 +9,11 @@ const socket = io(window.location.origin, { autoConLnect: true });
 socket.on('connect', () => {
   console.info(`CLIENT connected to the server. My socket id is ${socket.id}`);
 });
+
+// emitting updated session
+socket.on('updated-session', (session) => {
+  store.dispatch(activateSession(session))
+})
 
 socket.on('user-joined-room', (userId, message) => {
   console.info(message);

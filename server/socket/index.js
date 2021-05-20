@@ -22,8 +22,14 @@ module.exports = (io) => {
 
     socket.on('send-my-location', (userId, sessionId, lat, lng) => {
       const roomName = 'room_' + sessionId;
+      
       io.to(roomName).emit('user-location-changed', userId, lat, lng);
+      
     });
+
+    socket.on('updated-session', session => {
+      socket.broadcast.emit('updated-session', session)
+    })
 
     socket.on('disconnect', () => {
       console.info('user disconnected: ' + socket.id);
