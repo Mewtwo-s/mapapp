@@ -20,8 +20,15 @@ socket.on('user-left-room', (userId, message) => {
   // not sure there's anything else to do here...but i want the feedback
 });
 
+const lastPersistedTimesObj = {};
+
 socket.on('user-location-changed', (userId, lat, lng) => {
+  if (!lastPersistedTimesObj[userId] || Date.now() - lastPersistedTimesObj[userId]> 1000*60){
+    lastPersistedTimesObj[userId] = Date.now()
+    //trigger a call to the db to add the location
+    //store.dispatch(addLocationsToUserThunk(userId, lat, lng, sessionId))
+  }
   store.dispatch(userLocationChanged(userId, lat, lng));
 });
-
+export { lastPersistedTimesObj };
 export default socket;

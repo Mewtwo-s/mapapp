@@ -83,7 +83,6 @@ const Map = withScriptjs(
 
     useEffect(() => {
       props.getSession(props.user.id, props.match.params.code);
-
       props.startWatch(props.user.id)
 
     }, []);

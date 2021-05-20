@@ -1,6 +1,7 @@
 import { sendMyLocation } from './locationSharing';
 import store from '../store';
-import socket from '../socket';
+import socket, { lastPersistedTimesObj } from '../socket';
+
 // actions
 const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
 const LOCATION_WATCH_STOPPED = 'LOCATION_WATCH_STOPPED';
