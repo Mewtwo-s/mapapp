@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import User from './User'
 
 function InviteForm(props) {
-    console.log('in join form', props)
+
     const [relatedUsers, setUsers] = useState([])
 
     function handleSubmit(){

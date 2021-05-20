@@ -13,7 +13,7 @@ export const getFriendsThunk = (userId) => {
     
         try {
         const { data } = await axios.get(`/api/users/friends/2`)
-        console.log('in getFriend thunk', data)
+ 
         dispatch(getFriends(data));
         } catch (err) {
         console.error('Error getting Friends', err);

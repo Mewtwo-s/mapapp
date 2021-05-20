@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 import store from './store';
 import { userLocationChanged, sendMyLocation } from './store/locationSharing';
 
-const socket = io(window.location.origin, { autoConnect: true });
+const socket = io(window.location.origin, { autoConLnect: true });
 
 // TO DO: confirm socket connection via promise
 socket.on('connect', () => {

@@ -3,11 +3,11 @@ const DefinePlugin = require('webpack').DefinePlugin;
 
 let environmentConfig;
 if(process.env.NODE_ENV !=='production'){
-  console.log('!!!! DEV')
+
   environmentConfig = new Dotenv()
 }
 else{
-  console.log('!!!! PRODUCT')
+
 environmentConfig = new DefinePlugin({
   'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY)
 }

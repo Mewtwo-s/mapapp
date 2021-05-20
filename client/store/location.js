@@ -1,7 +1,7 @@
 import { sendMyLocation } from './locationSharing';
 import { getCurrentPositionAsync } from '../helpers';
 import store from '../store';
-
+import socket from '../socket';
 // actions
 const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
 const LOCATION_WATCH_STOPPED = 'LOCATION_WATCH_STOPPED';
@@ -33,25 +33,27 @@ export const locationWatchStarted = (watchId) => {
 // thunk
 
 // // one-time call to get my current position and save it to the store
-export const getMyLocation = () => {
-  console.log('location.getMyLocation()');
-  return async (dispatch) => {
-    console.log('dispatching async get location');
-    try {
-      const response = await getCurrentPositionAsync();
-      console.log('response', response);
-      console.log('coords', response.coords);
-      await dispatch(
-        myLocationUpdated(response.coords.latitude, response.coords.longitude)
-      );
-    } catch (err) {
-      console.error('Error getting initial location.', err);
-    }
-  };
-};
+// export const getMyLocation = () => {
+//   console.log('location.getMyLocation()');
+//   return async (dispatch) => {
+//     console.log('dispatching async get location');
+//     try {
+//       const response = await getCurrentPositionAsync();
+//       console.log('response', response);
+//       console.log('coords', response.coords);
+//       await dispatch(
+//         myLocationUpdated(response.coords.latitude, response.coords.longitude)
+//       );
+//     } catch (err) {
+//       console.error('Error getting initial location.', err);
+//     }
+//   };
+// };
+
+
 
 // Start watching my location.
-export const watchMyLocation = () => {
+export const watchMyLocation = (userId) => {
   console.log('location.watchMyLocation()');
   return (dispatch) => {
     // callback for when location check is successfull
@@ -59,6 +61,7 @@ export const watchMyLocation = () => {
       console.log('watchSuccess', pos);
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
+      socket.emit('user-location-changed', userId, pos.coords.latitude, pos.coords.longitude)
     };
 
     // callback for when location check fails

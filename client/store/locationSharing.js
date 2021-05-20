@@ -42,7 +42,7 @@ export const joinRoom = (userId, sessionId) => {
   return (dispatch) => {
     socket.emit('join-room', userId, sessionId);
     // start tracking my location
-    dispatch(watchMyLocation());
+    // dispatch(watchMyLocation());
   };
 };
 
