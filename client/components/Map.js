@@ -9,17 +9,16 @@ import {
   InfoWindow,
 } from 'react-google-maps';
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
-import axios from 'axios';
-import { point, featureCollection } from '@turf/helpers';
-import center from '@turf/center';
+// import axios from 'axios';
+// import { point, featureCollection } from '@turf/helpers';
+// import center from '@turf/center';
 // import socket from '../socket';
 import { connect } from 'react-redux';
-import history from '../history';
-import Place from './Place';
-import {
-  getSessionThunkCreator,
-  activateSessionThunkCreator,
-} from '../store/session';
+// import Place from './Place';
+// import {
+//   getSessionThunkCreator,
+//   activateSessionThunkCreator,
+// } from '../store/session';
 
 import { Button, Container } from '../GlobalStyles';
 
@@ -34,45 +33,45 @@ const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
-    const [topPlaces, setTopPlaces] = useState();
-    const [midPoint, setMidPoint] = useState();
+    // const [topPlaces, setTopPlaces] = useState();
+    // const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
     // const [joined, setJoin] = useState(false)
     // const [selection, setSelection] = useState('');
 
-    const getPlaces = async (lat, lng) => {
-      try {
-        if (lat && lng) {
-          const places = await (
-            await axios.post('/api/google', { lat: lat, lng: lng })
-          ).data;
-          setTopPlaces(places);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    // const getPlaces = async (lat, lng) => {
+    //   try {
+    //     if (lat && lng) {
+    //       const places = await (
+    //         await axios.post('/api/google', { lat: lat, lng: lng })
+    //       ).data;
+    //       setTopPlaces(places);
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
 
-    const findMidpoint = async (locations) => {
-      const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
+    // const findMidpoint = async (locations) => {
+    //   const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
    
-      let finalLocations = [];
-      if (initialLocations.length > 0) {
-        for (let i = 0; i < initialLocations.length; i++) {
-          finalLocations.push(
-            point([initialLocations[i][0], initialLocations[i][1]])
-          );
-        }
+    //   let finalLocations = [];
+    //   if (initialLocations.length > 0) {
+    //     for (let i = 0; i < initialLocations.length; i++) {
+    //       finalLocations.push(
+    //         point([initialLocations[i][0], initialLocations[i][1]])
+    //       );
+    //     }
 
-        const features = featureCollection(finalLocations);
+    //     const features = featureCollection(finalLocations);
 
-        const centerCenter = center(features);
-        await setMidPoint({
-          lat: centerCenter.geometry.coordinates[0],
-          lng: centerCenter.geometry.coordinates[1],
-        });
-      }
-    };
+    //     const centerCenter = center(features);
+    //     await setMidPoint({
+    //       lat: centerCenter.geometry.coordinates[0],
+    //       lng: centerCenter.geometry.coordinates[1],
+    //     });
+    //   }
+    // };
 
     // Fit bounds function
     const fitBounds = () => {
@@ -96,37 +95,34 @@ const Map = withScriptjs(
     //   }
     // }, [props.session.id, props.myLocation.lat]);
 
-    useEffect(() => {
-      if (midPoint) {
-        getPlaces(midPoint.lat, midPoint.lng);
-      }
-    }, [midPoint]);
+    // useEffect(() => {
+    //   if (midPoint) {
+    //     getPlaces(midPoint.lat, midPoint.lng);
+    //   }
+    // }, [midPoint]);
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
-
       if (props.allLocations.length > 1) {
         fitBounds();
       }
     }, [props.allLocations]);
 
     useEffect(() => {
-   
       if (props.session.status === 'Active') {
-      
         getDirections({ lat: props.session.lat, lng: props.session.lng });
       }
     }, [props.session, props.myLocation]);
 
-    function handleMagic() {
-      findMidpoint(props.allLocations);
-    }
+    // function handleMagic() {
+    //   findMidpoint(props.allLocations);
+    // }
 
     const directionsService = new google.maps.DirectionsService();
 
-    function placeSelected(loc, name) {
-      props.activateSession(props.session.id, loc.lat, loc.lng, name);
-    }
+    // function placeSelected(loc, name) {
+    //   props.activateSession(props.session.id, loc.lat, loc.lng, name);
+    // }
 
     function getDirections(loc) {
 
@@ -157,10 +153,10 @@ const Map = withScriptjs(
     return (
       <Container>
         
-        {props.session.status === 'Pending' &&
+        {/* {props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
             <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-          )}
+          )} */}
 
         {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
@@ -174,7 +170,7 @@ const Map = withScriptjs(
             {/* Draw markers for top places */}
 
             {props.session.status === 'Pending' &&
-              (topPlaces || []).map((place, index) => {
+              (props.topPlaces || []).map((place, index) => {
                 return (
                   <Marker
                     icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
@@ -255,7 +251,7 @@ const Map = withScriptjs(
           </GoogleMap>
         )}
         {/* Draw place buttons */}
-        <PlaceStyles>
+        {/* <PlaceStyles>
           {props.session.status === 'Pending' && topPlaces
             ? topPlaces.map((place) => (
 
@@ -273,7 +269,7 @@ const Map = withScriptjs(
             ))
 
             : console.log('There are no fun places near by')}
-        </PlaceStyles>
+        </PlaceStyles> */}
         
       </Container>
     );
@@ -291,35 +287,35 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch) => {
-  return {
-    // startWatch: (userId) => {
-    //   dispatch(watchMyLocation(userId));
-    // },
-    activateSession: (sessionId, lat, lng, name) => {
-      dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
-    },
-    // getSession: (userId, sessionCode) => {
-    //   dispatch(getSessionThunkCreator(userId, sessionCode));
-    // },
-    // userJoinRoom: (userId, sessionId, userLoc) => {
-    //   dispatch(joinRoom(userId, sessionId, userLoc))
-    // }
-  };
-};
+// const mapDispatch = (dispatch) => {
+//   return {
+//     // startWatch: (userId) => {
+//     //   dispatch(watchMyLocation(userId));
+//     // },
+//     // activateSession: (sessionId, lat, lng, name) => {
+//     //   dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
+//     // },
+//     // getSession: (userId, sessionCode) => {
+//     //   dispatch(getSessionThunkCreator(userId, sessionCode));
+//     // },
+//     // userJoinRoom: (userId, sessionId, userLoc) => {
+//     //   dispatch(joinRoom(userId, sessionId, userLoc))
+//     // }
+//   };
+// };
 
 
-const PlaceStyles = styled.div`
-  max-width: 1400px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+// const PlaceStyles = styled.div`
+//   max-width: 1400px;
+//   display: flex;
+//   flex-wrap: wrap;
+//   justify-content: space-between;
 
-  @media screen and (max-width:600px){
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-  }
-`
+//   @media screen and (max-width:600px){
+//     padding: 8px;
+//     display: flex;
+//     flex-direction: column;
+//   }
+// `
 
-export default connect(mapState, mapDispatch)(Map);
+export default connect(mapState)(Map);
