@@ -163,6 +163,26 @@ const Map = withScriptjs(
       }
     };
 
+    const renderUser = () => {
+      return parseFloat(props.myLocation.lat) ? (
+        <MarkerWithLabel
+          key={props.user.id}
+          icon={props.user.photo}
+          position={{
+            lat: parseFloat(props.myLocation.lat),
+            lng: parseFloat(props.myLocation.lng),
+          }}
+          labelAnchor={new google.maps.Point(0, 0)}
+          zIndex={100}
+          labelStyle={markerLabelStyle}
+        >
+          <div>{getUserName()}</div>
+        </MarkerWithLabel>
+      ) : (
+        console.log('location not reader')
+      );
+    };
+
     const renderOthers = () => {
       // gather user and location data into array of objects
       const users = props.session.users;
@@ -259,24 +279,7 @@ const Map = withScriptjs(
             {renderOthers()}
 
             {/* Draw the current user's marker */}
-
-            {parseFloat(props.myLocation.lat) ? (
-              <MarkerWithLabel
-                key={props.user.id}
-                icon={props.user.photo}
-                position={{
-                  lat: parseFloat(props.myLocation.lat),
-                  lng: parseFloat(props.myLocation.lng),
-                }}
-                labelAnchor={new google.maps.Point(0, 0)}
-                zIndex={100}
-                labelStyle={markerLabelStyle}
-              >
-                <div>{getUserName()}</div>
-              </MarkerWithLabel>
-            ) : (
-              console.log('location not reader')
-            )}
+            {renderUser()}
           </GoogleMap>
         )}
 
