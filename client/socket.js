@@ -2,6 +2,7 @@ import io from 'socket.io-client';
 import store from './store';
 import { userLocationChanged, sendMyLocation } from './store/locationSharing';
 import { activateSession } from './store/session';
+import axios from 'axios';
 
 const socket = io(window.location.origin, { autoConLnect: true });
 
@@ -12,8 +13,8 @@ socket.on('connect', () => {
 
 // emitting updated session
 socket.on('updated-session', (session) => {
-  store.dispatch(activateSession(session))
-})
+  store.dispatch(activateSession(session));
+});
 
 socket.on('user-joined-room', (userId, message) => {
   console.info(message);
@@ -26,15 +27,23 @@ socket.on('user-left-room', (userId, message) => {
   // not sure there's anything else to do here...but i want the feedback
 });
 
-const lastPersistedTimesObj = {};
+const lastSavedTimes = {};
+const saveInterval = 1000 * 60;
 
 socket.on('user-location-changed', (userId, lat, lng) => {
-  if (!lastPersistedTimesObj[userId] || Date.now() - lastPersistedTimesObj[userId]> 1000*60){
-    lastPersistedTimesObj[userId] = Date.now()
-    //trigger a call to the db to add the location
-    //store.dispatch(addLocationsToUserThunk(userId, lat, lng, sessionId))
+  const elapsedTime = Date.now() - lastSavedTimes[userId];
+  if (!lastSavedTimes[userId] || elapsedTime > saveInterval) {
+    //save to db
+    const sessionId = store.getState().sessionReducer.id;
+    if (sessionId) {
+      const { data } = axios.put(`/api/usersessions/${userId}/${sessionId}`, {
+        currentLat: lat,
+        currentLng: lng,
+      });
+      lastSavedTimes[userId] = Date.now();
+    }
   }
   store.dispatch(userLocationChanged(userId, lat, lng));
 });
-export { lastPersistedTimesObj };
+
 export default socket;
