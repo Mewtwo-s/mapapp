@@ -1,15 +1,51 @@
 const router = require('express').Router()
-const { models: { User, Session, UserSession }} = require('../db')
+const { models: { User, Session, userSession }} = require('../db')
 
 module.exports = router
 
 
-router.get('/test', async (req, res, next) => {
+router.get('/friends/:userId', async (req, res, next) => {
   try {
-    res.send(await User.findAll({
-      where:{id:1}, 
-      include:UserSession})
-)
+    var result = null
+    const getSession = async(userId)=>{
+      return await User.findByPk(userId, 
+        {include:Session})
+    }
+    
+    const getSessionUser = async(sessionId)=>{
+      return await Session.findByPk(sessionId,
+        {include:User})
+    }
+    
+    const f = async (userId, friends)=>{
+    
+      let userSessionObj = await getSession(userId)
+      if(userSessionObj){
+        let userSessions = userSessionObj.sessions
+  
+        userSessions.forEach(async(session) =>{
+          let sessionId = session.id
+          let sessionUser = await getSessionUser(sessionId)
+        
+        sessionUser.users.map( user=>{  
+          
+          if(user.id.toString() !== req.params.userId && friends.indexOf(user.id)===-1){
+            friends.push(
+              user.id)
+    }
+              result = friends
+      })})
+      return result
+
+      }
+     
+  }
+
+  console.log(await f(req.params.userId,[]))
+
+  res.send(await f(req.params.userId,[]))
+    
+
   } catch (err) {
     next(err)
   }
@@ -30,92 +66,6 @@ router.get('/', async (req, res, next) => {
     next(err)
   }
 })
-
-
-router.get('/friends/:userId', async (req, res, next) => {
-  try {
-
-    let friends = []
-    let relatedSessions = null
-
-    const result = await User.findOne({
-      where:{id:req.params.userId}, 
-      include:Session})
-
-    relatedSessions = result.sessions
-    
-    
-    relatedSessions.forEach(async(session) =>{
-    let sessionId = session.id
-
-    let sessionUser = 
-      await Session.findOne({
-        where:{id:sessionId}, 
-        include:User})
-
-    await sessionUser.users.forEach( user=>{
-      if(user.id.toString() !== req.params.userId){
-        friends.push({
-          fName:user.firstName,
-          lName:user.lastName,
-          email:user.email
-        })
-
-      }
-    })  
-    res.send(friends)
-  })
-    
-
-
-  } catch (err) {
-    next(err)
-  }
-})
-
-
-// router.get('/friends/:userId', async (req, res, next) => {
-//   try {
-//     let friends = []
-//     const myPromise = new Promise(async(resolve, reject)=>{
-     
-//       let relatedSessions = null
-  
-//       const result = await User.findOne({
-//         where:{id:req.params.userId}, 
-//         include:Session})
-  
-//       relatedSessions = result.sessions
-      
-      
-//       relatedSessions.forEach(async(session) =>{
-//       let sessionId = session.id
-  
-//       let sessionUser = 
-//         await Session.findOne({
-//           where:{id:sessionId}, 
-//           include:User})
-  
-//       await sessionUser.users.forEach( user=>{
-//         friends.push({
-//           fName:user.firstName,
-//           lName:user.lastName,
-//           email:user.email
-//         })
-//         console.log('friend status', friends)
-//       })  
-//     })
-//       resolve(friends)
-//     })
-    
-//   myPromise.then(res.send(friends))
-    
-//   } catch (err) {
-//     next(err)
-//   }
-// })
-
-
 
 router.post('/', async (req, res, next) => {
   try {
