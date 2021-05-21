@@ -23,9 +23,8 @@ import {
 
 import { Button, Container } from '../GlobalStyles';
 
-
-import {watchMyLocation} from '../store/location'
-import {joinRoom} from '../store/locationSharing'
+import { watchMyLocation } from '../store/location';
+import { joinRoom } from '../store/locationSharing';
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -37,8 +36,20 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    const [joined, setJoin] = useState(false)
+    const [joined, setJoin] = useState(false);
     // const [selection, setSelection] = useState('');
+
+    const markerLabelStyle = {
+      backgroundColor: 'black',
+      color: 'white',
+      fontSize: '14px',
+      border: '2px solid white',
+      borderRadius: '15px',
+      padding: '4px',
+    };
+
+    // Doesn't work ??
+    // const iconSize = new google.maps.Size(64, 64);
 
     const getPlaces = async (lat, lng) => {
       try {
@@ -55,7 +66,7 @@ const Map = withScriptjs(
 
     const findMidpoint = async (locations) => {
       const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
-   
+
       let finalLocations = [];
       if (initialLocations.length > 0) {
         for (let i = 0; i < initialLocations.length; i++) {
@@ -76,11 +87,9 @@ const Map = withScriptjs(
 
     // Fit bounds function
     const fitBounds = () => {
-    
       const bounds = new window.google.maps.LatLngBounds();
 
       props.allLocations.map((item) => {
-
         bounds.extend({ lat: item.lat, lng: item.lng });
         return item.id;
       });
@@ -93,9 +102,9 @@ const Map = withScriptjs(
     }, []);
 
     useEffect(() => {
-      if(props.session.id && props.myLocation.lat && joined === false){
-          props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
-          setJoin(true)
+      if (props.session.id && props.myLocation.lat && joined === false) {
+        props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
+        setJoin(true);
       }
     }, [props.session.id, props.myLocation.lat]);
 
@@ -107,16 +116,13 @@ const Map = withScriptjs(
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
-
       if (props.allLocations.length > 1) {
         fitBounds();
       }
     }, [props.allLocations]);
 
     useEffect(() => {
-   
       if (props.session.status === 'Active') {
-      
         getDirections({ lat: props.session.lat, lng: props.session.lng });
       }
     }, [props.session, props.myLocation]);
@@ -132,7 +138,6 @@ const Map = withScriptjs(
     }
 
     function getDirections(loc) {
-
       directionsService.route(
         {
           origin: props.myLocation,
@@ -148,18 +153,54 @@ const Map = withScriptjs(
         }
       );
     }
+    const getUserName = () => {
+      if (props.session.users) {
+        const firstName = props.session.users.find(
+          (user) => user.id === props.user.id
+        ).firstName;
 
+        return firstName !== '' ? firstName : 'You';
+      }
+    };
 
-    const myLocationIsValid = props.myLocation.lat ;
+    const renderOthers = () => {
+      // gather user and location data into array of objects
+      const users = props.session.users;
+      if (users && props.allLocations) {
+        const others = props.allLocations
+          .filter((loc) => loc.userId != props.user.id && loc.lat)
+          .map((other) => {
+            const user = users.find((user) => user.id === other.userId);
+            if (user) {
+              return { ...other, firstName: user.firstName, photo: user.photo };
+            }
+          });
+        console.log('OTHERS', others);
+        // Draw the marker
+        return others.map((user) => (
+          <MarkerWithLabel
+            key={`user_${user.userId}`}
+            icon={user.photo}
+            position={{ lat: user.lat, lng: user.lng }}
+            labelAnchor={new google.maps.Point(0, 0)}
+            zIndex={100}
+            labelStyle={markerLabelStyle}
+          >
+            <div>{user.firstName}</div>
+          </MarkerWithLabel>
+        ));
+      }
+    };
+
+    const myLocationIsValid = props.myLocation.lat;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
     const defCenter = myLocationIsValid
-      ? {lat: props.myLocation.lat, lng:props.myLocation.lng}
+      ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
 
     return (
       <Container>
-        
         {props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
             <Button onClick={handleMagic}> Show Meetup Spots! </Button>
@@ -187,7 +228,7 @@ const Map = withScriptjs(
                       setselectedPlace(place);
                     }}
                   >
-     {selectedPlace === place && (
+                    {selectedPlace === place && (
                       <InfoWindow
                         onCloseClick={() => {
                           setselectedPlace(null);
@@ -214,77 +255,58 @@ const Map = withScriptjs(
               <DirectionsRenderer directions={currentLine} />
             )}
 
+            {/* Draw labeled marker for each other person in the session */}
+            {renderOthers()}
 
-            {/* Draw labeled marker for each user in current session*/}
-            {props.allLocations.length > 0 &&
-              props.allLocations.filter(loc=>loc.userId!=props.user.id).map((loc) => {
-                return (
-                  <MarkerWithLabel
-                    key={`user_${loc.userId}`}
-                    icon={props.user.photo}
-                    position={{ lat: loc.lat, lng: loc.lng }}
-                    labelAnchor={new google.maps.Point(0, 0)}
-                    zIndex={100}
-                    labelStyle={{
-                      backgroundColor: 'black',
-                      color: 'white',
-                      fontSize: '16px',
-                      padding: '2px',
-                    }}
-                  >
-                    <div>{`user ${loc.userId}`}</div>
-                  </MarkerWithLabel>
-                );
-              })}
-              
-       
-                 {parseFloat(props.myLocation.lat)? <MarkerWithLabel
-                    key={props.user.id}
-                    icon={props.user.photo}
-                    position={{ lat: parseFloat(props.myLocation.lat), lng: parseFloat(props.myLocation.lng) }}
-                    labelAnchor={new google.maps.Point(0, 0)}
-                    zIndex={100}
-                    labelStyle={{
-                      backgroundColor: 'black',
-                      color: 'white',
-                      fontSize: '16px',
-                      padding: '2px',
-                    }}
-                  >
-                    <div>{`your marker`}</div>
-                  </MarkerWithLabel>:console.log('location not reader')}
-          
-              
+            {/* Draw the current user's marker */}
+
+            {parseFloat(props.myLocation.lat) ? (
+              <MarkerWithLabel
+                key={props.user.id}
+                icon={props.user.photo}
+                position={{
+                  lat: parseFloat(props.myLocation.lat),
+                  lng: parseFloat(props.myLocation.lng),
+                }}
+                labelAnchor={new google.maps.Point(0, 0)}
+                zIndex={100}
+                labelStyle={markerLabelStyle}
+              >
+                <div>{getUserName()}</div>
+              </MarkerWithLabel>
+            ) : (
+              console.log('location not reader')
+            )}
           </GoogleMap>
         )}
+
         {/* Draw place buttons */}
+
         <PlaceStyles>
           {props.session.status === 'Pending' && topPlaces
             ? topPlaces.map((place) => (
-
-              <Place
-                handle={placeSelected}
-                key={place.place_id}
-                location={place.geometry.location}
-                name={place.name}
-                open={place.opening_hours ? place.opening_hours.open_now : null}
-                price={place.price_level}
-                rating={place.rating}
-                place={place.image}
-              />
-              
-            ))
-
+                <Place
+                  handle={placeSelected}
+                  key={place.place_id}
+                  location={place.geometry.location}
+                  name={place.name}
+                  open={
+                    place.opening_hours ? place.opening_hours.open_now : null
+                  }
+                  price={place.price_level}
+                  rating={place.rating}
+                  place={place.image}
+                />
+              ))
             : console.log('There are no fun places near by')}
         </PlaceStyles>
-        
       </Container>
     );
   })
 );
 
 const mapState = (state) => {
-  console.log('state',state) 
+  console.log('state', state);
   return {
     user: state.auth,
     allLocations: state.allLocations,
@@ -306,11 +328,10 @@ const mapDispatch = (dispatch) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));
     },
     userJoinRoom: (userId, sessionId, userLoc) => {
-      dispatch(joinRoom(userId, sessionId, userLoc))
-    }
+      dispatch(joinRoom(userId, sessionId, userLoc));
+    },
   };
 };
-
 
 const PlaceStyles = styled.div`
   max-width: 1400px;
@@ -318,11 +339,11 @@ const PlaceStyles = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
 
-  @media screen and (max-width:600px){
+  @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
     flex-direction: column;
   }
-`
+`;
 
 export default connect(mapState, mapDispatch)(Map);
