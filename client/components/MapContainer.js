@@ -98,10 +98,10 @@ const MapContainer = (props) => {
 
   useEffect(() => {
     if (props.session.status === "Active") {
-      console.log("session users", props.allUsersInSession);
-      const updatedUsersInSession = props.allUsersInSession.map(user => user.arrived) || [];
-      console.log('after map', updatedUsersInSession);
-      if (updatedUsersInSession.includes(false) === false) {
+      const allArrived= props.allUsersInSession.every(user => user.arrived === true);
+      //this is just super inaccurate and not very realistic
+      // const allLocationsMatch = props.allUsersInSession.every(user => user.currentLat === props.session.lat && user.currentLng === props.session.lng);
+      if (allArrived === true || allLocationsMatch === true) {
         props.endSession(props.session.id);
       }
     }
