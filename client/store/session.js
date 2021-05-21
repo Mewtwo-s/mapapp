@@ -6,6 +6,7 @@ const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
 const CREATE_SESSION = 'CREATE_SESSION';
 const ACTIVATE_SESSION = 'ACTIVATE_SESSION';
+const END_SESSION = 'END_SESSION';
 
 //action creators
 const getSession = (session) => {
@@ -18,6 +19,13 @@ const getSession = (session) => {
 export const activateSession = (session) => {
   return {
     type: ACTIVATE_SESSION,
+    session,
+  };
+};
+
+export const endSession = (session) => {
+  return {
+    type: END_SESSION,
     session,
   };
 };
@@ -48,6 +56,18 @@ export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) =
     });
     const session = response.data;
     dispatch(activateSession(session));
+    socket.emit('updated-session', session)
+  };
+};
+
+export const endSessionThunkCreator = (sessionId) => {
+  return async (dispatch) => {
+    const response = await axios.put(`/api/sessions/${sessionId}`, {
+      status: 'Completed'
+    });
+    const session = response.data;
+    console.log('ended session', session)
+    dispatch(endSession(session));
     socket.emit('updated-session', session)
   };
 };

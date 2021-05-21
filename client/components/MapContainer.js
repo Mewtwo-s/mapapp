@@ -7,12 +7,13 @@ import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted, joinRoom } from '../store/locationSharing';
 import { Button, Container } from '../GlobalStyles';
 import {watchMyLocation} from '../store/location'
-import {getSessionThunkCreator, activateSessionThunkCreator} from '../store/session';
+import {getSessionThunkCreator, activateSessionThunkCreator, endSessionThunkCreator} from '../store/session';
 import Loading from './Loading';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
 import axios from 'axios';
 import Place from './Place';
+import { arriveThunkCreator, getSessionUsersThunkCreator } from '../store/userSessions'
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
@@ -39,6 +40,10 @@ const MapContainer = (props) => {
 
   function placeSelected(loc, name) {
     props.activateSession(props.session.id, loc.lat, loc.lng, name);
+  }
+
+  function userArrives() {
+    props.userArrives(props.user.id, props.session.id)
   }
 
   const findMidpoint = async (locations) => {
@@ -75,21 +80,31 @@ const MapContainer = (props) => {
   }, [props.session.id, props.myLocation.lat]);
 
   useEffect(() => {
+    if (props.session.id) {
+      props.getSessionUsers(props.session.id)
+    }    
+  }, [props.session]);
+
+  useEffect(() => {
     if (midPoint) {
       getPlaces(midPoint.lat, midPoint.lng);
     }
   }, [midPoint]);
   
+  console.log(props)
   return (
     <div>
     {joined === false ? <Loading message="your map"/> : 
     <Container>
+      {props.session.status === "Completed" ? <h1>Your session has ended! return home</h1> : 
+      <div>
       <Link to='/home'> Back To Home </Link>
       <h4>Session Code: {props.session.code}</h4>
       <p>Friends in this session:</p>
-        {props.session.users && props.session.users.map(user => {
+        {props.session.users && props.session.users.filter(friend => friend.id !== props.user.id).map(user => {
+          let userSession = props.sessionUsers.filter(userRow => userRow.userId === user.id)[0] || {};
           return (
-            <p key={`user_${user.id}`}>{user.firstName}</p>
+            <p key={`user_${user.id}`}>{user.firstName} – {userSession.arrived === true ? "Arrived" : (userSession.accepted === true ? "Accepted" : "Not accepted")}</p>
           )
         })}
   
@@ -119,6 +134,14 @@ const MapContainer = (props) => {
             : null}
         </PlaceStyles>
 
+        {props.session.status === 'Active' &&
+            <Button onClick={userArrives}> I have arrived </Button>
+          
+          }
+
+        {props.session.hostId === props.user.id && 
+            <Button onClick={() => props.endSession(props.session.id)}>End Session</Button>}
+
       <Map
         topPlaces={topPlaces}
         match={props.match}
@@ -132,6 +155,8 @@ const MapContainer = (props) => {
         }
         mapElement={<div className="map" style={{ height: '100%' }} />}
       />
+      </div>
+    }
     </Container>
 } </div>
   );
@@ -142,7 +167,8 @@ const mapState = (state) => {
     user: state.auth,
     session: state.sessionReducer,
     myLocation: state.myLocation,
-    allLocations: state.allLocations
+    allLocations: state.allLocations, 
+    sessionUsers: state.userSessionsReducer
   };
 };
 
@@ -160,6 +186,15 @@ const mapDispatch = (dispatch) => {
     activateSession: (sessionId, lat, lng, name) => {
       dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
     },
+    userArrives: (userId, sessionId) => {
+      dispatch(arriveThunkCreator(userId, sessionId))
+    },
+    getSessionUsers: (sessionId) => {
+      dispatch(getSessionUsersThunkCreator(sessionId))
+    }, 
+    endSession: (sessionId) => {
+      dispatch(endSessionThunkCreator(sessionId));
+    }
   };
 };
 
