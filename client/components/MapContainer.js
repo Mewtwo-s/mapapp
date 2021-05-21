@@ -97,6 +97,7 @@ const MapContainer = (props) => {
   
   console.log(props)
   return (
+
     <div>
     {joined === false ? <Loading message="your map"/> : 
     <Container>

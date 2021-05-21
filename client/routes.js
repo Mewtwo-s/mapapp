@@ -15,9 +15,7 @@ import InviteForm from './components/InviteForm'
 import Navbar from './components/Navbar'
 import PastSessions from './components/PastSessions';
 import GlobalStyles from './GlobalStyles';
-
-
-import Test from './components/Test'
+import TravelMode from './components/TravelMode'
 
 /**
  * COMPONENT
@@ -36,7 +34,7 @@ class Routes extends Component {
           <Navbar />
           {isLoggedIn ? (
             <Switch>
-            <Route path="/test" component={Test} />
+              <Route exact path="/test" component={TravelMode} />
               <Route path="/map/:code" component={MapContainer} />
               <Route path="/pastSessions" component={PastSessions} />
               <Route exact path="/home" component={Home} />

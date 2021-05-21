@@ -8,7 +8,7 @@ import {
 import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
 import { Button, Label, FormGroup, Input } from '../GlobalStyles';
-
+import TravelMode from './TravelMode'
 
 export class JoinRoom extends React.Component {
   constructor(props) {
@@ -62,10 +62,13 @@ export class JoinRoom extends React.Component {
 
     return (
       <div>
+        
         <h4>{`Hello ${capFirstName} !`}</h4>
+     
         {this.state.sessionAction === null && (
           <div>
             <h4> In the mood to hang out today ? </h4>
+            <TravelMode />
             <Button onClick={this.handleCreate}>Create New Session</Button>
             <Button onClick={() => this.handleClick('join')}>
               Join a Session
