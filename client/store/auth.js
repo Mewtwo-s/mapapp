@@ -34,7 +34,7 @@ export const me = () => async dispatch => {
 export const getTempUserThunkCreator = (confirmationCode) => async dispatch => {
   try {
     console.log('the thunk is working');
-    const result = await axios.get(`/api/users/${confirmationCode}`);
+    const result = await axios.put(`/api/users/${confirmationCode}`);
     dispatch(await setTempUser(result.data))
   } catch (err) {
     next(err)

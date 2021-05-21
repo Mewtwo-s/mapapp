@@ -10,7 +10,6 @@ const init = async () => {
     const server = app.listen(PORT, () =>
       console.log(`Mixing it up on port ${PORT}`)
     );
-require('dotenv').config();
     // create socket server (io) and attach our express server to it
     const io = require('socket.io')(server, {
       cors: {

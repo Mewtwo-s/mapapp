@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { models: { User, Session, UserSession }} = require('../db')
 const runMailer = require('../../nodemailer');
-module.exports = router
+module.exports = router;
 
 
 router.get('/test', async (req, res, next) => {
@@ -18,7 +18,6 @@ router.get('/test', async (req, res, next) => {
 router.get('/', async (req, res, next) => {
   try {
 
-
     const users = await User.findAll({
       // explicitly select only the id and email fields - even though
       // users' passwords are encrypted, it won't help if we just
@@ -31,33 +30,28 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:confirmationCode', async (req, res, next) => {
+router.put('/:confirmationCode', async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: {
         confirmationCode: req.params.confirmationCode
       }
-    })
-    res.send(user)
+    });
+    res.send(user.update({accepted: true}))
+  } catch (err) {
+      next(err)
+    }
+  })
 
 router.get('/friends/:userId', async (req, res, next) => {
   try {
-
     let friends = []
     let relatedSessions = null
-
-    const result = await User.findOne({
-      where:{id:req.params.userId}, 
-      include:Session})
-
+    const result = await User.findOne({where: { id: req.params.userId}, include: Session})
     relatedSessions = result.sessions
-    
-    
     relatedSessions.forEach(async(session) =>{
     let sessionId = session.id
-
-    let sessionUser = 
-      await Session.findOne({
+    let sessionUser = await Session.findOne({
         where:{id:sessionId}, 
         include:User})
 
@@ -73,57 +67,10 @@ router.get('/friends/:userId', async (req, res, next) => {
     })  
     res.send(friends)
   })
-    
-
-
   } catch (err) {
     next(err)
   }
 })
-
-
-// router.get('/friends/:userId', async (req, res, next) => {
-//   try {
-//     let friends = []
-//     const myPromise = new Promise(async(resolve, reject)=>{
-     
-//       let relatedSessions = null
-  
-//       const result = await User.findOne({
-//         where:{id:req.params.userId}, 
-//         include:Session})
-  
-//       relatedSessions = result.sessions
-      
-      
-//       relatedSessions.forEach(async(session) =>{
-//       let sessionId = session.id
-  
-//       let sessionUser = 
-//         await Session.findOne({
-//           where:{id:sessionId}, 
-//           include:User})
-  
-//       await sessionUser.users.forEach( user=>{
-//         friends.push({
-//           fName:user.firstName,
-//           lName:user.lastName,
-//           email:user.email
-//         })
-//         console.log('friend status', friends)
-//       })  
-//     })
-//       resolve(friends)
-//     })
-    
-//   myPromise.then(res.send(friends))
-    
-//   } catch (err) {
-//     next(err)
-//   }
-// })
-
-
 
 router.post('/', async (req, res, next) => {
   try {
@@ -143,7 +90,7 @@ router.post('/invite', async(req, res, next) => {
     })
     const session = await Session.findByPk(req.body.sessionId);
     if (!user) {
-      user = await User.create({email: req.body.email, firstName: 'test', lastName: 'test', password: 'test'});
+      user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
     }
     await session.addUsers(user);
     runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
@@ -163,13 +110,6 @@ router.put('/add/:userId', async (req, res, next) => {
 
     const user = await User.findByPk(req.params.userId);
     await session.addUsers(user);
-    // const sessionUser = await UserSession.findOne({
-    //   where: {
-    //     sessionId: session.id,
-    //     userId: user.id
-    //   }
-    // })
-    // sessionUser.setStatus(req.body.accepted);
     res.send(session);
   } catch (err) {
     next(err)
