@@ -9,6 +9,7 @@ import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
 import { Button, Label, FormGroup, Input } from '../GlobalStyles';
 import { getFriendsThunk } from '../store/user';
+import { inviteSessionUsersThunkCreator } from '../store/userSessions';
 
 
 export class JoinRoom extends React.Component {
@@ -96,7 +97,7 @@ console.log(this.props);
             <h5>Invite via code: {this.props.session.code} </h5>
             <h5>Add previous friends</h5>
             {this.props.friends && this.props.friends.map(friend =>  (
-              <button key={friend.id}>
+              <button key={friend.id} onClick={() => this.props.inviteFriend( this.props.session.id, friend.email, this.props.user.firstName)}>
                 <p>{friend.firstName} {friend.lastName}</p>
               </button>
             ))}
@@ -126,7 +127,8 @@ const mapDispatch = (dispatch, { history }) => {
       dispatch(createSessionThunkCreator(userId, history)),
     stopWatchingMyLocation: () => dispatch(stopWatchingMyLocation()),
     leaveRoom: (userId, sessionId) => dispatch(leaveRoom(userId, sessionId)),
-    getFriends: (userId) => dispatch(getFriendsThunk(userId))
+    getFriends: (userId) => dispatch(getFriendsThunk(userId)),
+    inviteFriend: (sessionId, email, hostName) => dispatch(inviteSessionUsersThunkCreator(sessionId, email, hostName))
   };
 };
 export default connect(mapState, mapDispatch)(JoinRoom);
