@@ -1,22 +1,43 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import {getFriendsThunk} from '../store/user'
+import { FormGroup, Label, Input , Button } from '../GlobalStyles'
+import styled from 'styled-components'
+import { Link, Redirect, } from 'react-router-dom';
+import history from '../history'
 
-class Test extends Component{
-constructor(props) {
-   super(props)
-}
+function Test() {
+   const [code, setCode] = useState()
 
-componentDidMount(){
-   this.props.fetchFriendsFromThunk(this.props.user.id)
-}
-
-   render(){
-      return(
-         <h1>TEST</h1>
-      )
+   function handleSubmit() {
+   alert('submit')
+     }
+   function handleChange(evt){
+      setCode(evt.target.value)
    }
+   return (
+      <FormContainer>
+      <form onSubmit={handleSubmit} name={name}>
+   
+         <FormGroup>
+           <div>
+             <Label htmlFor="email">
+               <small>Code</small>
+             </Label>
+             <Input name="code" required placeholder='required' onChange={handleChange}/>
+           </div> </FormGroup>
+
+       <FormGroup>
+         
+         <Link to={`/map/${code}`}><Button type="submit">Submit</Button></Link>
+        
+       </FormGroup>
+       
+     </form>
+   </FormContainer>
+   )
 }
+
 
 const mapState = state => {
    return {
@@ -31,4 +52,12 @@ const mapState = state => {
      }
    }
  }
+
+ const FormContainer = styled.div`
+  width: 90%;
+  border-radius: 5px;
+  background-color:#51adcf;
+  margin: 25px 25px;
+  padding: 20px;`
+
 export default connect(mapState, mapDispatch)(Test)

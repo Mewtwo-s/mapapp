@@ -10,13 +10,14 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
-
+import {AcceptWithAccount, AcceptWithoutAccount} from './components/CompleteJoinForm';
 import InviteForm from './components/InviteForm'
 import Navbar from './components/Navbar'
 import PastSessions from './components/PastSessions';
 import GlobalStyles from './GlobalStyles';
 import TravelMode from './components/TravelMode'
-
+import UserJoinSession from './components/UserJoinSession'
+import Test from './components/Test'
 /**
  * COMPONENT
  */
@@ -34,16 +35,19 @@ class Routes extends Component {
           <Navbar />
           {isLoggedIn ? (
             <Switch>
-              <Route exact path="/test" component={TravelMode} />
+              <Route path="/test"> component={Test}</Route>
               <Route path="/map/:code" component={MapContainer} />
               <Route path="/pastSessions" component={PastSessions} />
               <Route exact path="/home" component={Home} />
               <Route path='/emailInvite' component={InviteForm} />
-              <Redirect to="/home" />
+              <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
+              <Redirect to='/home'/>
+              
             </Switch>
           ) : (
             <Switch>
               {/* <Route path="/map" component={MapContainer} /> */}
+              <Route exact path="/test" component={UserJoinSession} />
               <Route exact path="/" component={Login} />
               <Route exact path="/home" component={Login} />
               <Route path="/login" component={Login} />
