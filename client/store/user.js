@@ -8,20 +8,19 @@ export const getFriends = (friends) => {
   };
 
 export const getFriendsThunk = (userId) => {
- 
     return async (dispatch) => {
     
         try {
-        const { data } = await axios.get(`/api/users/friends/2`)
- 
-        dispatch(getFriends(data));
+          const response = await axios.get(`/api/users/friends/${userId}`);
+          const friends = response.data
+          await dispatch(getFriends(friends));
         } catch (err) {
-        console.error('Error getting Friends', err);
+          console.error('Error getting Friends', err);
         }
     };
 };
 
-export default function (state = [], action) {
+export default function friendReducer (state = [], action) {
     switch (action.type) {
       case GET_FRIENDS:
         return action.friends

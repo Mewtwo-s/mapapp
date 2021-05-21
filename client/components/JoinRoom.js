@@ -8,6 +8,7 @@ import {
 import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
 import { Button, Label, FormGroup, Input } from '../GlobalStyles';
+import { getFriendsThunk } from '../store/user';
 
 
 export class JoinRoom extends React.Component {
@@ -28,10 +29,8 @@ export class JoinRoom extends React.Component {
     });
   }
 
-  async handleJoin(evt) {
+  async handleJoin (evt) {
     evt.preventDefault();
-
-    // clean up current session before joining a new one
     const session = this.props.session;
     if (session && session.id) {
       this.props.leaveRoom(this.props.user.id, session.id);
@@ -44,7 +43,7 @@ export class JoinRoom extends React.Component {
   async handleCreate(evt) {
     evt.preventDefault();
 
-    // clean up current session before joining a new one
+    await this.props.getFriends(this.props.user.id);
     const session = this.props.session;
     if (session && session.id) {
       this.props.leaveRoom(this.props.user.id, session.id);
@@ -59,7 +58,7 @@ export class JoinRoom extends React.Component {
  
   render() {
      const capFirstName = this.props.user.firstName.slice(0,1).toUpperCase() + this.props.user.firstName.slice(1).toLowerCase()
-
+console.log(this.props);
     return (
       <div>
         <h4>{`Hello ${capFirstName} !`}</h4>
@@ -89,11 +88,21 @@ export class JoinRoom extends React.Component {
         )}
         {this.state.sessionAction === 'host' && (
           <div>
-            <h3>Invite friends using the code: {this.props.session.code} </h3>
+            <h1>Your session is ready! Join now</h1>
             <Link to={`/map/${this.props.session.code}`}>
               <Button>Go to session</Button>
-
             </Link>
+            <h1>Invite Friends</h1>
+            <h5>Invite via code: {this.props.session.code} </h5>
+            <h5>Add previous friends</h5>
+            {this.props.friends && this.props.friends.map(friend =>  (
+              <button key={friend.id}>
+                <p>{friend.firstName} {friend.lastName}</p>
+              </button>
+            ))}
+            <h5>Invite via email</h5>
+            <input value="test"/>
+            <button type="submit">Submit</button>
           </div>
         )}
       </div>
@@ -105,6 +114,7 @@ const mapState = (state) => {
   return {
     user: state.auth,
     session: state.sessionReducer,
+    friends: state.friendReducer
   };
 };
 
@@ -116,6 +126,7 @@ const mapDispatch = (dispatch, { history }) => {
       dispatch(createSessionThunkCreator(userId, history)),
     stopWatchingMyLocation: () => dispatch(stopWatchingMyLocation()),
     leaveRoom: (userId, sessionId) => dispatch(leaveRoom(userId, sessionId)),
+    getFriends: (userId) => dispatch(getFriendsThunk(userId))
   };
 };
 export default connect(mapState, mapDispatch)(JoinRoom);
