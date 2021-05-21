@@ -4,12 +4,31 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { DirectionsRenderer } from 'react-google-maps';
-import { sessionStarted } from '../store/locationSharing';
+import { sessionStarted, joinRoom } from '../store/locationSharing';
 import { Button, Container } from '../GlobalStyles';
+import {watchMyLocation} from '../store/location'
+import {getSessionThunkCreator} from '../store/session';
+import Loading from './Loading';
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
+  const [joined, setJoin] = useState(false)
+
+  useEffect(() => {
+    props.startWatch(props.user.id);
+    props.getSession(props.user.id, props.match.params.code);
+  }, []);
+
+  useEffect(() => {
+    if(props.session.id && props.myLocation.lat && joined === false){
+        props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
+        setJoin(true)
+    }
+  }, [props.session.id, props.myLocation.lat]);
+  
   return (
+    <div>
+    {joined === false ? <Loading message="your map"/> : 
     <Container>
       <Link to='/home'> Back To Home </Link>
       <h4>Session Code: {props.session.code}</h4>
@@ -34,6 +53,7 @@ const MapContainer = (props) => {
         mapElement={<div className="map" style={{ height: '100%' }} />}
       />
     </Container>
+} </div>
   );
 };
 
@@ -44,11 +64,20 @@ const mapState = (state) => {
     myLocation: state.myLocation,
   };
 };
-// const mapDispatch = (dispatch) => {
-//   return {
-//     sessionStarted: (userId, sessionId) =>
-//       dispatch(sessionStarted(userId, sessionId)),
-//   };
-// };
 
-export default connect(mapState)(MapContainer);
+const mapDispatch = (dispatch) => {
+  return {
+    startWatch: (userId) => {
+      dispatch(watchMyLocation(userId));
+    },
+    getSession: (userId, sessionCode) => {
+      dispatch(getSessionThunkCreator(userId, sessionCode));
+    },
+    userJoinRoom: (userId, sessionId, userLoc) => {
+      dispatch(joinRoom(userId, sessionId, userLoc))
+    }
+  };
+};
+
+
+export default connect(mapState, mapDispatch)(MapContainer);

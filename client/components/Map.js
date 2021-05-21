@@ -12,7 +12,7 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import axios from 'axios';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
-import socket from '../socket';
+// import socket from '../socket';
 import { connect } from 'react-redux';
 import history from '../history';
 import Place from './Place';
@@ -24,8 +24,8 @@ import {
 import { Button, Container } from '../GlobalStyles';
 
 
-import {watchMyLocation} from '../store/location'
-import {joinRoom} from '../store/locationSharing'
+// import {watchMyLocation} from '../store/location'
+// import {joinRoom} from '../store/locationSharing'
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -37,7 +37,7 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    const [joined, setJoin] = useState(false)
+    // const [joined, setJoin] = useState(false)
     // const [selection, setSelection] = useState('');
 
     const getPlaces = async (lat, lng) => {
@@ -76,28 +76,25 @@ const Map = withScriptjs(
 
     // Fit bounds function
     const fitBounds = () => {
-    
       const bounds = new window.google.maps.LatLngBounds();
-
       props.allLocations.map((item) => {
-
         bounds.extend({ lat: item.lat, lng: item.lng });
         return item.id;
       });
       mapRef.current.fitBounds(bounds);
     };
 
-    useEffect(() => {
-      props.startWatch(props.user.id);
-      props.getSession(props.user.id, props.match.params.code);
-    }, []);
+    // useEffect(() => {
+    //   props.startWatch(props.user.id);
+    //   props.getSession(props.user.id, props.match.params.code);
+    // }, []);
 
-    useEffect(() => {
-      if(props.session.id && props.myLocation.lat && joined === false){
-          props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
-          setJoin(true)
-      }
-    }, [props.session.id, props.myLocation.lat]);
+    // useEffect(() => {
+    //   if(props.session.id && props.myLocation.lat && joined === false){
+    //       props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
+    //       setJoin(true)
+    //   }
+    // }, [props.session.id, props.myLocation.lat]);
 
     useEffect(() => {
       if (midPoint) {
@@ -296,18 +293,18 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    startWatch: (userId) => {
-      dispatch(watchMyLocation(userId));
-    },
+    // startWatch: (userId) => {
+    //   dispatch(watchMyLocation(userId));
+    // },
     activateSession: (sessionId, lat, lng, name) => {
       dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
     },
-    getSession: (userId, sessionCode) => {
-      dispatch(getSessionThunkCreator(userId, sessionCode));
-    },
-    userJoinRoom: (userId, sessionId, userLoc) => {
-      dispatch(joinRoom(userId, sessionId, userLoc))
-    }
+    // getSession: (userId, sessionCode) => {
+    //   dispatch(getSessionThunkCreator(userId, sessionCode));
+    // },
+    // userJoinRoom: (userId, sessionId, userLoc) => {
+    //   dispatch(joinRoom(userId, sessionId, userLoc))
+    // }
   };
 };
 
