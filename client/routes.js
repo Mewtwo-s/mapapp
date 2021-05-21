@@ -53,7 +53,6 @@ class Routes extends Component {
               <Redirect to="/" />
             </Switch>
           )}
-       
       </Router>
     );
   }

@@ -9,16 +9,19 @@ import { Button, Container } from '../GlobalStyles';
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
+  let friendsJoined
+  if (props.session.users ){
+    friendsJoined = props.session.users.filter(user => user.id !== props.user.id).map(user => user.firstName).join(', ')
+  }
   return (
     <Container>
       <Link to='/home'> Back To Home </Link>
-      <h4>Session Code: {props.session.code}</h4>
-      <p>Friends in this session:</p>
-        {props.session.users && props.session.users.map(user => {
-          return (
-            <p key={`user_${user.id}`}>{user.firstName}</p>
-          )
-        })}
+      <div style={{textAlign:'center'}}>
+        <h4>Session Code: {props.session.code}</h4>
+        <p>In this session:</p>
+        {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
+      </div>
+      
   
       <Map
         history={props.history}
@@ -28,7 +31,7 @@ const MapContainer = (props) => {
         containerElement={
           <div
             className="mapContainer"
-            style={{ height: '100vh', width: '100%' }}
+            style={{ height: '70vh', width: '100%' }}
           />
         }
         mapElement={<div className="map" style={{ height: '100%' }} />}
@@ -51,4 +54,7 @@ const mapState = (state) => {
 //   };
 // };
 
+const MapSize = styled.div`
+  height: 65vh, width: 100%
+`
 export default connect(mapState)(MapContainer);

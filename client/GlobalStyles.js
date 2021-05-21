@@ -3,8 +3,6 @@ import styled, { createGlobalStyle } from 'styled-components';
 const GlobalStyles = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;800;900&family=Rubik:wght@800&display=swap');
 *{
-    margin: 1px;
-    padding: 1px;
     box-sizing: inherit;
 }
 html {
@@ -18,6 +16,8 @@ html {
     }
      @media only screen and (max-width: 600px){
         font-size: 45%;
+        min-height: 100vh;
+        height: -webkit-fill-available;
     }
 }
 body{
@@ -27,25 +27,32 @@ body{
     font-size: 1.6rem;
     background: #faf1e6;
     color: #333;
+    @media only screen and (max-width: 600px){
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+    
 }
+
 `;
 
 export default GlobalStyles;
 
 
 export const Container = styled.div`
+padding: 16px;
 margin: 0 auto;
-padding: 0 30px;
 max-width: 1300px;
 width: 100%;
 @media screen & (max-width:600px){
-    padding: 0 10px;
+  margin: 5px, auto
+  padding: 0 5px;
 }
 @media screen & (max-width:991px) {
-    padding: 0 30px;
+  padding: 0 20px;
 }
 @media screen & (min-width: 1500px) {
-    max-width: 1400px;
+  max-width: 1400px;
 }
 `;
 

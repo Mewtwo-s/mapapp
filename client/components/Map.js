@@ -23,9 +23,8 @@ import {
 
 import { Button, Container } from '../GlobalStyles';
 
-
-import {watchMyLocation} from '../store/location'
-import {joinRoom} from '../store/locationSharing'
+import { watchMyLocation } from '../store/location';
+import { joinRoom } from '../store/locationSharing';
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -37,7 +36,7 @@ const Map = withScriptjs(
     const [topPlaces, setTopPlaces] = useState();
     const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    const [joined, setJoin] = useState(false)
+    const [joined, setJoin] = useState(false);
     // const [selection, setSelection] = useState('');
 
     const getPlaces = async (lat, lng) => {
@@ -55,7 +54,7 @@ const Map = withScriptjs(
 
     const findMidpoint = async (locations) => {
       const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
-   
+
       let finalLocations = [];
       if (initialLocations.length > 0) {
         for (let i = 0; i < initialLocations.length; i++) {
@@ -76,11 +75,9 @@ const Map = withScriptjs(
 
     // Fit bounds function
     const fitBounds = () => {
-    
       const bounds = new window.google.maps.LatLngBounds();
 
       props.allLocations.map((item) => {
-
         bounds.extend({ lat: item.lat, lng: item.lng });
         return item.id;
       });
@@ -93,9 +90,9 @@ const Map = withScriptjs(
     }, []);
 
     useEffect(() => {
-      if(props.session.id && props.myLocation.lat && joined === false){
-          props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
-          setJoin(true)
+      if (props.session.id && props.myLocation.lat && joined === false) {
+        props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
+        setJoin(true);
       }
     }, [props.session.id, props.myLocation.lat]);
 
@@ -107,16 +104,13 @@ const Map = withScriptjs(
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
-
       if (props.allLocations.length > 1) {
         fitBounds();
       }
     }, [props.allLocations]);
 
     useEffect(() => {
-   
       if (props.session.status === 'Active') {
-      
         getDirections({ lat: props.session.lat, lng: props.session.lng });
       }
     }, [props.session, props.myLocation]);
@@ -132,7 +126,6 @@ const Map = withScriptjs(
     }
 
     function getDirections(loc) {
-
       directionsService.route(
         {
           origin: props.myLocation,
@@ -149,142 +142,155 @@ const Map = withScriptjs(
       );
     }
 
-
-    const myLocationIsValid = props.myLocation.lat ;
+    const myLocationIsValid = props.myLocation.lat;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
     const defCenter = myLocationIsValid
-      ? {lat: props.myLocation.lat, lng:props.myLocation.lng}
+      ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
-
+    
     return (
       <Container>
-        
         {props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
-            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+            <ShowMeetUpSpots>
+              <Button style={{ width: '100%' }} onClick={handleMagic}> Show Meetup Spots! </Button>
+            </ShowMeetUpSpots>
           )}
-
-        {myLocationIsValid && (
-          <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
-            {sessionIsValid && (
-              <Marker
-                icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
-                position={{ lat: props.session.lat, lng: props.session.lng }}
-              />
-            )}
-
-            {/* Draw markers for top places */}
-
-            {props.session.status === 'Pending' &&
-              (topPlaces || []).map((place, index) => {
-                return (
-                  <Marker
-                    icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-                    key={`top-places-marker_${index}`}
-                    position={place.geometry.location}
-                    onClick={() => {
-                      setselectedPlace(place);
-                    }}
+        <MapView>
+          {myLocationIsValid && (
+            <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
+              {sessionIsValid && (
+                <Marker
+                  icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
+                  position={{ lat: props.session.lat, lng: props.session.lng }}
+                >
+                  <InfoWindow
+                  
                   >
-     {selectedPlace === place && (
-                      <InfoWindow
-                        onCloseClick={() => {
-                          setselectedPlace(null);
-                        }}
-                        position={selectedPlace.geometry.location}
-                      >
-                        <div>
-                          <h3>{selectedPlace.name}</h3>
-                          <h5>{selectedPlace.vicinity}</h5>
-                          <p>
-                            {selectedPlace.opening_hours.open_now
-                              ? 'Open Now'
-                              : 'Closed Now'}
-                          </p>
-                        </div>
-                      </InfoWindow>
-                    )}
+                    <div>
+                     {/* <h3>{session.locationName}</h3> ????? */}
+                      Meet up spot
+                    </div>
+                  </InfoWindow>
+                  
                   </Marker>
-                  ///>
-                );
-              })}
+              )}
 
-            {props.myLocation.lat && (
-              <DirectionsRenderer directions={currentLine} />
-            )}
+              {/* Draw markers for top places */}
 
+              {props.session.status === 'Pending' &&
+                (topPlaces || []).map((place, index) => {
+                  return (
+                    <Marker
+                      icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                      key={`top-places-marker_${index}`}
+                      position={place.geometry.location}
+                      onClick={() => {
+                        setselectedPlace(place);
+                      }}
+                    >
+                      {selectedPlace === place && (
+                        <InfoWindow
+                          onCloseClick={() => {
+                            setselectedPlace(null);
+                          }}
+                          position={selectedPlace.geometry.location}
+                        >
+                          <div>
+                            <h3>{selectedPlace.name}</h3>
+                            <h5>{selectedPlace.vicinity}</h5>
+                            <p>
+                              {selectedPlace.opening_hours.open_now
+                                ? 'Open Now'
+                                : 'Closed Now'}
+                            </p>
+                          </div>
+                        </InfoWindow>
+                      )}
+                    </Marker>
+                    ///>
+                  );
+                })}
 
-            {/* Draw labeled marker for each user in current session*/}
-            {props.allLocations.length > 0 &&
-              props.allLocations.filter(loc=>loc.userId!=props.user.id).map((loc) => {
-                return (
-                  <MarkerWithLabel
-                    key={`user_${loc.userId}`}
-                    icon={props.user.photo}
-                    position={{ lat: loc.lat, lng: loc.lng }}
-                    labelAnchor={new google.maps.Point(0, 0)}
-                    zIndex={100}
-                    labelStyle={{
-                      backgroundColor: 'black',
-                      color: 'white',
-                      fontSize: '16px',
-                      padding: '2px',
-                    }}
-                  >
-                    <div>{`user ${loc.userId}`}</div>
-                  </MarkerWithLabel>
-                );
-              })}
-              
-       
-                 {parseFloat(props.myLocation.lat)? <MarkerWithLabel
-                    key={props.user.id}
-                    icon={props.user.photo}
-                    position={{ lat: parseFloat(props.myLocation.lat), lng: parseFloat(props.myLocation.lng) }}
-                    labelAnchor={new google.maps.Point(0, 0)}
-                    zIndex={100}
-                    labelStyle={{
-                      backgroundColor: 'black',
-                      color: 'white',
-                      fontSize: '16px',
-                      padding: '2px',
-                    }}
-                  >
-                    <div>{`your marker`}</div>
-                  </MarkerWithLabel>:console.log('location not reader')}
-          
-              
-          </GoogleMap>
-        )}
-        {/* Draw place buttons */}
-        <PlaceStyles>
-          {props.session.status === 'Pending' && topPlaces
-            ? topPlaces.map((place) => (
+              {props.myLocation.lat && (
+                <DirectionsRenderer directions={currentLine} />
+              )}
 
-              <Place
-                handle={placeSelected}
-                key={place.place_id}
-                location={place.geometry.location}
-                name={place.name}
-                open={place.opening_hours ? place.opening_hours.open_now : null}
-                price={place.price_level}
-                rating={place.rating}
-                place={place.image}
-              />
-              
-            ))
+              {/* Draw labeled marker for each user in current session*/}
+              {props.allLocations.length > 0 &&
+                props.allLocations
+                  .filter((loc) => loc.userId != props.user.id)
+                  .map((loc) => {
+                    return (
+                      <MarkerWithLabel
+                        key={`user_${loc.userId}`}
+                        icon={props.user.photo}
+                        position={{ lat: loc.lat, lng: loc.lng }}
+                        labelAnchor={new google.maps.Point(0, 0)}
+                        zIndex={100}
+                        labelStyle={{
+                          backgroundColor: 'black',
+                          color: 'white',
+                          fontSize: '16px',
+                          padding: '2px',
+                        }}
+                      >
+                        <div>{`user ${loc.userId}`}</div>
+                      </MarkerWithLabel>
+                    );
+                  })}
 
-            : console.log('There are no fun places near by')}
-        </PlaceStyles>
-        
+              {parseFloat(props.myLocation.lat) ? (
+                <MarkerWithLabel
+                  key={props.user.id}
+                  icon={props.user.photo}
+                  position={{
+                    lat: parseFloat(props.myLocation.lat),
+                    lng: parseFloat(props.myLocation.lng),
+                  }}
+                  labelAnchor={new google.maps.Point(0, 0)}
+                  zIndex={100}
+                  labelStyle={{
+                    backgroundColor: 'black',
+                    color: 'white',
+                    fontSize: '16px',
+                    padding: '2px',
+                  }}
+                >
+                  <div>{`you're here`}</div>
+                </MarkerWithLabel>
+              ) : (
+                console.log('location not reader')
+              )}
+            </GoogleMap>
+          )}
+          {/* Draw place buttons */}
+          <PlaceStyles>
+            {props.session.status === 'Pending' && topPlaces
+              ? topPlaces.map((place) => (
+                  <Place
+                    handle={placeSelected}
+                    key={place.place_id}
+                    location={place.geometry.location}
+                    name={place.name}
+                    open={
+                      place.opening_hours ? place.opening_hours.open_now : null
+                    }
+                    price={place.price_level}
+                    rating={place.rating}
+                    place={place.image}
+                  />
+                ))
+              : console.log('There are no fun places near by')}
+          </PlaceStyles>
+        </MapView>
       </Container>
     );
   })
 );
 
 const mapState = (state) => {
-  console.log('state',state) 
   return {
     user: state.auth,
     allLocations: state.allLocations,
@@ -306,23 +312,55 @@ const mapDispatch = (dispatch) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));
     },
     userJoinRoom: (userId, sessionId, userLoc) => {
-      dispatch(joinRoom(userId, sessionId, userLoc))
-    }
+      dispatch(joinRoom(userId, sessionId, userLoc));
+    },
   };
 };
-
 
 const PlaceStyles = styled.div`
   max-width: 1400px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-
-  @media screen and (max-width:600px){
+  @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
     flex-direction: column;
   }
-`
+`;
+
+const MapView = styled.div`
+  margin: auto;
+  padding: 0 10px;
+  max-width: 1300px;
+  width: 100%;
+  @media screen & (max-height: 600px) {
+    padding: 10px 5px;
+    margin: 0;
+    min-height: 100vh;
+  }
+  @media screen & (max-width: 600px) {
+    padding: 0 10px;
+  }
+  @media screen & (min-width: 1500px) {
+    max-width: 1400px;
+  }
+`;
+const ShowMeetUpSpots = styled.div`
+  left: 0;
+  bottom: 0;
+  margin: 0px;
+  font-size: 18px;
+  position: fixed;
+  width: 100%;
+  height: 80px;
+  background-color: #a5ecd7;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+
 
 export default connect(mapState, mapDispatch)(Map);
