@@ -42,10 +42,10 @@ export const getTempUserThunkCreator = (confirmationCode) => async dispatch => {
 }
 
 export const authenticate = (email, password, method, firstName,
-  lastName, phoneNum,  street, city, state, country, zipCode, photo) => async dispatch => {
+  lastName, photo) => async dispatch => {
   try {
     const res = await axios.post(`/auth/${method}`, {email, password, firstName,
-      lastName, phoneNum, street, city, state, country, zipCode, photo})
+      lastName, photo})
     window.localStorage.setItem(TOKEN, res.data.token)
     dispatch(me())
   } catch (authError) {

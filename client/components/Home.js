@@ -1,42 +1,112 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react';
+import styled from 'styled-components';
 import {connect} from 'react-redux'
 import { Link } from 'react-router-dom';
 import JoinRoom from './JoinRoom'
 // import Session from './Session'
 import axios from 'axios'
 
+import sessionReducer from '../store/session';
+import { Container } from '../GlobalStyles';
+
+import {clearAllLocations} from '../store/locationSharing'
+
+
 /**
  * COMPONENT
  */
 export const Home = props => {
-  const {email} = props
-  const [sessions, setSessions] = useState([])
+  // useEffect(() => {
+  //     fetchAllSession()
+  // }, []);
 
-  const fetchAllSession = async () =>{
-    const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
-    setSessions(data)
-  }
+  // const fetchAllSession = async () =>{
+  //   const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
+  //   setSessions(data)
+  // }
   useEffect(() => {
-      fetchAllSession()
+    props.clearAllLocationHome()  
+      
   }, []);
 
+  const activeSessions = props.userSessions.filter(session => session.status === "Active")
+  const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
+  console.log('userSessions', props.userSessions)
   return (
-    <div>
-      {/* <Link to='/map'>Show Map</Link>
-      {sessions.map(session=><Session code={session.code} id={session.id} key={session.id}/>)} */}
+    <Container>
+      
+      <Link to='/pastSessions'> View Past Sessions </Link>
+      <div style={{ display: 'flex', flexDirection: 'column', justtifyContent: 'center', alignItems: 'center' }}>
       <JoinRoom history= {props.history} />
-    </div>
+        <h2>{`Active Sessions (${activeSessions.length})`} </h2>
+        {
+          activeSessions.map( session => {
+            console.log(session);
+            return (
+              <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
+                <Card>
+                  <h5>{`Meetup Spot: ${session.locationName}`}</h5>
+                  <p>{`Session Code: ${session.code}`}</p>
+                  {session.hostId === props.userId && <h5>Hosted by you!</h5>}
+                </Card>
+              </Link>
+              
+            )
+          })
+        }
+      <h2>{`Pending Sessions (${pendingSessions.length})`} </h2>
+      {
+        pendingSessions.map(session => {
+          return (
+            <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
+              <Card>
+                {/* replace with place name */}
+                <h5>Meetup Spot: TBD </h5>
+                <p>{`Session Code: ${session.code}`}</p>
+                {session.hostId === props.userId && <h5>Hosted by you!</h5>}
+              </Card>
+            </Link>
+
+          )
+        })
+      }
+      </div>
+    </Container>
   )
 }
 
-/**
- * CONTAINER
- */
+const Card = styled.div`
+    margin: 1rem;
+    border: solid 2px #51adcf;
+    border-radius: 10px;
+    max-width: 1300px;
+    width: 100%;
+    padding: 8px;
+    background-color: #EFEFEF;
+
+    @media screen and (max-width:600px){
+        padding: 8px;
+        width: 90%;
+        margin: 10px 10px;
+    }
+`
 const mapState = state => {
+  console.log('state home', state)
   return {
     email: state.auth.email,
-    userId: state.auth.id
+    userId: state.auth.id,
+    userSessions : state.auth.allSessions,
   }
 }
 
-export default connect(mapState)(Home)
+const mapDispatch = (dispatch) => {
+  return {
+    clearAllLocationHome: () => {
+      dispatch(clearAllLocations());
+    },
+   
+  };
+};
+
+export default connect(mapState, mapDispatch)(Home)
+

@@ -10,9 +10,14 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
-import InviteForm from './components/InviteForm';
-import Navbar from './components/Navbar';
 import {AcceptWithAccount, AcceptWithoutAccount} from './components/CompleteJoinForm';
+import InviteForm from './components/InviteForm'
+import Navbar from './components/Navbar'
+import PastSessions from './components/PastSessions';
+import GlobalStyles from './GlobalStyles';
+
+
+import Test from './components/Test'
 
 /**
  * COMPONENT
@@ -26,23 +31,29 @@ class Routes extends Component {
     const { isLoggedIn } = this.props;
     return (
       <Router>
-        <Navbar />
-        {isLoggedIn ? (
-          <Switch>
-            <Route path="/map/:code" component={MapContainer} />
-            <Route exact path="/home" component={Home} />
-            <Route path="/emailInvite" component={InviteForm} />
-            <Redirect to="/home" />
-            <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
-          </Switch>
-        ) : (
-          <Switch>
-            <Route path="/accept/:userCode/:gameCode" component={AcceptWithoutAccount}/>
-            <Route exact path="/" component={Login} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-          </Switch>
-        )}
+
+          <GlobalStyles/>
+          <Navbar />
+          {isLoggedIn ? (
+            <Switch>
+            <Route path="/test" component={Test} />
+              <Route path="/map/:code" component={MapContainer} />
+              <Route path="/pastSessions" component={PastSessions} />
+              <Route exact path="/home" component={Home} />
+              <Route path='/emailInvite' component={InviteForm} />
+              <Redirect to="/home" />
+              <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
+            </Switch>
+          ) : (
+            <Switch>
+              {/* <Route path="/map" component={MapContainer} /> */}
+              <Route exact path="/" component={Login} />
+              <Route exact path="/home" component={Login} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+              <Redirect to="/" />
+            </Switch>
+          )}
       </Router>
     );
   }

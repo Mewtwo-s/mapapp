@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { sessionStarted } from './locationSharing';
+import { sessionStarted, clearAllLocations } from './locationSharing';
+import socket from '../socket';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
 const CREATE_SESSION = 'CREATE_SESSION';
 const ACTIVATE_SESSION = 'ACTIVATE_SESSION';
+const END_SESSION = 'END_SESSION';
 
 //action creators
 const getSession = (session) => {
@@ -14,9 +16,16 @@ const getSession = (session) => {
   };
 };
 
-const activateSession = (session) => {
+export const activateSession = (session) => {
   return {
     type: ACTIVATE_SESSION,
+    session,
+  };
+};
+
+export const endSession = (session) => {
+  return {
+    type: END_SESSION,
     session,
   };
 };
@@ -34,49 +43,79 @@ const createSession = (session) => {
   };
 };
 
+
 //thunks
-export const activateSessionThunkCreator = (sessionId, lat, lng) => {
-  console.log('activateSessionThunk', sessionId, lat, lng);
+export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) => {
+
   return async (dispatch) => {
     const response = await axios.put(`/api/sessions/${sessionId}`, {
       status: 'Active',
       lat: lat,
       lng: lng,
+      locationName: locationName
     });
     const session = response.data;
-    console.log('session', session);
     dispatch(activateSession(session));
+    socket.emit('updated-session', session)
+  };
+};
+
+export const endSessionThunkCreator = (sessionId) => {
+  return async (dispatch) => {
+    const response = await axios.put(`/api/sessions/${sessionId}`, {
+      status: 'Completed'
+    });
+    const session = response.data;
+    console.log('ended session', session)
+    dispatch(endSession(session));
+    socket.emit('updated-session', session)
   };
 };
 
 export const getSessionThunkCreator = (userId, code) => {
+
+
   return async (dispatch) => {
-    const response = await axios.get(`/api/sessions/${code}`);
-    const session = response.data;
-    dispatch(getSession(session));
-    dispatch(sessionStarted(userId, session.id));
+    try {
+      const response = await axios.get(`/api/sessions/${code}`);
+      const session = response.data;
+      await dispatch(getSession(session));
+
+    } catch (err) {
+      console.error('Error in getSessionThunkCreator:', err);
+    }
   };
 };
 
 export const joinSessionThunkCreator = (userId, code, history) => {
+
   return async (dispatch) => {
-    const response = await axios.put(`/api/users/add/${userId}`, {
-      code: code,
-      accepted: true,
-    });
-    const session = response.data;
-    dispatch(joinSession(session));
-    dispatch(sessionStarted(userId, session.id));
-    history.push(`/map/${code}`);
+    try {
+      const response = await axios.put(`/api/users/add/${userId}`, {
+        code: code,
+        accepted: true,
+      });
+      const session = response.data;
+      await dispatch(joinSession(session));
+      history.push(`/map/${code}`);
+    } catch (err) {
+      console.error(err)
+    }
+
   };
 };
 
 export const createSessionThunkCreator = (hostId, history) => {
   return async (dispatch) => {
-    const response = await axios.post(`/api/sessions/`, { hostId: hostId });
-    const session = response.data;
-    dispatch(createSession(session));
-    dispatch(sessionStarted(hostId, session.id));
+
+    try {
+      const response = await axios.post(`/api/sessions/`, { hostId: hostId });
+      const session = response.data;
+      await dispatch(createSession(session));
+    } catch (err) {
+      console.error(err)
+    }
+
   };
 };
 

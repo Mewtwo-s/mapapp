@@ -15,9 +15,7 @@ Session.belongsToMany(User,{through: userSession})
 User.belongsToMany(Session,{through: userSession})
 
 
-// 
-User.hasMany(Session, {as: 'host', foreignKey: 'hostId'
-})
+User.hasMany(Session, {as: 'host', foreignKey: 'hostId'})
 
 // Session.hasOne(User, {as: 'host', foreignKey: 'hostId'
 // })
@@ -29,6 +27,7 @@ module.exports = {
   db,
   models: {
     User,
-    Session
+    Session,
+    userSession,
   },
 }

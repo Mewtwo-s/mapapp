@@ -1,7 +1,10 @@
+let sslRedirect = require('heroku-ssl-redirect').default;
+
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+
 
 module.exports = app;
 
@@ -10,6 +13,10 @@ app.use(morgan('dev'));
 
 // body parsing middleware
 app.use(express.json());
+// static file-serving middleware
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use(sslRedirect());
 
 // auth and api routes
 app.use('/auth', require('./auth'));
@@ -19,8 +26,8 @@ app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '..', 'public/index.html'))
 );
 
-// static file-serving middleware
-app.use(express.static(path.join(__dirname, '..', 'public')));
+
+
 
 // any remaining requests with an extension (.js, .css, etc.) send 404
 app.use((req, res, next) => {
@@ -44,3 +51,5 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
+
+
