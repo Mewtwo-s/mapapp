@@ -2,6 +2,7 @@ import io from 'socket.io-client';
 import store from './store';
 import { userLocationChanged, sendMyLocation } from './store/locationSharing';
 import { activateSession } from './store/session';
+import { arriveAction } from './store/userSessions';
 
 const socket = io(window.location.origin, { autoConLnect: true });
 
@@ -13,6 +14,11 @@ socket.on('connect', () => {
 // emitting updated session
 socket.on('updated-session', (session) => {
   store.dispatch(activateSession(session))
+})
+
+// emitting updated user status
+socket.on('updated-user-status', (usersession) => {
+  store.dispatch(arriveAction(usersession))
 })
 
 socket.on('user-joined-room', (userId, message) => {

@@ -14,6 +14,7 @@ import center from '@turf/center';
 import axios from 'axios';
 import Place from './Place';
 import { arriveThunkCreator, getSessionUsersThunkCreator } from '../store/userSessions'
+import EndedSession from './EndedSession';
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
@@ -94,14 +95,26 @@ const MapContainer = (props) => {
       getPlaces(midPoint.lat, midPoint.lng);
     }
   }, [midPoint]);
+
+  useEffect(() => {
+    if (props.session.status === "Active") {
+      console.log("session users", props.allUsersInSession);
+      const updatedUsersInSession = props.allUsersInSession.map(user => user.arrived) || [];
+      console.log('after map', updatedUsersInSession);
+      if (updatedUsersInSession.includes(false) === false) {
+        props.endSession(props.session.id);
+      }
+    }
+   
+  }, [props.allUsersInSession]);
   
   console.log(props)
   return (
     <div>
-    {joined === false ? <Loading message="your map"/> : 
-    <Container>
-      {props.session.status === "Completed" ? <h1>Your session has ended! return home</h1> : 
-      <div>
+     {props.session.status === "Completed" ? <EndedSession /> :
+    <div>
+    {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
+      <Container>
       <Link to='/home'> Back To Home </Link>
       <div style={{textAlign:'center'}}>
         <h4>Session Code: {props.session.code}</h4>
@@ -157,9 +170,9 @@ const MapContainer = (props) => {
         }
         mapElement={<div className="map" style={{ height: '100%' }} />}
       />
-      </div>
+      </Container>
     }
-    </Container>
+    </div>
 } </div>
   );
 };
@@ -170,7 +183,7 @@ const mapState = (state) => {
     session: state.sessionReducer,
     myLocation: state.myLocation,
     allLocations: state.allLocations, 
-    sessionUsers: state.userSessionsReducer
+    allUsersInSession: state.userSessionsReducer
   };
 };
 

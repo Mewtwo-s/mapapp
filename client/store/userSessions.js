@@ -1,4 +1,5 @@
 import axios from 'axios'
+import socket from '../socket';
 
 const GET_SESSION_USERS = "GET_SESSION_USERS"
 const ARRIVE = "ARRIVE"
@@ -9,7 +10,7 @@ const getSessionUsersRows = (sessionUsers) => (
    sessionUsers
 })
 
-const arriveAction = (userSession) => ({
+export const arriveAction = (userSession) => ({
    type: ARRIVE,
    userSession
 })
@@ -34,6 +35,7 @@ export const arriveThunkCreator = (userId, sessionId) => {
          const response = await axios.put(`/api/usersessions/arrive/${userId}/${sessionId}`)
          const usersession = response.data
          dispatch(arriveAction(usersession))
+         socket.emit('updated-user-status', usersession)
       } catch (error) {
          console.log(`Failed to update ${userId} to arrived`)
       }
@@ -46,8 +48,12 @@ export default function userSessionsReducer(state=[], action) {
     case GET_SESSION_USERS:
        return action.sessionUsers   
     case ARRIVE: 
-        return state.map((userSession) => 
-        userSession.userId === action.usersession.userId ? action.usersession : usersession); 
+        return state.map(user => {
+           if (user.userId === action.userSession.userId) {
+            return action.userSession} 
+              else {
+            return user
+        }})
       default:
          return state
    }

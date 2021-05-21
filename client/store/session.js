@@ -66,7 +66,6 @@ export const endSessionThunkCreator = (sessionId) => {
       status: 'Completed'
     });
     const session = response.data;
-    console.log('ended session', session)
     dispatch(endSession(session));
     socket.emit('updated-session', session)
   };
@@ -128,6 +127,8 @@ export default function sessionReducer(session = {}, action) {
     case CREATE_SESSION:
       return action.session;
     case ACTIVATE_SESSION:
+      return action.session;
+    case END_SESSION:
       return action.session;
     default:
       return session;

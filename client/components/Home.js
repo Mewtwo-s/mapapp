@@ -31,7 +31,7 @@ export const Home = props => {
 
   const activeSessions = props.userSessions.filter(session => session.status === "Active")
   const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
-  console.log('userSessions', props.userSessions)
+  console.log('all props', props)
   return (
     <Container>
       
@@ -41,7 +41,6 @@ export const Home = props => {
         <h2>{`Active Sessions (${activeSessions.length})`} </h2>
         {
           activeSessions.map( session => {
-            console.log(session);
             return (
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
                 <Card>
