@@ -14,7 +14,7 @@ const reducer = combineReducers({
   myLocation, 
   allLocations, 
   sessionReducer,
-  userSessions : userSessionsReducer
+  userSessionsReducer
  });
 
 const middleware = composeWithDevTools(

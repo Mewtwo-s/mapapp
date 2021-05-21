@@ -41,12 +41,13 @@ export const Home = props => {
         <h2>{`Active Sessions (${activeSessions.length})`} </h2>
         {
           activeSessions.map( session => {
+            console.log(session);
             return (
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
                 <Card>
-                  {/* replace with place name */}
                   <h5>{`Meetup Spot: ${session.locationName}`}</h5>
                   <p>{`Session Code: ${session.code}`}</p>
+                  {session.hostId === props.userId && <h5>Hosted by you!</h5>}
                 </Card>
               </Link>
               
@@ -62,6 +63,7 @@ export const Home = props => {
                 {/* replace with place name */}
                 <h5>Meetup Spot: TBD </h5>
                 <p>{`Session Code: ${session.code}`}</p>
+                {session.hostId === props.userId && <h5>Hosted by you!</h5>}
               </Card>
             </Link>
 
