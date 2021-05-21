@@ -9,9 +9,18 @@ const axios = require('axios');
 
 const userSession = db.define('userSession',{
 
-    currentLat: {type: Sequelize.FLOAT},
-    currentLng: {type: Sequelize.FLOAT},
-    accepted: {type: Sequelize.BOOLEAN, defaultValue: false},
+    currentLat: {
+      type: Sequelize.FLOAT
+    },
+    currentLng: {
+      type: Sequelize.FLOAT
+    },
+    accepted: {
+      type: Sequelize.BOOLEAN, defaultValue: false
+    },
+    arrived: {
+      type: Sequelize.BOOLEAN, defaultValue: false
+    },
 })
 
 userSession.prototype.setStatus = async function (status) {

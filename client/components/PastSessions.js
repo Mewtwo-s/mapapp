@@ -54,6 +54,7 @@ const mapState = state => {
 
 const Card = styled.div`
   border: solid 3px #51adcf;
-  border-radius: 10px;
+  border-radius: 3px;
+  background-color: #EFEFEF;
 `
 export default connect(mapState)(PastSessions)
