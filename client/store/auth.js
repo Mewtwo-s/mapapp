@@ -7,11 +7,14 @@ const TOKEN = 'token'
  * ACTION TYPES
  */
 const SET_AUTH = 'SET_AUTH'
+const SET_TEMP_USER = 'SET_TEMP_USER'
 
 /**
  * ACTION CREATORS
  */
 const setAuth = auth => ({type: SET_AUTH, auth})
+
+const setTempUser = auth => ({type: SET_TEMP_USER, auth})
 
 /**
  * THUNK CREATORS
@@ -25,6 +28,16 @@ export const me = () => async dispatch => {
       }
     })
     return dispatch(setAuth(res.data))
+  }
+}
+
+export const getTempUserThunkCreator = (confirmationCode) => async dispatch => {
+  try {
+    console.log('the thunk is working');
+    const result = await axios.put(`/api/users/${confirmationCode}`);
+    dispatch(await setTempUser(result.data))
+  } catch (err) {
+    next(err)
   }
 }
 
@@ -55,6 +68,8 @@ export const logout = () => {
 export default function(state = {}, action) {
   switch (action.type) {
     case SET_AUTH:
+      return action.auth
+    case SET_TEMP_USER:
       return action.auth
     default:
       return state
