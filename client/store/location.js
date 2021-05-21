@@ -41,30 +41,40 @@ export const watchMyLocation = (userId) => {
       console.log('watchSuccess', pos);
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
-      socket.emit('user-location-changed', userId, pos.coords.latitude, pos.coords.longitude)
+      socket.emit(
+        'user-location-changed',
+        userId,
+        pos.coords.latitude,
+        pos.coords.longitude
+      );
       //also add those new coords to the DB
     };
 
     // callback for when location check fails
     const watchFail = (err) => {
       alert('Unable to detect your location');
-      console.error(err)
+      console.error(err);
       //make a db call to find their coords
-        //if coords exist, we emit them in updateMyLocation
-        //if coords don't exist, we take them off the map? show a field to input location?
+      //if coords exist, we emit them in updateMyLocation
+      //if coords don't exist, we take them off the map? show a field to input location?
+    };
+
+    const options = {
+      enableHighAccuracy: false,
     };
 
     // save the watchId so we can stop watching when needed
     const watchId = navigator.geolocation.watchPosition(
       watchSuccess,
-      watchFail
+      watchFail,
+      options
     );
     dispatch(locationWatchStarted(watchId));
   };
 };
 
 export const stopWatchingMyLocation = () => {
-  console.log('STOP watching location' , location.stopWatching);
+  console.log('STOP watching location', location.stopWatching);
   return (dispatch) => {
     // get the watchId so we can stop the watching function
     const { watchId } = store.getState().myLocation;
@@ -77,7 +87,7 @@ export const stopWatchingMyLocation = () => {
 
 export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
-    console.log("updateMyLocation", lat,lng)
+    console.log('updateMyLocation', lat, lng);
     // update state with my current position
     dispatch(myLocationUpdated(lat, lng));
     // send update to all users

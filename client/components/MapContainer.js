@@ -6,8 +6,12 @@ import { Link } from 'react-router-dom';
 import { DirectionsRenderer } from 'react-google-maps';
 import { sessionStarted, joinRoom } from '../store/locationSharing';
 import { Button, Container } from '../GlobalStyles';
-import {watchMyLocation} from '../store/location'
-import {getSessionThunkCreator, activateSessionThunkCreator, endSessionThunkCreator} from '../store/session';
+import { watchMyLocation } from '../store/location';
+import {
+  getSessionThunkCreator,
+  activateSessionThunkCreator,
+  endSessionThunkCreator,
+} from '../store/session';
 import Loading from './Loading';
 import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
@@ -16,13 +20,17 @@ import Place from './Place';
 import { arriveThunkCreator, getSessionUsersThunkCreator } from '../store/userSessions'
 import EndedSession from './EndedSession';
 
+
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
-  let friendsJoined
-  if (props.session.users ){
-    friendsJoined = props.session.users.filter(user => user.id !== props.user.id).map(user => user.firstName).join(', ')
+  let friendsJoined;
+  if (props.session.users) {
+    friendsJoined = props.session.users
+      .filter((user) => user.id !== props.user.id)
+      .map((user) => user.firstName)
+      .join(', ');
   }
-  const [joined, setJoin] = useState(false)
+  const [joined, setJoin] = useState(false);
   const [topPlaces, setTopPlaces] = useState();
   const [midPoint, setMidPoint] = useState();
 
@@ -35,7 +43,7 @@ const MapContainer = (props) => {
         setTopPlaces(places);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -48,12 +56,12 @@ const MapContainer = (props) => {
   }
 
   function userArrives() {
-    props.userArrives(props.user.id, props.session.id)
+    props.userArrives(props.user.id, props.session.id);
   }
 
   const findMidpoint = async (locations) => {
     const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
- 
+
     let finalLocations = [];
     if (initialLocations.length > 0) {
       for (let i = 0; i < initialLocations.length; i++) {
@@ -78,16 +86,16 @@ const MapContainer = (props) => {
   }, []);
 
   useEffect(() => {
-    if(props.session.id && props.myLocation.lat && joined === false){
-        props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
-        setJoin(true)
+    if (props.session.id && props.myLocation.lat && joined === false) {
+      props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
+      setJoin(true);
     }
   }, [props.session.id, props.myLocation.lat]);
 
   useEffect(() => {
     if (props.session.id) {
-      props.getSessionUsers(props.session.id)
-    }    
+      props.getSessionUsers(props.session.id);
+    }
   }, [props.session]);
 
   useEffect(() => {
@@ -174,6 +182,7 @@ const MapContainer = (props) => {
     }
     </div>
 } </div>
+
   );
 };
 
@@ -184,6 +193,7 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     allLocations: state.allLocations, 
     allUsersInSession: state.userSessionsReducer
+
   };
 };
 
@@ -196,24 +206,22 @@ const mapDispatch = (dispatch) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));
     },
     userJoinRoom: (userId, sessionId, userLoc) => {
-      dispatch(joinRoom(userId, sessionId, userLoc))
+      dispatch(joinRoom(userId, sessionId, userLoc));
     },
     activateSession: (sessionId, lat, lng, name) => {
       dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
     },
     userArrives: (userId, sessionId) => {
-      dispatch(arriveThunkCreator(userId, sessionId))
+      dispatch(arriveThunkCreator(userId, sessionId));
     },
     getSessionUsers: (sessionId) => {
-      dispatch(getSessionUsersThunkCreator(sessionId))
-    }, 
+      dispatch(getSessionUsersThunkCreator(sessionId));
+    },
     endSession: (sessionId) => {
       dispatch(endSessionThunkCreator(sessionId));
-    }
+    },
   };
 };
-
-
 
 const PlaceStyles = styled.div`
   max-width: 1400px;
@@ -221,11 +229,11 @@ const PlaceStyles = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
 
-  @media screen and (max-width:600px){
+  @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
     flex-direction: column;
   }
-`
+`;
 
 export default connect(mapState, mapDispatch)(MapContainer);
