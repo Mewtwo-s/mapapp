@@ -9,22 +9,8 @@ import {
   InfoWindow,
 } from 'react-google-maps';
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
-import axios from 'axios';
-import { point, featureCollection } from '@turf/helpers';
-import center from '@turf/center';
-import socket from '../socket';
 import { connect } from 'react-redux';
-import history from '../history';
-import Place from './Place';
-import {
-  getSessionThunkCreator,
-  activateSessionThunkCreator,
-} from '../store/session';
-
 import { Button, Container } from '../GlobalStyles';
-
-import { watchMyLocation } from '../store/location';
-import { joinRoom } from '../store/locationSharing';
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -33,11 +19,7 @@ const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
-    const [topPlaces, setTopPlaces] = useState();
-    const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    const [joined, setJoin] = useState(false);
-    // const [selection, setSelection] = useState('');
 
     const markerLabelStyle = {
       backgroundColor: 'black',
@@ -48,71 +30,15 @@ const Map = withScriptjs(
       padding: '4px',
     };
 
-    // Doesn't work ??
-    // const iconSize = new google.maps.Size(64, 64);
-
-    const getPlaces = async (lat, lng) => {
-      try {
-        if (lat && lng) {
-          const places = await (
-            await axios.post('/api/google', { lat: lat, lng: lng })
-          ).data;
-          setTopPlaces(places);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const findMidpoint = async (locations) => {
-      const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
-
-      let finalLocations = [];
-      if (initialLocations.length > 0) {
-        for (let i = 0; i < initialLocations.length; i++) {
-          finalLocations.push(
-            point([initialLocations[i][0], initialLocations[i][1]])
-          );
-        }
-
-        const features = featureCollection(finalLocations);
-
-        const centerCenter = center(features);
-        await setMidPoint({
-          lat: centerCenter.geometry.coordinates[0],
-          lng: centerCenter.geometry.coordinates[1],
-        });
-      }
-    };
-
     // Fit bounds function
     const fitBounds = () => {
       const bounds = new window.google.maps.LatLngBounds();
-
       props.allLocations.map((item) => {
         bounds.extend({ lat: item.lat, lng: item.lng });
         return item.id;
       });
       mapRef.current.fitBounds(bounds);
     };
-
-    useEffect(() => {
-      props.startWatch(props.user.id);
-      props.getSession(props.user.id, props.match.params.code);
-    }, []);
-
-    useEffect(() => {
-      if (props.session.id && props.myLocation.lat && joined === false) {
-        props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
-        setJoin(true);
-      }
-    }, [props.session.id, props.myLocation.lat]);
-
-    useEffect(() => {
-      if (midPoint) {
-        getPlaces(midPoint.lat, midPoint.lng);
-      }
-    }, [midPoint]);
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
@@ -127,15 +53,7 @@ const Map = withScriptjs(
       }
     }, [props.session, props.myLocation]);
 
-    function handleMagic() {
-      findMidpoint(props.allLocations);
-    }
-
     const directionsService = new google.maps.DirectionsService();
-
-    function placeSelected(loc, name) {
-      props.activateSession(props.session.id, loc.lat, loc.lng, name);
-    }
 
     function getDirections(loc) {
       directionsService.route(
@@ -221,11 +139,6 @@ const Map = withScriptjs(
 
     return (
       <Container>
-        {props.session.status === 'Pending' &&
-          props.session.hostId === props.user.id && (
-            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-          )}
-
         {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
             {sessionIsValid && (
@@ -238,7 +151,7 @@ const Map = withScriptjs(
             {/* Draw markers for top places */}
 
             {props.session.status === 'Pending' &&
-              (topPlaces || []).map((place, index) => {
+              (props.topPlaces || []).map((place, index) => {
                 return (
                   <Marker
                     icon="https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
@@ -282,27 +195,6 @@ const Map = withScriptjs(
             {renderUser()}
           </GoogleMap>
         )}
-
-        {/* Draw place buttons */}
-
-        <PlaceStyles>
-          {props.session.status === 'Pending' && topPlaces
-            ? topPlaces.map((place) => (
-                <Place
-                  handle={placeSelected}
-                  key={place.place_id}
-                  location={place.geometry.location}
-                  name={place.name}
-                  open={
-                    place.opening_hours ? place.opening_hours.open_now : null
-                  }
-                  price={place.price_level}
-                  rating={place.rating}
-                  place={place.image}
-                />
-              ))
-            : console.log('There are no fun places near by')}
-        </PlaceStyles>
       </Container>
     );
   })
@@ -319,34 +211,4 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch) => {
-  return {
-    startWatch: (userId) => {
-      dispatch(watchMyLocation(userId));
-    },
-    activateSession: (sessionId, lat, lng, name) => {
-      dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
-    },
-    getSession: (userId, sessionCode) => {
-      dispatch(getSessionThunkCreator(userId, sessionCode));
-    },
-    userJoinRoom: (userId, sessionId, userLoc) => {
-      dispatch(joinRoom(userId, sessionId, userLoc));
-    },
-  };
-};
-
-const PlaceStyles = styled.div`
-  max-width: 1400px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  @media screen and (max-width: 600px) {
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-export default connect(mapState, mapDispatch)(Map);
+export default connect(mapState)(Map);
