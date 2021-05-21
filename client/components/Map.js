@@ -71,6 +71,16 @@ const Map = withScriptjs(
         }
       );
     }
+
+    // TEMP useEffect just for easy to read feedback.
+    useEffect(() => {
+      console.log('THIS USER:', props.user.id, props.user.firstName);
+      console.log('USERS in SESSION:');
+      if (props.session.users) {
+        props.session.users.forEach((u) => console.log(u.id, u.firstName));
+      }
+    }, [props.session]);
+
     const getUserName = () => {
       if (props.session.users) {
         const firstName = props.session.users.find(
@@ -102,22 +112,28 @@ const Map = withScriptjs(
     };
 
     const renderOthers = () => {
-      // gather user and location data into array of objects
+      // creates a list of objects with consolidated user
+      // and loc data for rendering
       const users = props.session.users;
+
       if (users && props.allLocations) {
-        const others = props.allLocations
-          .filter((loc) => loc.userId != props.user.id && loc.lat)
-          .map((other) => {
-            const user = users.find((user) => user.id === other.userId);
-            if (user) {
-              return { ...other, firstName: user.firstName, photo: user.photo };
+        const otherUsers = users
+          .filter((user) => user.id !== props.user.id)
+          .reduce((modifiedUsers, user) => {
+            // find user location
+            const loc = props.allLocations.find(
+              (loc) => loc.userId === user.id
+            );
+            if (loc) {
+              modifiedUsers.push({ ...user, lat: loc.lat, lng: loc.lng });
             }
-          });
-        console.log('OTHERS', others);
-        // Draw the marker
-        return others.map((user) => (
+            return modifiedUsers;
+          }, []);
+
+        // Create the marker to render
+        return otherUsers.map((user) => (
           <MarkerWithLabel
-            key={`user_${user.userId}`}
+            key={`user_${user.id}`}
             icon={user.photo}
             position={{ lat: user.lat, lng: user.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
@@ -201,7 +217,7 @@ const Map = withScriptjs(
 );
 
 const mapState = (state) => {
-  console.log('state', state);
+  console.log('Map state', state);
   return {
     user: state.auth,
     allLocations: state.allLocations,
