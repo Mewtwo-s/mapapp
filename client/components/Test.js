@@ -16,6 +16,8 @@ function Test() {
       setCode(evt.target.value)
    }
    return (
+     <div>
+     <Link to='/test/sdjasdkj/2312'>hi</Link>
       <FormContainer>
       <form onSubmit={handleSubmit} name={name}>
    
@@ -35,6 +37,7 @@ function Test() {
        
      </form>
    </FormContainer>
+   </div>
    )
 }
 
