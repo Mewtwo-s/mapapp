@@ -5,7 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import auth from './auth';
 import allLocations from './locationSharing';
 import myLocation from './location';
-
+import friendReducer from './user';
 import sessionReducer from './session';
 import userSessionsReducer from './userSessions';
 
@@ -14,7 +14,8 @@ const reducer = combineReducers({
   myLocation, 
   allLocations, 
   sessionReducer,
-  userSessionsReducer
+  userSessionsReducer,
+  friendReducer
  });
 
 const middleware = composeWithDevTools(

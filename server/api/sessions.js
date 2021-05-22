@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {
-  models: { Session, User },
+  models: { Session, User, userSession },
 } = require('../db');
 module.exports = router;
 
@@ -53,6 +53,13 @@ router.post('/', async (req, res, next) => {
     const session = await Session.create(req.body);
     await user.addHost(session);
     await session.addUsers(user);
+    // const userSession = await userSession.findOne({
+    //   where: {
+    //     userId: req.body.hostId,
+    //     sessionId: session.id
+    //   }
+    // })
+    // userSession.update({accepted: true});
     res.status(201).send(session);
   } catch (err) {
     next(err);

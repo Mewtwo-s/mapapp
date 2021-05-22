@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const UserSession = require('../db/models/userSession');
-const { models: { Session, User }} = require('../db')
+const { models: { Session, User }} = require('../db');
+const userSession = require('../db/models/userSession');
 module.exports = router
 
 router.put('/arrive/:userId/:sessionId', async (req, res, next) => {
@@ -27,7 +28,9 @@ router.put('/:userId/:sessionId', async (req, res, next) => {
               sessionId: req.params.sessionId
           }
       });
-      res.send(await usersession.update(req.body));
+      if (usersession) {
+        res.send(await usersession.update(req.body));
+      }
     } catch (err) {
       next(err)
     }

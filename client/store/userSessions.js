@@ -3,6 +3,7 @@ import socket from '../socket';
 
 const GET_SESSION_USERS = "GET_SESSION_USERS"
 const ARRIVE = "ARRIVE"
+const INVITE_USER = "INVITE_USERS"
 
 const getSessionUsersRows = (sessionUsers) => (
     {
@@ -13,6 +14,11 @@ const getSessionUsersRows = (sessionUsers) => (
 export const arriveAction = (userSession) => ({
    type: ARRIVE,
    userSession
+})
+
+export const inviteAction = (user) => ({
+   type: INVITE_USER,
+   user
 })
 
 
@@ -28,6 +34,18 @@ export const getSessionUsersThunkCreator = (sessionId) => {
        }
     }
  }
+
+ export const inviteSessionUsersThunkCreator = (sessionId, email, hostName) => {
+   return async (dispatch) => {
+      try {
+         const response = await axios.post(`/api/users/invite`, {hostName, email, sessionId})
+         const invitedUser = response.data
+         dispatch(inviteAction(invitedUser))
+      } catch (error) {
+         console.log(`Failed to invite user in ${sessionId}`)
+      }
+   }
+}
 
 export const arriveThunkCreator = (userId, sessionId) => {
    return async (dispatch) => {
