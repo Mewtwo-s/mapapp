@@ -101,7 +101,7 @@ router.post('/', async (req, res, next) => {
 //       user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
 //     }
 //     await session.addUsers(user);
-//     runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
+//     runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode, user.id);
 //     res.send(user);
 //   } catch(err) {
 //     next(err)
@@ -118,10 +118,13 @@ router.post('/invite', async(req, res, next) => {
     const session = await Session.findByPk(req.body.sessionId);
     // if not existing user
     if (!user) {
-      runMailer(req.body.hostName, req.body.email, session.code, 'Guest');
-      res.send('Sent Invite To Guest!');
+      user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
+      await session.addUsers(user);
+      runMailer(req.body.hostName, req.body.email, session.code, 'Guest', user.confirmationCode, user.id);
+      res.send(user);
     }
     else{
+      await session.addUsers(user);
       runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
       res.send(user)
     }
@@ -157,5 +160,37 @@ router.put('/remove/:userId', async (req, res, next) => {
     res.send(session);
   } catch (err) {
     next(err)
+  }
+})
+
+// router.post('/changePassword/:userId', async (req, res, next) => {
+//   try {
+//     const user = await User.findByPk(req.params.userId)
+//     await user.update({password:req.body.password})
+//     res.send({token: await user.generateToken()})
+    
+    
+//   } catch (err) {
+//     if (err.name === 'SequelizeUniqueConstraintError') {
+//       res.status(401).send('User already exists')
+//     } else {
+//       next(err)
+//     }
+//   }
+// })
+
+router.post('/changePassword/:userId', async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.userId)
+    await user.update(req.body)
+    res.send({token: await user.generateToken()})
+    
+    
+  } catch (err) {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      res.status(401).send('User already exists')
+    } else {
+      next(err)
+    }
   }
 })

@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
-function runMailer (senderName, toEmail, gameCode, toName, userCode) {
-  console.log(toName)
+function runMailer (senderName, toEmail, gameCode, toName, userCode, userId) {
+  console.log('in node mailer', userId)
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -24,7 +24,7 @@ let transporter = nodemailer.createTransport({
           `
           <p>Hi ${toName}! Welcome To Meedle!</p>
           
-          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="http://localhost:8080/signup/${gameCode}">here</a></p>`
+          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="http://localhost:8080/signup/${gameCode}/${userId}">here</a></p>`
     };
 
     transporter.sendMail(mailOptions, function(err, data) {

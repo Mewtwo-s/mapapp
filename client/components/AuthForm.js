@@ -6,6 +6,8 @@ import MapComponent from './Map'
 import { FormGroup, Label, Input , Button } from '../GlobalStyles'
 import history from '../history'
 import { Link } from 'react-router-dom';
+import {joinSessionThunkCreator} from '../store/session'
+import axios from 'axios'
 
 /**
  * COMPONENT
@@ -154,12 +156,16 @@ const mapSignup = state => {
 const mapDispatch = dispatch => {
   return {
     handleSubmit(evt) {
-      
-      const roomCode = history.location.pathname.split('/')[history.location.pathname.split.length]
-
+      evt.preventDefault()
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
+      const sessionCode = history.location.pathname.split('/')[history.location.pathname.split.length]
+      
+      if(sessionCode){
+        console.log('assign user and session')
+      }
+   
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
@@ -173,11 +179,15 @@ const mapDispatch = dispatch => {
         const photo = evt.target.photo.value ||'http://maps.google.com/mapfiles/ms/icons/golfer.png'
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))
+        
+        if(sessionCode){
+            console.log('assign user and session')
+          }
       }
       else{
         dispatch(authenticate(email, password, formName))
       } 
-    }
+    },
   }
 }
 

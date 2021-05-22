@@ -21,6 +21,20 @@ export const getFriendsThunk = (userId) => {
     };
 };
 
+export const updateUserThunk = (userId) =>{
+  return async (dispatch) => {
+    
+    try {
+    const { data } = await axios.post(`/api/users/changePassword/${userId}`)
+
+    dispatch(getFriends(data));
+    } catch (err) {
+    console.error('Error getting Friends', err);
+    }
+};
+
+}
+
 export default function (state = [], action) {
     switch (action.type) {
       case GET_FRIENDS:

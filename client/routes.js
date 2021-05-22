@@ -18,6 +18,8 @@ import GlobalStyles from './GlobalStyles';
 import TravelMode from './components/TravelMode'
 import UserJoinSession from './components/UserJoinSession'
 import Test from './components/Test'
+import FinishSignUp from './components/FinishSignUp'
+
 /**
  * COMPONENT
  */
@@ -42,7 +44,7 @@ class Routes extends Component {
               <Route path='/emailInvite' component={InviteForm} />
               <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
               <Route exact path="/home" component={Home} />
-              
+              <Redirect to="/home" />
             </Switch>
           ) : (
             <Switch>
@@ -52,7 +54,7 @@ class Routes extends Component {
               <Route exact path="/" component={Login} />
               <Route exact path="/home" component={Login} />
               <Route path="/login" component={Login} />
-              <Route exact path="/signup/:gamecode" component={Signup} />
+              <Route exact path="/signup/:gamecode/:usercode" component={FinishSignUp} />
               <Route exact path="/signup" component={Signup} />
               <Redirect to="/" />
             </Switch>
