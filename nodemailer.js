@@ -22,7 +22,7 @@ let transporter = nodemailer.createTransport({
       subject: 'Your friend invited you to meet',
       html: 
           `
-          <p>Hi ${toName}! Welcome To Meedle!</p>
+          <p> Welcome To Meedle!</p>
           
           <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="http://localhost:8080/signup/${gameCode}/${userId}">here</a></p>`
     };
