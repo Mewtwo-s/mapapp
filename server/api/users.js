@@ -162,8 +162,8 @@ router.post('/invite', async(req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
-    console.log('triggered')
-    const session = await Session.findOne({
+    console.log('triggered', req.body.code)
+    let session = await Session.findOne({
       where: {
         code: req.body.code
       }, 
@@ -171,7 +171,7 @@ router.put('/add/:userId', async (req, res, next) => {
         model: User
       }
     });
-    const user = await User.findByPk(req.params.userId);
+    let user = await User.findByPk(req.params.userId);
     await session.addUsers(user);
     session = await Session.findOne({
       where: {

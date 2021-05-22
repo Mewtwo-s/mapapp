@@ -59,6 +59,7 @@ router.put('/:sessionId', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
+    console.log('in post route--', req.body.travelMode)
     const user = await User.findByPk(req.body.hostId);
     const session = await Session.create(req.body);
     await user.addHost(session);

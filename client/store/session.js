@@ -106,11 +106,12 @@ export const joinSessionThunkCreator = (userId, code, history) => {
   };
 };
 
-export const createSessionThunkCreator = (hostId, history) => {
+export const createSessionThunkCreator = (hostId, travelMode, history) => {
   return async (dispatch) => {
 
     try {
-      const response = await axios.post(`/api/sessions/`, { hostId: hostId });
+      console.log('in creat session thunk', travelMode)
+      const response = await axios.post(`/api/sessions/`, { hostId: hostId, travelMode:travelMode });
       const session = response.data;
       await axios.put(`/api/usersessions/${hostId}/${session.id}`, {accepted: true})
       await dispatch(createSession(session));
