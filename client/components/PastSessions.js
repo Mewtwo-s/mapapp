@@ -50,7 +50,13 @@ const Card = styled.div`
     max-width: 1300px;
     width: 100%;
     padding: 8px;
-    background-color: #EFEFEF;
+    color: #e4efe7;
+    background-color: #1F817F;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
+      &:hover {
+    background-color: #e4efe5;
+  }
+
 
     @media screen and (max-width:375px){
       padding: 8px;

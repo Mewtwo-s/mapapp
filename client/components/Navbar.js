@@ -13,6 +13,7 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
   return (
   <Nav>
     <NavbarContainer>
+      {/* <div style={{backgroundImage: '/public/mapLogo.png'}}></div> */}
         <h2 style={{ textShadow: '2px 2px white'}}>Meedle</h2>
       
       {
@@ -39,6 +40,7 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
           <NavLink to="/signup">Sign Up</NavLink>
         </NavMenu>
       )}
+      
         <StyledBurger open={open} onClick={() => setOpen(!open)}>
           <div />
           <div />

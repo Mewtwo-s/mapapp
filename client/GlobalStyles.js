@@ -15,7 +15,7 @@ html {
         font-size: 70%;
     }
      @media only screen and (max-width: 600px){
-        font-size: 60%;
+        font-size: 50%;
         min-height: 100vh;
         height: -webkit-fill-available;
     }
@@ -66,7 +66,7 @@ export const Button = styled.button`
   border: 2px solid #51adcf;
 
   &:hover {
-    background-color: #51adcf;
+    background-color: #95e1d3;
     color: #0f3057
   } 
 `;
@@ -80,6 +80,7 @@ export const FormGroup = styled.div`
 `;
 
 export const Input = styled.input`
+  width: 100%;
   font-size: 16px;
   border: solid 0.5px #dbdbdb;
   border-radius: 3px;
@@ -91,8 +92,7 @@ export const Input = styled.input`
   font-size: 14px;
   font-weight: 300;
   text-align: left;
-  background: #fafafa;
-  margin-right: 5px;
+  background: #fafafa
   &:active,
   &:focus {
     text-align: left;

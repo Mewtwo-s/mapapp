@@ -129,33 +129,14 @@ const MapContainer = (props) => {
         {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
       </div>
    
-    
+    <div style={{display: 'flex', justifyContent:'center'}}>
         {
           props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
             <Button onClick={handleMagic}> Show Meetup Spots! </Button>
           )  
         }
-          <PlaceStyles>
-          {props.session.status === 'Pending' && topPlaces
-            ? topPlaces.map((place) => (
-
-              <Place
-                handle={placeSelected}
-                key={place.place_id}
-                location={place.geometry.location}
-                name={place.name}
-                open={place.opening_hours ? place.opening_hours.open_now : null}
-                price={place.price_level}
-                rating={place.rating}
-                place={place.image}
-              />
-              
-            ))
-
-            : null}
-        </PlaceStyles>
-
+          
         {props.session.status === 'Active' &&
             <Button onClick={userArrives}> I have arrived </Button>
           
@@ -163,6 +144,27 @@ const MapContainer = (props) => {
 
         {props.session.hostId === props.user.id && 
             <Button onClick={() => props.endSession(props.session.id)}>End Session</Button>}
+      </div>
+              <PlaceStyles>
+                {props.session.status === 'Pending' && topPlaces
+                  ? topPlaces.map((place) => (
+
+                    <Place
+                      handle={placeSelected}
+                      key={place.place_id}
+                      location={place.geometry.location}
+                      name={place.name}
+                      open={place.opening_hours ? place.opening_hours.open_now : null}
+                      price={place.price_level}
+                      rating={place.rating}
+                      place={place.image}
+                    />
+
+                  ))
+
+                  : null}
+              </PlaceStyles>
+
 
       <Map
         topPlaces={topPlaces}
@@ -225,13 +227,13 @@ const mapDispatch = (dispatch) => {
 const PlaceStyles = styled.div`
   max-width: 1400px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
 
   @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
     flex-direction: column;
+    just
   }
 `;
 

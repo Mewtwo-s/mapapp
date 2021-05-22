@@ -58,11 +58,10 @@ export class JoinRoom extends React.Component {
   }
  
   render() {
-     const capFirstName = this.props.user.firstName.slice(0,1).toUpperCase() + this.props.user.firstName.slice(1).toLowerCase()
 
     return (
       <div>
-        <h4>{`Hello ${capFirstName} !`}</h4>
+        <h4>{`Hello ${this.props.user.firstName} !`}</h4>
         {this.state.sessionAction === null && (
           <div>
           <h4> In the mood to hang out today ? </h4>
@@ -82,7 +81,7 @@ export class JoinRoom extends React.Component {
                 <Label style={{ color: '#0f3057'}} htmlFor="code">
                   Join Existing Session
                 </Label>
-                <Input style={{ boder: "solid 10px #51adcf", backgroundColor: '#e4efe7'}}name="code" type="text" />
+                <Input required placeholder='enter code here' style={{ boder: "solid 10px #51adcf", backgroundColor: '#e4efe5'}}name="code" type="text" />
                 <Button type="submit">Join</Button>
               </div>
               <div></div>

@@ -169,16 +169,17 @@ const mapDispatch = dispatch => {
 }
 
 const FormContainer = styled.div`
-  width: 90%;
   border-radius: 5px;
-  background-color:#51adcf;
+  background-color:#41adcf;
   margin: 0 auto;
-  padding: 10px;
-  max-width: 550px;
+  padding: 20px;
+  width: fit-content;
    @media screen and (max-width:600px){
      width: 90vw
    }
 `
+
+
 
 export const Login = connect(mapLogin, mapDispatch)(AuthForm)
 export const Signup = connect(mapSignup, mapDispatch)(AuthForm)

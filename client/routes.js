@@ -36,17 +36,16 @@ class Routes extends Component {
           <Navbar />
           {isLoggedIn ? (
             <Switch>
-            <Route path="/test" component={Test} />
-              <Route path="/map/:code" component={MapContainer} />
-              <Route path="/pastSessions" component={PastSessions} />
-              <Route exact path="/home" component={Home} />
-              <Route path='/emailInvite' component={InviteForm} />
-              <Redirect to="/home" />
-              <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
+              <Route exact path="/test" component={Test} />
+              <Route exact path="/map/:code" component={MapContainer} />
+              <Route exact path="/pastSessions" component={PastSessions} />
+              <Route path="/home" component={Home} />
+              <Route exact path='/emailInvite' component={InviteForm} />
+              <Route exact path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
+              <Redirect to="/home" /> 
             </Switch>
           ) : (
             <Switch>
-              {/* <Route path="/map" component={MapContainer} /> */}
               <Route exact path="/" component={Login} />
               <Route exact path="/home" component={Login} />
               <Route path="/login" component={Login} />
