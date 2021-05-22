@@ -28,7 +28,7 @@ export const updateUserThunk = (userId) =>{
 
     dispatch(getFriends(data));
     } catch (err) {
-    console.error('Error getting Friends', err);
+    console.error('Error updating password', err);
     }
 };
 

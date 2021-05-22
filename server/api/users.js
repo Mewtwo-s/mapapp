@@ -5,52 +5,7 @@ module.exports = router;
 const sequelize = require('sequelize')
 
 
-router.get('/friends/:userId', async (req, res, next) => {
-  try {
-    var result = null
-    const getSession = async(userId)=>{
-      return await User.findByPk(userId, 
-        {include:Session})
-    }
-    
-    const getSessionUser = async(sessionId)=>{
-      return await Session.findByPk(sessionId,
-        {include:User})
-    }
-    
-    const f = async (userId, friends)=>{
-    
-      let userSessionObj = await getSession(userId)
-      if(userSessionObj){
-        let userSessions = userSessionObj.sessions
-  
-        userSessions.forEach(async(session) =>{
-          let sessionId = session.id
-          let sessionUser = await getSessionUser(sessionId)
-        
-        sessionUser.users.map( user=>{  
-          
-          if(user.id.toString() !== req.params.userId && friends.indexOf(user.id)===-1){
-            friends.push(
-              user.id)
-    }
-              result = friends
-      })})
-      return result
 
-      }
-     
-  }
-
-  console.log(await f(req.params.userId,[]))
-
-  res.send(await f(req.params.userId,[]))
-    
-
-  } catch (err) {
-    next(err)
-  }
-})
 
 router.get('/', async (req, res, next) => {
   try {
@@ -142,7 +97,7 @@ router.get('/friends/:userId', async (req, res, next) => {
       let uniqueFriends = Object.keys(friendObject).map(friend => {
         return friendObject[friend];
     })
- 
+ console.log(uniqueFriends)
  res.send(uniqueFriends)
   } catch (err) {
     next(err)
