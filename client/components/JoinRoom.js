@@ -16,18 +16,34 @@ export class JoinRoom extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
     this.state = {
       currentSession: null,
       sessionAction: null,
     };
     this.handleCreate = this.handleCreate.bind(this);
+    this.handleAddFriendViaEmail = this.handleAddFriendViaEmail.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+  })
   }
 
   handleClick(action) {
     this.setState({
       sessionAction: action,
     });
+  }
+
+  async handleAddFriendViaEmail (evt) {
+    evt.preventDefault();
+    this.props.inviteFriend( this.props.session.id, evt.target.email.value, this.props.user.firstName)
+    this.setState({
+      email: ''
+    })
   }
 
   async handleJoin (evt) {
@@ -65,7 +81,7 @@ console.log(this.props);
         <h4>{`Hello ${capFirstName} !`}</h4>
         {this.state.sessionAction === null && (
           <div>
-            <h4> In the mood to hang out today ? </h4>
+            <h4> In the mood to hang out today? </h4>
             <Button onClick={this.handleCreate}>Create New Session</Button>
             <Button onClick={() => this.handleClick('join')}>
               Join a Session
@@ -101,9 +117,12 @@ console.log(this.props);
                 <p>{friend.firstName} {friend.lastName}</p>
               </button>
             ))}
-            <h5>Invite via email</h5>
-            <input value="test"/>
-            <button type="submit">Submit</button>
+            <h5>Invite a friend via email (one at a time)</h5>
+            <form onSubmit={this.handleAddFriendViaEmail}>
+              <input name="email" type="email" value={this.state.email}
+            onChange = {this.handleChange}/>
+              <button type="submit">Submit</button>
+            </form>
           </div>
         )}
       </div>
