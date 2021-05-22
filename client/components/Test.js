@@ -1,13 +1,17 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState,  useHistory } from 'react';
 import { connect } from 'react-redux';
 import {getFriendsThunk} from '../store/user'
 import { FormGroup, Label, Input , Button } from '../GlobalStyles'
 import styled from 'styled-components'
-import { Link, Redirect, } from 'react-router-dom';
-import history from '../history'
+import { Link, Redirect,useParams } from 'react-router-dom';
+
 
 function Test() {
+  console.log('in test')
    const [code, setCode] = useState()
+   const {id} = useParams()
+   const history = useHistory()
+   console.log('in test', history)
 
    function handleSubmit() {
    alert('submit')

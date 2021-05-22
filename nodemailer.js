@@ -20,7 +20,7 @@ let transporter = nodemailer.createTransport({
     html: 
         `
         <p>Hi ${toName}! </p>
-        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://mapapp999.herokuapp.com/${userCode}/${gameCode}">https://mapapp999.herokuapp.com/${userCode}/${gameCode}</a></p>`
+        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://mapapp999test.herokuapp.com/${userCode}/${gameCode}">here</a></p>`
   };
 
   transporter.sendMail(mailOptions, function(err, data) {

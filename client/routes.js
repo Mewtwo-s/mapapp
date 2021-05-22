@@ -29,20 +29,20 @@ class Routes extends Component {
   render() {
     const { isLoggedIn } = this.props;
     return (
-      <Router>
+      <div>
 
           <GlobalStyles/>
           <Navbar />
           {isLoggedIn ? (
             <Switch>
               <Route exact path="/test" component={Test} />
-              <Route path="/test/:hello/:ball" component={Test} />
+              <Route path='/test/:id'><Test/></Route>
               <Route path="/map/:code" component={MapContainer} />
               <Route path="/pastSessions" component={PastSessions} />
               <Route exact path="/home" component={Home} />
               <Route path='/emailInvite' component={InviteForm} />
               <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
-          
+              <Redirect to='home'/>
               
             </Switch>
           ) : (
@@ -52,11 +52,12 @@ class Routes extends Component {
               <Route exact path="/" component={Login} />
               <Route exact path="/home" component={Login} />
               <Route path="/login" component={Login} />
-              <Route path="/signup" component={Signup} />
+              <Route exact path="/signup" component={Signup} />
+              <Route path="/signup/:usrr1" component={Signup} />
               <Redirect to="/" />
             </Switch>
           )}
-      </Router>
+      </div>
     );
   }
 }

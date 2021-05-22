@@ -8,7 +8,6 @@ import axios from 'axios'
 
 import sessionReducer from '../store/session';
 import { Container } from '../GlobalStyles';
-
 import {clearAllLocations} from '../store/locationSharing'
 
 
