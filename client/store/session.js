@@ -91,10 +91,10 @@ export const joinSessionThunkCreator = (userId, code, history) => {
   return async (dispatch) => {
     try {
       const response = await axios.put(`/api/users/add/${userId}`, {
-        code: code,
-        accepted: true,
+        code: code
       });
       const session = response.data;
+      await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
       await dispatch(joinSession(session));
       history.push(`/map/${code}`);
     } catch (err) {
@@ -110,6 +110,7 @@ export const createSessionThunkCreator = (hostId, history) => {
     try {
       const response = await axios.post(`/api/sessions/`, { hostId: hostId });
       const session = response.data;
+      await axios.put(`/api/usersessions/${hostId}/${session.id}`, {accepted: true})
       await dispatch(createSession(session));
     } catch (err) {
       console.error(err)
