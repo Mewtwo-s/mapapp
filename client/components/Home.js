@@ -16,14 +16,7 @@ import {clearAllLocations} from '../store/locationSharing'
  * COMPONENT
  */
 export const Home = props => {
-  // useEffect(() => {
-  //     fetchAllSession()
-  // }, []);
-
-  // const fetchAllSession = async () =>{
-  //   const {data} = await axios.get(`/api/sessions/allSessions/${props.userId}`)
-  //   setSessions(data)
-  // }
+ 
   useEffect(() => {
     props.clearAllLocationHome()  
       
@@ -31,7 +24,7 @@ export const Home = props => {
 
   const activeSessions = props.userSessions.filter(session => session.status === "Active")
   const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
-  console.log('all props', props)
+ 
   return (
     <Container>
       

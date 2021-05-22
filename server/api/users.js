@@ -2,6 +2,7 @@ const router = require('express').Router()
 const { models: { User, Session, UserSession }} = require('../db')
 const runMailer = require('../../nodemailer');
 module.exports = router;
+const sequelize = require('sequelize')
 
 
 router.get('/test', async (req, res, next) => {
@@ -43,30 +44,70 @@ router.put('/:confirmationCode', async (req, res, next) => {
     }
   })
 
+// router.get('/friends/:userId', async (req, res, next) => {
+//   try {
+//     let friends = []
+//     let relatedSessions = null
+//     const result = await User.findOne({
+//       where: { id: req.params.userId}, include: Session})
+//     relatedSessions = result.sessions
+//     relatedSessions.forEach(async(session) =>{
+//     let sessionId = session.id
+//     let sessionUser = await Session.findOne({
+//         where:{id:sessionId}, 
+//         include:User})
+
+//     await sessionUser.users.forEach( user=>{
+//       if(user.id.toString() !== req.params.userId){
+//         friends.push({
+//           fName:user.firstName,
+//           lName:user.lastName,
+//           email:user.email
+//         })
+
+//       }
+//     })  
+//     res.send(friends)
+//   })
+//   } catch (err) {
+//     next(err)
+//   }
+// })
+
+
 router.get('/friends/:userId', async (req, res, next) => {
   try {
     let friends = []
-    let relatedSessions = null
-    const result = await User.findOne({where: { id: req.params.userId}, include: Session})
-    relatedSessions = result.sessions
-    relatedSessions.forEach(async(session) =>{
-    let sessionId = session.id
-    let sessionUser = await Session.findOne({
-        where:{id:sessionId}, 
-        include:User})
-
-    await sessionUser.users.forEach( user=>{
-      if(user.id.toString() !== req.params.userId){
-        friends.push({
-          fName:user.firstName,
-          lName:user.lastName,
-          email:user.email
-        })
-
-      }
-    })  
-    res.send(friends)
-  })
+    let friendObject = {};
+    const user = await User.findOne({
+      where: {
+         id: req.params.userId
+        }, 
+        include: {
+          model: Session, 
+          include: {
+            model: User,
+            attributes: ["firstName", "lastName", "id", "email"],
+            where: {
+              id: { 
+                [sequelize.Op.not]: req.params.userId}
+            }
+          }
+        }
+        
+      })
+      let relatedSessions = user.sessions
+      relatedSessions.forEach(session => friends = friends.concat(session.users));
+      friends.forEach((friend) => {
+        if (!friendObject[friend.id]) {
+          friendObject[friend.id]= {firstName: friend.firstName, lastName: friend.lastName, id: friend.id, email: friend.email}
+        }})
+      
+      let uniqueFriends = Object.keys(friendObject).map(friend => {
+        return friendObject[friend];
+    })
+ 
+ res.send(uniqueFriends)
   } catch (err) {
     next(err)
   }
@@ -126,3 +167,23 @@ router.put('/remove/:userId', async (req, res, next) => {
     next(err)
   }
 })
+
+
+ //   relatedSessions.forEach(
+  //     async (session) =>{
+  //   let sessionId = session.id
+  //   let sessionUser = await Session.findOne({
+  //       where:{id:sessionId}, 
+  //       include:User})
+
+  //   await sessionUser.users.forEach( user=>{
+  //     if(user.id.toString() !== req.params.userId){
+  //       friends.push({
+  //         fName:user.firstName,
+  //         lName:user.lastName,
+  //         email:user.email
+  //       })
+
+  //     }
+  //   })  
+  // })
