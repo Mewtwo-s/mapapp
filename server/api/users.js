@@ -143,14 +143,24 @@ router.post('/invite', async(req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
-    const session = await Session.findOne({
+    let session = await Session.findOne({
       where: {
         code: req.body.code
+      }, 
+      include: {
+        model: User
       }
     });
-
     const user = await User.findByPk(req.params.userId);
     await session.addUsers(user);
+    session = await Session.findOne({
+      where: {
+        code: req.body.code
+      }, 
+      include: {
+        model: User
+      }
+    });
     res.send(session);
   } catch (err) {
     next(err)

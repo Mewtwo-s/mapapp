@@ -96,6 +96,7 @@ export const joinSessionThunkCreator = (userId, code, history) => {
       const session = response.data;
       await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
       await dispatch(joinSession(session));
+      socket.emit('updated-session', session)
       history.push(`/map/${code}`);
     } catch (err) {
       console.error(err)
