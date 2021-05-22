@@ -10,7 +10,7 @@ import { leaveRoom } from '../store/locationSharing';
 import { Button, Label, FormGroup, Input } from '../GlobalStyles';
 import { getFriendsThunk } from '../store/user';
 import { inviteSessionUsersThunkCreator } from '../store/userSessions';
-
+import TravelMode from './TravelMode'
 
 export class JoinRoom extends React.Component {
   constructor(props) {
@@ -21,9 +21,11 @@ export class JoinRoom extends React.Component {
     this.state = {
       currentSession: null,
       sessionAction: null,
+      travelMode: null
     };
     this.handleCreate = this.handleCreate.bind(this);
     this.handleAddFriendViaEmail = this.handleAddFriendViaEmail.bind(this)
+    this.handleChangeMode = this.handleChangeMode.bind(this)
   }
 
   handleChange(event) {
@@ -57,6 +59,11 @@ export class JoinRoom extends React.Component {
     await this.props.joinSession(this.props.user.id, evt.target.code.value);
   }
 
+  async handleChangeMode(e){
+    this.setState({travelMode: e.target.value})
+    console.log('mode->', this.state.travelMode)
+  }
+
   async handleCreate(evt) {
     evt.preventDefault();
 
@@ -67,16 +74,18 @@ export class JoinRoom extends React.Component {
       this.props.stopWatchingMyLocation();
     }
 
+ 
+
     this.setState({
       sessionAction: 'host',
     });
-    await this.props.createSession(this.props.user.id);
+    await this.props.createSession(this.props.user.id, this.state.travelMode);
   }
  
   render() {
 
      const capFirstName = this.props.user.firstName.slice(0,1).toUpperCase() + this.props.user.firstName.slice(1).toLowerCase()
-console.log('here===>', this.props);
+
     return (
       <div>
         
@@ -85,6 +94,14 @@ console.log('here===>', this.props);
         {this.state.sessionAction === null && (
           <div>
             <h4> In the mood to hang out today? </h4>
+            <div>
+            <select onChange={this.handleChangeMode}>
+                <option value="BICYCLING">Cycling</option>
+                <option value="DRIVING">Driving</option>
+                <option value="TRANSIT">Transit</option>
+                <option selected value="WALKING" selected>Walking</option>
+            </select>
+        </div>
             <Button onClick={this.handleCreate}>Create New Session</Button>
             <Button onClick={() => this.handleClick('join')}>
               Join a Session
@@ -147,8 +164,8 @@ const mapDispatch = (dispatch, { history }) => {
   return {
     joinSession: (userId, code) =>
       dispatch(joinSessionThunkCreator(userId, code, history)),
-    createSession: (userId) =>
-      dispatch(createSessionThunkCreator(userId, history)),
+    createSession: (userId, travelMode) =>
+      dispatch(createSessionThunkCreator(userId, travelMode, history)),
     stopWatchingMyLocation: () => dispatch(stopWatchingMyLocation()),
     leaveRoom: (userId, sessionId) => dispatch(leaveRoom(userId, sessionId)),
     getFriends: (userId) => dispatch(getFriendsThunk(userId)),
