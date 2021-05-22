@@ -59,7 +59,7 @@ const User = db.define('user', {
   photo:{
     type: Sequelize.STRING,
     allowNull: true,
-    defaultValue: 'http://maps.google.com/mapfiles/ms/icons/golfer.png'
+    // defaultValue: 'http://maps.google.com/mapfiles/ms/icons/golfer.png'
   },
   confirmationCode: {
     type: Sequelize.STRING
@@ -73,10 +73,16 @@ const generateRandomString = function(length=10){
   return Math.random().toString(20).substr(2, length)
   };
 
+const capFirstName =  name =>  {
+  return name.slice(0, 1).toUpperCase() + name.slice(1).toLowerCase()
+}
+
 User.beforeCreate( (user) => {
   const confirmationCode = generateRandomString();
   user.confirmationCode = confirmationCode;
+  user.firstName = capFirstName(user.firstName)
 });
+
 
 /**
  * instanceMethods

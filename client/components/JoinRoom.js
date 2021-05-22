@@ -67,7 +67,7 @@ export class JoinRoom extends React.Component {
           <div>
           <h4> In the mood to hang out today ? </h4>
 
-            <Container style={{display: 'flex'}}>
+            <Container style={{display: 'flex', justifyItems:'stretch'}}>
               <Button onClick={this.handleCreate}>Create New Session</Button>
               <Button onClick={() => this.handleClick('join')}>
                 Join a Session

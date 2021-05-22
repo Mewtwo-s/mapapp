@@ -39,7 +39,8 @@
     "shortid": "^2.2.16",
     "socket.io": "^4.1.1",
     "socket.io-client": "^4.1.1",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "util": "^0.12.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

@@ -23,6 +23,11 @@ module.exports = {
     filename: './public/bundle.js'
   },
   devtool: 'source-map',
+  resolve: {
+    fallback: {
+      util: require.resolve("util/")
+    }
+  },
   module: {
     rules: [
       {

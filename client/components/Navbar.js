@@ -4,28 +4,30 @@ import { Container } from '../GlobalStyles';
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store';
+import { ProgressPlugin } from 'webpack';
 //import mapLogo from '../../public/mapLogo.png'  -> module not found 
 
 
-const Navbar = ({handleClick, isLoggedIn}) => {
+const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
   const [open, setOpen] = useState(false)
   return (
   <Nav>
     <NavbarContainer>
-      <h4>The Map App</h4>
-      {/* <img style={{ width: "95%" }} src={MapLogo} /> */}
-      <StyledBurger open={open} onClick={() => setOpen(!open)}>
-        <div />
-        <div />
-        <div />
-      </StyledBurger>
+        <h2 style={{ textShadow: '2px 2px white'}}>Meedle</h2>
+      
+      {
+          isLoggedIn && 
+          <div>{
+              photo ?
+              <ProfilePhoto src={`${photo}`} /> :
+              <Name>{firstName}</Name>
+          }</div>
+      }
+    
       {isLoggedIn ? (
         <NavMenu open={open}>
           {/* The navbar will show these links after you log in */}
           <NavLink to="/home">Home</NavLink> 
-          {/* <a href="#" onClick={handleClick}>
-            Logout
-          </a> */}
           <NavLink to="/" onClick={handleClick}>
             Logout
           </NavLink>
@@ -37,6 +39,12 @@ const Navbar = ({handleClick, isLoggedIn}) => {
           <NavLink to="/signup">Sign Up</NavLink>
         </NavMenu>
       )}
+        <StyledBurger open={open} onClick={() => setOpen(!open)}>
+          <div />
+          <div />
+          <div />
+        </StyledBurger>
+
     </NavbarContainer>
   </Nav>
  )}
@@ -45,8 +53,11 @@ const Navbar = ({handleClick, isLoggedIn}) => {
  * CONTAINER
  */
 const mapState = state => {
+  console.log('state auth nav', state.auth.photo)
   return {
-    isLoggedIn: !!state.auth.id
+    isLoggedIn: !!state.auth.id,
+    photo: state.auth.photo,
+    firstName: state.auth.firstName
   }
 }
 
@@ -83,6 +94,11 @@ const Nav = styled.nav`
   align-items: center;
   height: 80px;
   margin: 0 auto;
+
+  @media screen and (max-width:600px){
+    display: flex;
+    justify-content: space-stretch;
+  }
   ${Container};
 `;
 
@@ -142,8 +158,7 @@ const NavMenu = styled.div`
 const StyledBurger = styled.div`
   width: 4rem;
   height: 4rem;
-  position: fixed;
-  top: 5px;
+  top: 10px;
   right: 20px;
   z-index: 20;
   display: none;
@@ -173,4 +188,28 @@ const StyledBurger = styled.div`
   }
 `;
 
+const ProfilePhoto = styled.img`
+  border: solid 1px white;
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  @media screen and (max-width:600px){
+    height: 60px;
+    width: 60px;
+  }
+`
+
+const Name = styled.h4`
+  border: solid 1px white;
+  text-align:center;
+  padding-top: 35%;
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  background-color: #faf1e6;
+  @media screen and (max-width:600px){
+    height: 60px;
+    width: 60px;
+  }
+`
 export default connect(mapState, mapDispatch)(Navbar)

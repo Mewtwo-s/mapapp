@@ -186,7 +186,7 @@ const Map = withScriptjs(
                       >
                         <div>
                           <h3>{selectedPlace.name}</h3>
-                          <h5>{selectedPlace.vicinity}</h5>
+                          <p>{selectedPlace.vicinity}</p>
                           <p>
                             {selectedPlace.opening_hours.open_now
                               ? 'Open Now'
@@ -207,52 +207,8 @@ const Map = withScriptjs(
             {/* Draw labeled marker for each other person in the session */}
             {renderOthers()}
 
-{/* <<<<<<< HEAD */}
-            {/* Draw labeled marker for each user in current session*/}
-            {/* {props.allLocations.length > 0 &&
-              props.allLocations.filter(loc=>loc.userId!=props.user.id).map((loc) => {
-                return (
-                  <MarkerWithLabel
-                    key={`user_${loc.userId}`}
-                    icon={props.user.photo}
-                    position={{ lat: loc.lat, lng: loc.lng }}
-                    labelAnchor={new google.maps.Point(0, 0)}
-                    zIndex={100}
-                    labelStyle={{
-                      backgroundColor: 'black',
-                      color: 'white',
-                      fontSize: '16px',
-                      padding: '2px',
-                    }}
-                  >
-                    <div>{`user ${loc.userId}`}</div>
-                  </MarkerWithLabel>
-                );
-              })}
-              
-       
-                 {parseFloat(props.myLocation.lat)? <MarkerWithLabel
-                    key={props.user.id}
-                    icon={props.user.photo}
-                    position={{ lat: parseFloat(props.myLocation.lat), lng: parseFloat(props.myLocation.lng) }}
-                    labelAnchor={new google.maps.Point(0, 0)}
-                    zIndex={100}
-                    labelStyle={{
-                      backgroundColor: 'black',
-                      color: 'white',
-                      fontSize: '16px',
-                      padding: '2px',
-                    }}
-                  >
-                    <div>{`you're here`}</div>
-                  </MarkerWithLabel>:console.log('location not reader')} */}
-          
-              
-
             {/* Draw the current user's marker */}
             {renderUser()}
-
-{/* >>>>>>> 4d1a937e18e9cd184060c26917ad0f128cb7212f */}
           </GoogleMap>
         )}
       </Container>

@@ -43,7 +43,7 @@ const AuthForm = props => {
                 <Label htmlFor="lastName">
                   <small>Last Name</small>
                 </Label>
-                <Input name="lastName" type="text" />
+                <Input name="lastName" type="text" required placeholder='required'/>
               </div>
               {/* <div>
                 <Label htmlFor="phoneNum">
@@ -101,7 +101,7 @@ const AuthForm = props => {
               <Label htmlFor="photo">
                 <small>Image URL</small>
               </Label>
-              <Input name="photo" type="text" />
+              <Input name="photo" type="text" placeholder='e.g. https://image.png'/>
           </div>
         </FormGroup>
       </div>: 

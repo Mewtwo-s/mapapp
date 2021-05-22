@@ -15,7 +15,7 @@ export const PastSessions = props => {
 
    return (
      <Container>
-         <Link to='/home'> Back To Home </Link>
+         <Link to='/home' className='small-link'> Back To Home </Link>
          <div style={{ display: 'flex', flexDirection: 'column', justtifyContent: 'center', alignItems: 'center' }}>
             <h1>Past Sessions</h1>
             { (pastSessions.length === 0) ? <h2>There are no past sessions</h2> :
