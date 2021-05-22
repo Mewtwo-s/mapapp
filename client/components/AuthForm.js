@@ -1,17 +1,21 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {connect} from 'react-redux'
 import {authenticate} from '../store'
 import MapComponent from './Map'
 import { FormGroup, Label, Input , Button } from '../GlobalStyles'
-
+import history from '../history'
+import { Link } from 'react-router-dom';
 
 /**
  * COMPONENT
  */
 const AuthForm = props => {
+
+
   const {name, displayName, handleSubmit, error} = props 
   return (
+    
     <FormContainer>
 
       <form onSubmit={handleSubmit} name={name}>
@@ -113,7 +117,7 @@ const AuthForm = props => {
 
         {error && error.response && <div> {error.response.data} </div>}
         <FormGroup>
-          <Button type="submit">{displayName}</Button>
+         <Button type="submit">{displayName}</Button>
         </FormGroup>
         
       </form>
@@ -137,17 +141,22 @@ const mapLogin = state => {
 }
 
 const mapSignup = state => {
+  const roomCode = history.location.pathname.split('/')[history.location.pathname.split.length]
+
   return {
     name: 'signup',
     displayName: 'Sign Up',
-    error: state.auth.error
+    error: state.auth.error,
+    code: roomCode
   }
 }
 
 const mapDispatch = dispatch => {
   return {
     handleSubmit(evt) {
-      evt.preventDefault()
+      
+      const roomCode = history.location.pathname.split('/')[history.location.pathname.split.length]
+
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
@@ -167,7 +176,8 @@ const mapDispatch = dispatch => {
       }
       else{
         dispatch(authenticate(email, password, formName))
-      } }
+      } 
+    }
   }
 }
 

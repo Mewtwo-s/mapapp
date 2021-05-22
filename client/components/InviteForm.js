@@ -7,8 +7,13 @@ function InviteForm(props) {
 
     const [relatedUsers, setUsers] = useState([])
 
-    function handleSubmit(){
+    function handleSubmit(evt){
+      evt.preventDefault()
         alert('eysss')
+    }
+
+    function handleChange(evt){
+      console.log('here', evt.target.value)
     }
 
     const fetchAllSession = async () =>{
@@ -26,7 +31,7 @@ function InviteForm(props) {
           <label htmlFor="email">
             <small>Email</small>
           </label>
-          <input name="email" type="text" />
+          <input name="email" type="text" onChange={handleChange}/>
           <button type='submit'>Submit</button>
         </div>
         <div>

@@ -93,6 +93,7 @@ export class JoinRoom extends React.Component {
         {this.state.sessionAction === 'host' && (
           <div>
             <h3>Invite friends using the code: {this.props.session.code} </h3>
+            <Link to ='/emailInvite'>jere</Link>
             <Link to={`/map/${this.props.session.code}`}>
               <Button>Go to session</Button>
 

@@ -88,6 +88,26 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+// router.post('/invite', async(req, res, next) => {
+//   try {
+//     let user = await User.findOne({
+//       where: {
+//         email: req.body.email
+//       }
+//     })
+//     const session = await Session.findByPk(req.body.sessionId);
+//     // if not existing user
+//     if (!user) {
+//       user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
+//     }
+//     await session.addUsers(user);
+//     runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
+//     res.send(user);
+//   } catch(err) {
+//     next(err)
+//   }
+// })
+
 router.post('/invite', async(req, res, next) => {
   try {
     let user = await User.findOne({
@@ -96,12 +116,17 @@ router.post('/invite', async(req, res, next) => {
       }
     })
     const session = await Session.findByPk(req.body.sessionId);
+    // if not existing user
     if (!user) {
-      user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
+      runMailer(req.body.hostName, req.body.email, session.code, 'Guest');
+      res.send('Sent Invite To Guest!');
     }
-    await session.addUsers(user);
-    runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
-    res.send(user);
+    else{
+      runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
+      res.send(user)
+    }
+    
+    
   } catch(err) {
     next(err)
   }
@@ -109,6 +134,7 @@ router.post('/invite', async(req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
+    console.log('triggered')
     const session = await Session.findOne({
       where: {
         code: req.body.code
