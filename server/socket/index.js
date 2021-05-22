@@ -31,6 +31,10 @@ module.exports = (io) => {
       socket.broadcast.emit('updated-session', session)
     })
 
+    socket.on('updated-user-status', usersession => {
+      socket.broadcast.emit('updated-user-status', usersession)
+    })
+
     socket.on('disconnect', () => {
       console.info('user disconnected: ' + socket.id);
     });
