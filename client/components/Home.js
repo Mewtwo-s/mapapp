@@ -31,11 +31,11 @@ export const Home = props => {
 
   const activeSessions = props.userSessions.filter(session => session.status === "Active")
   const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
-  console.log('userSessions', props.userSessions)
+  
   return (
     <Container>
       
-      <Link to='/pastSessions'> View Past Sessions </Link>
+      <Link to='/pastSessions' className='small-link'> View Past Sessions </Link>
       <div style={{ display: 'flex', flexDirection: 'column', justtifyContent: 'center', alignItems: 'center' }}>
       <JoinRoom history= {props.history} />
         <h2>{`Active Sessions (${activeSessions.length})`} </h2>
@@ -76,19 +76,19 @@ export const Home = props => {
 }
 
 const Card = styled.div`
-    margin: 1rem;
+    margin: 0.5rem;
     border: solid 2px #51adcf;
     border-radius: 10px;
-    max-width: 1300px;
-    width: 100%;
+    max-width: 1000px;
+   
     padding: 8px;
     background-color: #EFEFEF;
 
     @media screen and (max-width:600px){
-        padding: 8px;
-        width: 90%;
-        margin: 10px 10px;
+      padding: 8px;
+      width: 275px;
     }
+   
 `
 const mapState = state => {
   console.log('state home', state)

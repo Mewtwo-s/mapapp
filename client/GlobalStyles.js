@@ -15,7 +15,7 @@ html {
         font-size: 70%;
     }
      @media only screen and (max-width: 600px){
-        font-size: 45%;
+        font-size: 60%;
         min-height: 100vh;
         height: -webkit-fill-available;
     }
@@ -42,31 +42,32 @@ export default GlobalStyles;
 export const Container = styled.div`
 padding: 16px;
 margin: 0 auto;
-max-width: 1300px;
+max-width: 1000px;
 width: 100%;
-@media screen & (max-width:600px){
-  margin: 5px, auto
+@media screen and (max-width:600px){
+  margin: 3px, auto
   padding: 0 5px;
 }
-@media screen & (max-width:991px) {
+@media screen and (max-width:991px) {
   padding: 0 20px;
 }
-@media screen & (min-width: 1500px) {
-  max-width: 1400px;
-}
+
 `;
 
 
 export const Button = styled.button`
-  backgroundcolor: white;
+  background-color: white;
   color: #51adcf;
   font-size: 1em;
+  font-weight: bold;
   margin: 1em;
   padding: 0.25em 1em;
+  border-radius: 10px;
   border: 2px solid #51adcf;
-  border-radius: 3px;
+
   &:hover {
-    backgroundcolor: #a5ecd7;
+    background-color: #51adcf;
+    color: #0f3057
   } 
 `;
 
@@ -76,7 +77,6 @@ export const FormGroup = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   margin: 1em;
-
 `;
 
 export const Input = styled.input`
@@ -84,7 +84,7 @@ export const Input = styled.input`
   border: solid 0.5px #dbdbdb;
   border-radius: 3px;
   color: orange;
-  padding: 7px 33px;
+  padding: 5px 40px;
   border-radius: 3px;
   color: #999;
   cursor: text;
@@ -92,7 +92,7 @@ export const Input = styled.input`
   font-weight: 300;
   text-align: left;
   background: #fafafa;
- 
+  margin-right: 5px;
   &:active,
   &:focus {
     text-align: left;

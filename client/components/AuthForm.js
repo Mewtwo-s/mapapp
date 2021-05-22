@@ -13,9 +13,7 @@ const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props 
   return (
     <FormContainer>
-
       <form onSubmit={handleSubmit} name={name}>
-        <div>
           <FormGroup>
             <div>
               <Label htmlFor="email">
@@ -30,7 +28,7 @@ const AuthForm = props => {
               <Input name="password" type="password" required placeholder='required'/>
             </div>
           </FormGroup>
-        </div>
+       
 
         {props.name==='signup'? 
         <div> 
@@ -100,10 +98,10 @@ const AuthForm = props => {
         
         <FormGroup>
           <div>
-            <Label htmlFor="photo">
-              <small>Image URL</small>
-            </Label>
-            <Input name="photo" type="text" />
+              <Label htmlFor="photo">
+                <small>Image URL</small>
+              </Label>
+              <Input name="photo" type="text" />
           </div>
         </FormGroup>
       </div>: 
@@ -115,7 +113,6 @@ const AuthForm = props => {
         <FormGroup>
           <Button type="submit">{displayName}</Button>
         </FormGroup>
-        
       </form>
     </FormContainer>
   )
@@ -175,8 +172,12 @@ const FormContainer = styled.div`
   width: 90%;
   border-radius: 5px;
   background-color:#51adcf;
-  margin: 25px 25px;
-  padding: 20px;
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 550px;
+   @media screen and (max-width:600px){
+     width: 90vw
+   }
 `
 
 export const Login = connect(mapLogin, mapDispatch)(AuthForm)

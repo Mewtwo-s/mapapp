@@ -33,11 +33,11 @@ const Place = (props) => {
 const Card = styled.div`
     border: solid 2px #51adcf;
     border-radius: 10px;
-    max-width: 1300px;
+    max-width: 1000px;
     width: 25%;
     background-color: #e4efe7;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
-    @media screen and (max-width:600px){
+    @media screen and (max-width:375px){
         padding: 16px;
         width: 90%;
         margin: 10px;

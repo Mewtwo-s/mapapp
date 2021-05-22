@@ -3,23 +3,28 @@ body {
   margin: 0;
 }
 
-a {
-  text-decoration: none;
+.small-link {
+  text-decoration: underline;
 }
 
 label {
   display: block;
 }
 
-/* nav a {
-  display: inline-block;
-  margin: 1em;
-} */
+a:visited {
+  color:#0f3057;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+}
 
 form div {
   margin: 0 0.5rem;
 }
 
+/* loading component */
 .loader {
   border: 16px solid #f3f3f3;
   border-top: 16px solid #3498db;
@@ -40,4 +45,11 @@ form div {
   display: block;
   margin: 50px auto;
   text-align: center;
+}
+
+.icon {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
 }

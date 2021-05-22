@@ -95,7 +95,6 @@ const MapContainer = (props) => {
     }
   }, [midPoint]);
   
-  console.log(props)
   return (
     <div>
     {joined === false ? <Loading message="your map"/> : 
@@ -108,14 +107,14 @@ const MapContainer = (props) => {
         <p>In this session:</p>
         {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
       </div>
-      
-  
-  {props.session.status === 'Pending' &&
+   
+    
+        {
+          props.session.status === 'Pending' &&
           props.session.hostId === props.user.id && (
             <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-          )
-          
-          }
+          )  
+        }
           <PlaceStyles>
           {props.session.status === 'Pending' && topPlaces
             ? topPlaces.map((place) => (
@@ -214,5 +213,6 @@ const PlaceStyles = styled.div`
     flex-direction: column;
   }
 `
+
 
 export default connect(mapState, mapDispatch)(MapContainer);

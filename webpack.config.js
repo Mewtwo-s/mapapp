@@ -34,6 +34,37 @@ module.exports = {
             '@babel/preset-react'
           ]
         }
+      },
+      {
+        test: /\.(png)$/,
+        use: {
+          loader: 'url-loader'
+        }
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      }, {
+        test: /\.(sass|scss|css)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+      {
+        test: /\.(svg|eot|woff|woff2|ttf)(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'public/map-logo.png',
+            outputPath: 'fonts/'
+          }
+        }
       }
     ]
   },

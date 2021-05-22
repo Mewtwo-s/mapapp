@@ -244,7 +244,7 @@ const Map = withScriptjs(
                       padding: '2px',
                     }}
                   >
-                    <div>{`your marker`}</div>
+                    <div>{`you're here`}</div>
                   </MarkerWithLabel>:console.log('location not reader')}
           
               
