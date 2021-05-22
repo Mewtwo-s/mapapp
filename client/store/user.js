@@ -8,18 +8,31 @@ export const getFriends = (friends) => {
   };
 
 export const getFriendsThunk = (userId) => {
- 
     return async (dispatch) => {
     
         try {
-        const { data } = await axios.get(`/api/users/friends/2`)
- 
-        dispatch(getFriends(data));
+          const response = await axios.get(`/api/users/friends/${userId}`);
+          const friends = response.data
+          await dispatch(getFriends(friends));
         } catch (err) {
-        console.error('Error getting Friends', err);
+          console.error('Error getting Friends', err);
         }
     };
 };
+
+export const updateUserThunk = (userId) =>{
+  return async (dispatch) => {
+    
+    try {
+    const { data } = await axios.post(`/api/users/changePassword/${userId}`)
+
+    dispatch(getFriends(data));
+    } catch (err) {
+    console.error('Error updating password', err);
+    }
+};
+
+}
 
 export default function (state = [], action) {
     switch (action.type) {

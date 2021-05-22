@@ -109,7 +109,7 @@ const MapContainer = (props) => {
       const allArrived= props.allUsersInSession.every(user => user.arrived === true);
       //this is just super inaccurate and not very realistic
       // const allLocationsMatch = props.allUsersInSession.every(user => user.currentLat === props.session.lat && user.currentLng === props.session.lng);
-      if (allArrived === true || allLocationsMatch === true) {
+      if (allArrived === true) {
         props.endSession(props.session.id);
       }
     }
@@ -117,6 +117,7 @@ const MapContainer = (props) => {
   }, [props.allUsersInSession]);
   
   return (
+
     <div>
      {props.session.status === "Completed" ? <EndedSession /> :
     <div>

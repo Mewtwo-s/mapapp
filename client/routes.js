@@ -15,9 +15,10 @@ import InviteForm from './components/InviteForm'
 import Navbar from './components/Navbar'
 import PastSessions from './components/PastSessions';
 import GlobalStyles from './GlobalStyles';
-
-
+import TravelMode from './components/TravelMode'
+import UserJoinSession from './components/UserJoinSession'
 import Test from './components/Test'
+import FinishSignUp from './components/FinishSignUp'
 
 /**
  * COMPONENT
@@ -30,30 +31,34 @@ class Routes extends Component {
   render() {
     const { isLoggedIn } = this.props;
     return (
-      <Router>
+      <div>
 
           <GlobalStyles/>
           <Navbar />
           {isLoggedIn ? (
             <Switch>
-              <Route exact path="/test" component={Test} />
+              <Route exact path='/friend/:gamecode' component={Test}></Route>
+              <Route exact path="/friend/" component={UserJoinSession} />
               <Route exact path="/map/:code" component={MapContainer} />
               <Route exact path="/pastSessions" component={PastSessions} />
-              <Route path="/home" component={Home} />
               <Route exact path='/emailInvite' component={InviteForm} />
               <Route exact path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
-              <Redirect to="/home" /> 
+              <Route path="/home" component={Home} />
+              <Redirect to="/home" />
             </Switch>
           ) : (
             <Switch>
-              <Route exact path="/" component={Login} />
-              <Route exact path="/home" component={Login} />
+              {/* <Route path="/map" component={MapContainer} /> */}
+              <Route exact path='/friend' component={Test}></Route>
+              <Route path="/" component={Login} />
+              <Route path="/home" component={Login} />
               <Route path="/login" component={Login} />
-              <Route path="/signup" component={Signup} />
+              <Route exact path="/signup/:gamecode/:usercode" component={FinishSignUp} />
+              <Route exact path="/signup" component={Signup} />
               <Redirect to="/" />
             </Switch>
           )}
-      </Router>
+      </div>
     );
   }
 }

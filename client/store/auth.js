@@ -44,7 +44,21 @@ export const getTempUserThunkCreator = (confirmationCode) => async dispatch => {
 export const authenticate = (email, password, method, firstName,
   lastName, photo) => async dispatch => {
   try {
+    console.log('in authenticate thunk')
     const res = await axios.post(`/auth/${method}`, {email, password, firstName,
+      lastName, photo})
+    window.localStorage.setItem(TOKEN, res.data.token)
+    dispatch(me())
+  } catch (authError) {
+    return dispatch(setAuth({error: authError}))
+  }
+}
+
+export const changeUserInfoThunk = (userId, email, password, firstName,
+  lastName, photo) => async dispatch => {
+  try {
+    console.log('in change userinfo thunk')
+    const res = await axios.post(`/api/users/changePassword/${userId}`, {email, password, firstName,
       lastName, photo})
     window.localStorage.setItem(TOKEN, res.data.token)
     dispatch(me())

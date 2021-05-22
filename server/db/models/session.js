@@ -29,6 +29,10 @@ const Session = db.define('session',{
     },
     locationName: {
         type: Sequelize.STRING
+    },
+    travelMode: {
+        type: Sequelize.ENUM('WALKING', 'DRIVING', 'TRANSIT', 'BICYCLING'),
+        defaultValue: 'DRIVING',
     }
     })
 

@@ -1,17 +1,23 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {connect} from 'react-redux'
 import {authenticate} from '../store'
 import MapComponent from './Map'
 import { FormGroup, Label, Input , Button } from '../GlobalStyles'
-
+import history from '../history'
+import { Link } from 'react-router-dom';
+import {joinSessionThunkCreator} from '../store/session'
+import axios from 'axios'
 
 /**
  * COMPONENT
  */
 const AuthForm = props => {
+
+
   const {name, displayName, handleSubmit, error} = props 
   return (
+    
     <FormContainer>
       <form onSubmit={handleSubmit} name={name}>
           <FormGroup>
@@ -111,7 +117,7 @@ const AuthForm = props => {
 
         {error && error.response && <div> {error.response.data} </div>}
         <FormGroup>
-          <Button type="submit">{displayName}</Button>
+         <Button type="submit">{displayName}</Button>
         </FormGroup>
       </form>
     </FormContainer>
@@ -134,10 +140,13 @@ const mapLogin = state => {
 }
 
 const mapSignup = state => {
+  const roomCode = history.location.pathname.split('/')[history.location.pathname.split.length]
+
   return {
     name: 'signup',
     displayName: 'Sign Up',
-    error: state.auth.error
+    error: state.auth.error,
+    code: roomCode
   }
 }
 
@@ -148,6 +157,12 @@ const mapDispatch = dispatch => {
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
+      const sessionCode = history.location.pathname.split('/')[history.location.pathname.split.length]
+      
+      if(sessionCode){
+        console.log('assign user and session')
+      }
+   
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
@@ -161,10 +176,15 @@ const mapDispatch = dispatch => {
         const photo = evt.target.photo.value ||'http://maps.google.com/mapfiles/ms/icons/golfer.png'
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))
+        
+        if(sessionCode){
+            console.log('assign user and session')
+          }
       }
       else{
         dispatch(authenticate(email, password, formName))
-      } }
+      } 
+    },
   }
 }
 

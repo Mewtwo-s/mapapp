@@ -22,7 +22,6 @@ User.hasMany(Session, {as: 'host', foreignKey: 'hostId'})
 
 
 
-
 module.exports = {
   db,
   models: {

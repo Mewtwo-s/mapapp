@@ -60,7 +60,7 @@ const Map = withScriptjs(
         {
           origin: props.myLocation,
           destination: loc,
-          travelMode: google.maps.TravelMode.DRIVING,
+          travelMode: props.session.travelMode || 'WALKING'
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -164,7 +164,7 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
-
+    console.log('here...', props.session)
     return (
       <Container>
         {myLocationIsValid && (
