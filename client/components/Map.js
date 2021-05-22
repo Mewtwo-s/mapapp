@@ -9,22 +9,8 @@ import {
   InfoWindow,
 } from 'react-google-maps';
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
-// import axios from 'axios';
-// import { point, featureCollection } from '@turf/helpers';
-// import center from '@turf/center';
-// import socket from '../socket';
 import { connect } from 'react-redux';
-// import Place from './Place';
-// import {
-//   getSessionThunkCreator,
-//   activateSessionThunkCreator,
-// } from '../store/session';
-
 import { Button, Container } from '../GlobalStyles';
-
-
-// import {watchMyLocation} from '../store/location'
-// import {joinRoom} from '../store/locationSharing'
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -33,45 +19,16 @@ const Map = withScriptjs(
   withGoogleMap((props) => {
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
-    // const [topPlaces, setTopPlaces] = useState();
-    // const [midPoint, setMidPoint] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
-    // const [joined, setJoin] = useState(false)
-    // const [selection, setSelection] = useState('');
 
-    // const getPlaces = async (lat, lng) => {
-    //   try {
-    //     if (lat && lng) {
-    //       const places = await (
-    //         await axios.post('/api/google', { lat: lat, lng: lng })
-    //       ).data;
-    //       setTopPlaces(places);
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-
-    // const findMidpoint = async (locations) => {
-    //   const initialLocations = locations.map((loc) => [loc.lat, loc.lng]);
-   
-    //   let finalLocations = [];
-    //   if (initialLocations.length > 0) {
-    //     for (let i = 0; i < initialLocations.length; i++) {
-    //       finalLocations.push(
-    //         point([initialLocations[i][0], initialLocations[i][1]])
-    //       );
-    //     }
-
-    //     const features = featureCollection(finalLocations);
-
-    //     const centerCenter = center(features);
-    //     await setMidPoint({
-    //       lat: centerCenter.geometry.coordinates[0],
-    //       lng: centerCenter.geometry.coordinates[1],
-    //     });
-    //   }
-    // };
+    const markerLabelStyle = {
+      backgroundColor: 'black',
+      color: 'white',
+      fontSize: '14px',
+      border: '2px solid white',
+      borderRadius: '15px',
+      padding: '4px',
+    };
 
     // Fit bounds function
     const fitBounds = () => {
@@ -82,24 +39,6 @@ const Map = withScriptjs(
       });
       mapRef.current.fitBounds(bounds);
     };
-
-    // useEffect(() => {
-    //   props.startWatch(props.user.id);
-    //   props.getSession(props.user.id, props.match.params.code);
-    // }, []);
-
-    // useEffect(() => {
-    //   if(props.session.id && props.myLocation.lat && joined === false){
-    //       props.userJoinRoom(props.user.id,  props.session.id, props.myLocation)
-    //       setJoin(true)
-    //   }
-    // }, [props.session.id, props.myLocation.lat]);
-
-    // useEffect(() => {
-    //   if (midPoint) {
-    //     getPlaces(midPoint.lat, midPoint.lng);
-    //   }
-    // }, [midPoint]);
 
     // Fit bounds on mount, and when the markers change
     useEffect(() => {
@@ -114,18 +53,9 @@ const Map = withScriptjs(
       }
     }, [props.session, props.myLocation]);
 
-    // function handleMagic() {
-    //   findMidpoint(props.allLocations);
-    // }
-
     const directionsService = new google.maps.DirectionsService();
 
-    // function placeSelected(loc, name) {
-    //   props.activateSession(props.session.id, loc.lat, loc.lng, name);
-    // }
-
     function getDirections(loc) {
-
       directionsService.route(
         {
           origin: props.myLocation,
@@ -142,22 +72,89 @@ const Map = withScriptjs(
       );
     }
 
+    // TEMP useEffect just for easy to read feedback.
+    useEffect(() => {
+      console.log('THIS USER:', props.user.id, props.user.firstName);
+      console.log('USERS in SESSION:');
+      if (props.session.users) {
+        props.session.users.forEach((u) => console.log(u.id, u.firstName));
+      }
+    }, [props.session]);
 
-    const myLocationIsValid = props.myLocation.lat ;
+    const getUserName = () => {
+      if (props.session.users) {
+        const firstName = props.session.users.find(
+          (user) => user.id === props.user.id
+        ).firstName;
+
+        return firstName !== '' ? firstName : 'You';
+      }
+    };
+
+    const renderUser = () => {
+      return parseFloat(props.myLocation.lat) ? (
+        <MarkerWithLabel
+          key={props.user.id}
+          icon={props.user.photo}
+          position={{
+            lat: parseFloat(props.myLocation.lat),
+            lng: parseFloat(props.myLocation.lng),
+          }}
+          labelAnchor={new google.maps.Point(0, 0)}
+          zIndex={100}
+          labelStyle={markerLabelStyle}
+        >
+          <div>{getUserName()}</div>
+        </MarkerWithLabel>
+      ) : (
+        console.log('location not reader')
+      );
+    };
+
+    const renderOthers = () => {
+      // creates a list of objects with consolidated user
+      // and loc data for rendering
+      const users = props.session.users;
+
+      if (users && props.allLocations) {
+        const otherUsers = users
+          .filter((user) => user.id !== props.user.id)
+          .reduce((modifiedUsers, user) => {
+            // find user location
+            const loc = props.allLocations.find(
+              (loc) => loc.userId === user.id
+            );
+            if (loc) {
+              modifiedUsers.push({ ...user, lat: loc.lat, lng: loc.lng });
+            }
+            return modifiedUsers;
+          }, []);
+
+        // Create the marker to render
+        return otherUsers.map((user) => (
+          <MarkerWithLabel
+            key={`user_${user.id}`}
+            icon={user.photo}
+            position={{ lat: user.lat, lng: user.lng }}
+            labelAnchor={new google.maps.Point(0, 0)}
+            zIndex={100}
+            labelStyle={markerLabelStyle}
+          >
+            <div>{user.firstName}</div>
+          </MarkerWithLabel>
+        ));
+      }
+    };
+
+    const myLocationIsValid = props.myLocation.lat;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
     const defCenter = myLocationIsValid
-      ? {lat: props.myLocation.lat, lng:props.myLocation.lng}
+      ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
 
     return (
       <Container>
-        
-        {/* {props.session.status === 'Pending' &&
-          props.session.hostId === props.user.id && (
-            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-          )} */}
-
         {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
             {sessionIsValid && (
@@ -180,7 +177,7 @@ const Map = withScriptjs(
                       setselectedPlace(place);
                     }}
                   >
-     {selectedPlace === place && (
+                    {selectedPlace === place && (
                       <InfoWindow
                         onCloseClick={() => {
                           setselectedPlace(null);
@@ -207,9 +204,12 @@ const Map = withScriptjs(
               <DirectionsRenderer directions={currentLine} />
             )}
 
+            {/* Draw labeled marker for each other person in the session */}
+            {renderOthers()}
 
+{/* <<<<<<< HEAD */}
             {/* Draw labeled marker for each user in current session*/}
-            {props.allLocations.length > 0 &&
+            {/* {props.allLocations.length > 0 &&
               props.allLocations.filter(loc=>loc.userId!=props.user.id).map((loc) => {
                 return (
                   <MarkerWithLabel
@@ -245,39 +245,23 @@ const Map = withScriptjs(
                     }}
                   >
                     <div>{`you're here`}</div>
-                  </MarkerWithLabel>:console.log('location not reader')}
+                  </MarkerWithLabel>:console.log('location not reader')} */}
           
               
+
+            {/* Draw the current user's marker */}
+            {renderUser()}
+
+{/* >>>>>>> 4d1a937e18e9cd184060c26917ad0f128cb7212f */}
           </GoogleMap>
         )}
-        {/* Draw place buttons */}
-        {/* <PlaceStyles>
-          {props.session.status === 'Pending' && topPlaces
-            ? topPlaces.map((place) => (
-
-              <Place
-                handle={placeSelected}
-                key={place.place_id}
-                location={place.geometry.location}
-                name={place.name}
-                open={place.opening_hours ? place.opening_hours.open_now : null}
-                price={place.price_level}
-                rating={place.rating}
-                place={place.image}
-              />
-              
-            ))
-
-            : console.log('There are no fun places near by')}
-        </PlaceStyles> */}
-        
       </Container>
     );
   })
 );
 
 const mapState = (state) => {
-  console.log('state',state) 
+  console.log('Map state', state);
   return {
     user: state.auth,
     allLocations: state.allLocations,
@@ -286,36 +270,5 @@ const mapState = (state) => {
     session: state.sessionReducer,
   };
 };
-
-// const mapDispatch = (dispatch) => {
-//   return {
-//     // startWatch: (userId) => {
-//     //   dispatch(watchMyLocation(userId));
-//     // },
-//     // activateSession: (sessionId, lat, lng, name) => {
-//     //   dispatch(activateSessionThunkCreator(sessionId, lat, lng, name));
-//     // },
-//     // getSession: (userId, sessionCode) => {
-//     //   dispatch(getSessionThunkCreator(userId, sessionCode));
-//     // },
-//     // userJoinRoom: (userId, sessionId, userLoc) => {
-//     //   dispatch(joinRoom(userId, sessionId, userLoc))
-//     // }
-//   };
-// };
-
-
-// const PlaceStyles = styled.div`
-//   max-width: 1400px;
-//   display: flex;
-//   flex-wrap: wrap;
-//   justify-content: space-between;
-
-//   @media screen and (max-width:600px){
-//     padding: 8px;
-//     display: flex;
-//     flex-direction: column;
-//   }
-// `
 
 export default connect(mapState)(Map);

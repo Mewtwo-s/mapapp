@@ -68,6 +68,20 @@ module.exports = {
       }
     ]
   },
+//   resolve: {
+//     fallback: {
+//       "buffer": false,
+//       "stream": false,
+//       "net": false,
+//       "path": false,
+//       "zlib": false,
+//       "http": false,
+//       "https": false,
+//       "crypto": false,
+//       "cheerio": false,
+//       "parse5": false
+//     } 
+// }
   plugins: [
    environmentConfig
   ]
