@@ -1,20 +1,11 @@
 const router = require('express').Router()
-const { models: { User, Session, UserSession }} = require('../db')
+const { models: { User, Session, userSession }} = require('../db')
 const runMailer = require('../../nodemailer');
 module.exports = router;
 const sequelize = require('sequelize')
 
 
-router.get('/test', async (req, res, next) => {
-  try {
-    res.send(await User.findAll({
-      where:{id:1}, 
-      include:UserSession})
-)
-  } catch (err) {
-    next(err)
-  }
-})
+
 
 router.get('/', async (req, res, next) => {
   try {
@@ -106,7 +97,7 @@ router.get('/friends/:userId', async (req, res, next) => {
       let uniqueFriends = Object.keys(friendObject).map(friend => {
         return friendObject[friend];
     })
- 
+ console.log(uniqueFriends)
  res.send(uniqueFriends)
   } catch (err) {
     next(err)
@@ -122,6 +113,26 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+// router.post('/invite', async(req, res, next) => {
+//   try {
+//     let user = await User.findOne({
+//       where: {
+//         email: req.body.email
+//       }
+//     })
+//     const session = await Session.findByPk(req.body.sessionId);
+//     // if not existing user
+//     if (!user) {
+//       user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
+//     }
+//     await session.addUsers(user);
+//     runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode, user.id);
+//     res.send(user);
+//   } catch(err) {
+//     next(err)
+//   }
+// })
+
 router.post('/invite', async(req, res, next) => {
   try {
     let user = await User.findOne({
@@ -130,12 +141,20 @@ router.post('/invite', async(req, res, next) => {
       }
     })
     const session = await Session.findByPk(req.body.sessionId);
+    // if not existing user
     if (!user) {
       user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
+      await session.addUsers(user);
+      runMailer(req.body.hostName, req.body.email, session.code, 'Guest', user.confirmationCode, user.id);
+      res.send(user);
     }
-    await session.addUsers(user);
-    runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
-    res.send(user);
+    else{
+      await session.addUsers(user);
+      runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
+      res.send(user)
+    }
+    
+    
   } catch(err) {
     next(err)
   }
@@ -143,7 +162,8 @@ router.post('/invite', async(req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
-    let session = await Session.findOne({
+    console.log('triggered')
+    const session = await Session.findOne({
       where: {
         code: req.body.code
       }, 
@@ -189,21 +209,18 @@ router.put('/remove/:userId', async (req, res, next) => {
 })
 
 
- //   relatedSessions.forEach(
-  //     async (session) =>{
-  //   let sessionId = session.id
-  //   let sessionUser = await Session.findOne({
-  //       where:{id:sessionId}, 
-  //       include:User})
-
-  //   await sessionUser.users.forEach( user=>{
-  //     if(user.id.toString() !== req.params.userId){
-  //       friends.push({
-  //         fName:user.firstName,
-  //         lName:user.lastName,
-  //         email:user.email
-  //       })
-
-  //     }
-  //   })  
-  // })
+router.post('/changePassword/:userId', async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.userId)
+    await user.update(req.body)
+    res.send({token: await user.generateToken()})
+    
+    
+  } catch (err) {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      res.status(401).send('User already exists')
+    } else {
+      next(err)
+    }
+  }
+})

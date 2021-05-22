@@ -74,11 +74,14 @@ export class JoinRoom extends React.Component {
   }
  
   render() {
+
      const capFirstName = this.props.user.firstName.slice(0,1).toUpperCase() + this.props.user.firstName.slice(1).toLowerCase()
-console.log(this.props);
+console.log('here===>', this.props);
     return (
       <div>
+        
         <h4>{`Hello ${capFirstName} !`}</h4>
+     
         {this.state.sessionAction === null && (
           <div>
             <h4> In the mood to hang out today? </h4>
@@ -105,6 +108,8 @@ console.log(this.props);
         )}
         {this.state.sessionAction === 'host' && (
           <div>
+            <h3>Invite friends using the code: {this.props.session.code} </h3>
+       
             <h1>Your session is ready! Join now</h1>
             <Link to={`/map/${this.props.session.code}`}>
               <Button>Go to session</Button>

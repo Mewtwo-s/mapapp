@@ -20,7 +20,21 @@ export const getFriendsThunk = (userId) => {
     };
 };
 
-export default function friendReducer (state = [], action) {
+export const updateUserThunk = (userId) =>{
+  return async (dispatch) => {
+    
+    try {
+    const { data } = await axios.post(`/api/users/changePassword/${userId}`)
+
+    dispatch(getFriends(data));
+    } catch (err) {
+    console.error('Error updating password', err);
+    }
+};
+
+}
+
+export default function (state = [], action) {
     switch (action.type) {
       case GET_FRIENDS:
         return action.friends

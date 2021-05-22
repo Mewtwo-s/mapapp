@@ -90,6 +90,7 @@ export const joinSessionThunkCreator = (userId, code, history) => {
 
   return async (dispatch) => {
     try {
+      console.log('in join session thunk')
       const response = await axios.put(`/api/users/add/${userId}`, {
         code: code
       });
