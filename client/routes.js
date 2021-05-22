@@ -37,8 +37,8 @@ class Routes extends Component {
           <Navbar />
           {isLoggedIn ? (
             <Switch>
-              <Route exact path='/test/:gamecode' component={Test}></Route>
-              <Route exact path="/test" component={UserJoinSession} />
+              <Route exact path='/friend/:gamecode' component={Test}></Route>
+              <Route exact path="/friend/" component={UserJoinSession} />
               <Route path="/map/:code" component={MapContainer} />
               <Route path="/pastSessions" component={PastSessions} />
               <Route path='/emailInvite' component={InviteForm} />
@@ -49,8 +49,7 @@ class Routes extends Component {
           ) : (
             <Switch>
               {/* <Route path="/map" component={MapContainer} /> */}
-              <Route path='/test/:id' component={Test}></Route>
-              <Route exact path="/test" component={UserJoinSession} />
+              <Route path='/friend' component={Test}></Route>
               <Route exact path="/" component={Login} />
               <Route exact path="/home" component={Login} />
               <Route path="/login" component={Login} />
