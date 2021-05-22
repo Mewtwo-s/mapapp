@@ -223,7 +223,8 @@ router.put('/add/:userId', async (req, res, next) => {
         code: req.body.code
       }, 
       include: {
-        model: User
+        model: User,
+        attributes: ['id', 'firstName', 'photo']
       }
     });
     res.send(session);
@@ -234,9 +235,18 @@ router.put('/add/:userId', async (req, res, next) => {
 
 router.put('/remove/:userId', async (req, res, next) => {
   try {
-    const session = await Session.findByPk(req.body.sessionId);
+    let session = await Session.findByPk(req.body.sessionId);
     const user = await User.findByPk(req.params.userId);
     await session.removeUsers(user);
+    session = await Session.findOne({
+      where: {
+        id: req.body.sessionId
+      }, 
+      include: {
+        model: User,
+        attributes: ['id', 'firstName', 'photo']
+      }
+    });
     res.send(session);
   } catch (err) {
     next(err)

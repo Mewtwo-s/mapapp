@@ -40,7 +40,17 @@ router.get('/:sessionCode', async (req, res, next) => {
 
 router.put('/:sessionId', async (req, res, next) => {
   try {
-    const session = await Session.findByPk(req.params.sessionId);
+    const session = await Session.findOne({
+      where: {
+        id: req.params.sessionId
+      }, 
+      include: {
+        model: User, 
+        attributes: ['id', 'firstName', 'photo']
+      }
+
+
+    });
     res.send(await session.update(req.body));
   } catch (err) {
     next(err);
