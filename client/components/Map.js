@@ -145,13 +145,17 @@ const Map = withScriptjs(
         return otherUsers.map((user) => (
           <MarkerWithLabel
             key={`user_${user.id}`}
-            // icon={user.photo}
+            //icon={user.photo}
+            icon= {{
+                url: `${user.photo}`, // url
+                    scaledSize: new google.maps.Size(40, 40), // scaled size
+              }}
             position={{ lat: user.lat, lng: user.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
             zIndex={100}
             labelStyle={markerLabelStyle}
           >
-            <img src={user.photo} style={{ height: '70px', width: '70px' }} />
+            {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
             <div>{user.firstName}</div>
           </MarkerWithLabel>
         ));

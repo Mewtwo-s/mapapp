@@ -82,7 +82,7 @@ export const FormGroup = styled.div`
 export const Input = styled.input`
   width: 100%;
   font-size: 16px;
-  border: solid 0.5px #dbdbdb;
+  border: solid 0.5px #1F817F;
   border-radius: 3px;
   color: orange;
   padding: 5px 40px;
@@ -108,3 +108,8 @@ export const Label = styled.label`
 	margin-bottom: 0.25em;
 	color: white;
 `;
+
+export const Select = styled.select`
+  border: solid 0.5px #1F817F;
+  border-radius: 3px;
+`

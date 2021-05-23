@@ -44,7 +44,7 @@ export const Home = props => {
             return (
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
                 <Card>
-                  <p style={{textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
+                  <p style={{ textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
                   <p style={{ textAlign: 'center', fontWeight: 'bold'}}>{`${session.locationName}`}</p>
                   <p style={{ textAlign: 'center'}}>{`Session Code: ${session.code}`}</p>
                   {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}

@@ -167,7 +167,7 @@ const mapDispatch = dispatch => {
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
         // const phoneNum = evt.target.phoneNum.value
-        // // const preferTransportation = evt.target.preferTransportation.value
+       // const preferTransportation = evt.target.preferTransportation.value
         // const street = evt.target.street.value
         // const city = evt.target.city.value
         // const state = evt.target.state.value

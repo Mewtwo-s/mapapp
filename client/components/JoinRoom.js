@@ -7,7 +7,7 @@ import {
 } from '../store/session';
 import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
-import { Button, Label, FormGroup, Input, Container } from '../GlobalStyles';
+import { Button, Label, FormGroup, Input, Container, Select } from '../GlobalStyles';
 import { getFriendsThunk } from '../store/user';
 import { inviteSessionUsersThunkCreator } from '../store/userSessions';
 import TravelMode from './TravelMode'
@@ -21,7 +21,7 @@ export class JoinRoom extends React.Component {
     this.state = {
       currentSession: null,
       sessionAction: null,
-      travelMode: null
+      travelMode: 'WALKING'
     };
     this.handleCreate = this.handleCreate.bind(this);
     this.handleAddFriendViaEmail = this.handleAddFriendViaEmail.bind(this)
@@ -59,7 +59,7 @@ export class JoinRoom extends React.Component {
     await this.props.joinSession(this.props.user.id, evt.target.code.value);
   }
 
-  async handleChangeMode(e){
+   handleChangeMode(e){
     this.setState({travelMode: e.target.value})
     console.log('mode->', this.state.travelMode)
   }
@@ -74,7 +74,6 @@ export class JoinRoom extends React.Component {
       this.props.stopWatchingMyLocation();
     }
 
- 
 
     this.setState({
       sessionAction: 'host',
@@ -83,9 +82,6 @@ export class JoinRoom extends React.Component {
   }
  
   render() {
-
-
-
     return (
       <div>
         
@@ -93,19 +89,14 @@ export class JoinRoom extends React.Component {
      
         {this.state.sessionAction === null && (
           <div>
-            <h4> In the mood to hang out today? </h4>
-            <div>
-            <select onChange={this.handleChangeMode}>
+            <h4> In the mood to hang out today? </h4>  
+            {/* Travel Mode component?? */}
+            <Select name="travelMode" onChange={this.handleChangeMode}>
                 <option value="BICYCLING">Cycling</option>
                 <option value="DRIVING">Driving</option>
                 <option value="TRANSIT">Transit</option>
-                <option selected value="WALKING" selected>Walking</option>
-            </select>
-        </div>
-            <Button onClick={this.handleCreate}>Create New Session</Button>
-            <Button onClick={() => this.handleClick('join')}>
-              Join a Session
-            </Button>
+                <option value="WALKING">Walking</option>
+            </Select>
 
             <Container style={{display: 'flex', justifyItems:'stretch'}}>
               <Button onClick={this.handleCreate}>Create New Session</Button>
@@ -122,7 +113,7 @@ export class JoinRoom extends React.Component {
                 <Label style={{ color: '#0f3057'}} htmlFor="code">
                   Join Existing Session
                 </Label>
-                <Input required placeholder='enter code here' style={{ boder: "solid 10px #51adcf", backgroundColor: '#e4efe5'}}name="code" type="text" />
+                <Input required placeholder='enter code here' style={{ boder: "solid 10px #51adcf", backgroundColor: '#e4efe5', width: 'fit-content'}}name="code" type="text" />
                 <Button type="submit">Join</Button>
               </div>
               <div></div>
