@@ -69,6 +69,9 @@ module.exports = {
     ]
   },
   resolve: {
+  //   alias: {
+  //     process: "process/browser"
+  //  },
     fallback: {
       "buffer": false,
       "stream": false,
@@ -90,6 +93,7 @@ module.exports = {
       "child_process": false,
       "worker_threads": false,
       "inspector": false,
+      "process": false,
       util: require.resolve("util/")
     } 
 },
