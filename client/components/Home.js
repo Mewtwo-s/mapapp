@@ -29,9 +29,7 @@ export const Home = props => {
  console.log(props)
   return (
     <Container>
-      <Link to={'/pastSessions'} className="small-link">
-        View Past Events
-      </Link>
+    
       <div style={{
           display: 'flex',
           flexDirection: 'column',
@@ -39,7 +37,11 @@ export const Home = props => {
           alignItems: 'center',
         }}
       >
+        <Link to={'/pastSessions'}>
+        View Past Events
+      </Link>
         <JoinRoom history={props.history} />
+        
         <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
