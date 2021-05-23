@@ -23,11 +23,6 @@ module.exports = {
     filename: './public/bundle.js'
   },
   devtool: 'source-map',
-  resolve: {
-    fallback: {
-      util: require.resolve("util/")
-    }
-  },
   module: {
     rules: [
       {
@@ -84,7 +79,18 @@ module.exports = {
       "https": false,
       "crypto": false,
       "cheerio": false,
-      "parse5": false
+      "parse5": false,
+      "constants": false,
+      "assert": false,
+      "fs": false,
+      "url": false,
+      "vm": false,
+      "querystring": false,
+      "os": false,
+      "child_process": false,
+      "worker_threads": false,
+      "inspector": false,
+      util: require.resolve("util/")
     } 
 },
   plugins: [
