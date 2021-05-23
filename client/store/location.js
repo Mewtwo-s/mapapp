@@ -40,7 +40,7 @@ export const locationWatchStarted = (watchId) => {
 // thunk
 // Start watching my location.
 // we should add session ID into here
-export const watchMyLocation = (userId) => {
+export const watchMyLocation = (userId, sessionId) => {
   console.log('location.watchMyLocation()');
   return (dispatch) => {
     // callback for when location check is successfull
@@ -71,7 +71,6 @@ export const watchMyLocation = (userId) => {
       //make a db call to find their coords
       //if coords exist, we emit them in updateMyLocation
       //if coords don't exist, we take them off the map? show a field to input location?
-      const sessionId = store.getState().sessionReducer.id;
       console.log('SESSION ID:', sessionId);
       console.log('HISTORY:', history);
       if (sessionId) {

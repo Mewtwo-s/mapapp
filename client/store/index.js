@@ -8,6 +8,7 @@ import myLocation from './location';
 import friendReducer from './user';
 import sessionReducer from './session';
 import userSessionsReducer from './userSessions';
+import sessionAction from './homeStatus';
 
 const reducer = combineReducers({ 
   auth, 
@@ -15,7 +16,8 @@ const reducer = combineReducers({
   allLocations, 
   sessionReducer,
   userSessionsReducer,
-  friendReducer
+  friendReducer,
+  sessionAction
  });
 
 const middleware = composeWithDevTools(

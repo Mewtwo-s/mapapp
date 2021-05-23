@@ -58,7 +58,7 @@ form div {
 }
 
 .logo{
- -webkit-text-stroke: 1px rgb(19, 121, 119);
+ -webkit-text-stroke: 1px #0f3057;
   background-color: aquamarine;
   font-size: 8vh;
   line-height: 6vw;
@@ -71,6 +71,7 @@ form div {
   -webkit-background-clip: text;
   color: #e8b7432e;
   animation: zoomout 10s ease 500ms forwards;
+  /* text-shadow: 4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15); */
 }
 
 @keyframes zoomout {
