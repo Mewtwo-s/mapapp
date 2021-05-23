@@ -1,4 +1,4 @@
-import { sendMyLocation } from './locationSharing';
+import { sendMyLocation, sendUserInputAddress } from './locationSharing';
 import store from '../store';
 import socket, { lastPersistedTimesObj } from '../socket';
 import axios from 'axios';
@@ -9,6 +9,8 @@ const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
 const LOCATION_WATCH_STOPPED = 'LOCATION_WATCH_STOPPED';
 const LOCATION_WATCH_STARTED = 'LOCATION_WATCH_STARTED';
 const LOCATION_ERROR = 'LOCATION_ERROR';
+const USER_INPUT_LOCATION = 'USER_INPUT_LOCATION';
+
 
 // action creator
 export const myLocationUpdated = (lat, lng) => {
@@ -32,6 +34,8 @@ export const locationWatchStarted = (watchId) => {
     watchId,
   };
 };
+
+
 
 // thunk
 // Start watching my location.
@@ -57,8 +61,13 @@ export const watchMyLocation = (userId) => {
     const watchFail = async (err) => {
       alert('Unable to detect your location');
       console.error('Unable to detect your location:', err);
-      dispatch(updateMyLocation(23.111548543393226, 113.2436214181923));
+      // var locInput = prompt("Please enter your address").split(',')
+      // dispatch(updateMyLocation(parseInt(locInput[0]), parseInt(locInput[1])));
       
+      
+      // var locInput = prompt("Please enter your address")
+      dispatch(requestUserInputLocation(40.78146359807055, -73.96651380162687, 'pending'));
+
       //make a db call to find their coords
       //if coords exist, we emit them in updateMyLocation
       //if coords don't exist, we take them off the map? show a field to input location?
@@ -104,11 +113,35 @@ export const stopWatchingMyLocation = () => {
 
 export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
-    console.log('updateMyLocation', lat, lng);
+    console.log('in location.js - updateMyLocation THUNK', lat, lng);
     // update state with my current position
     dispatch(myLocationUpdated(lat, lng));
     // send update to all users
     dispatch(sendMyLocation());
+  };
+};
+
+
+//////user input related
+
+
+export const userInputLocation = (lat, lng, address) => {
+  return {
+    type: USER_INPUT_LOCATION,
+    lat,
+    lng,
+    address,
+  };
+};
+
+export const requestUserInputLocation = (lat, lng, address) => {
+  return (dispatch) => {
+
+    console.log('in location.js - request GEOCODE THUNK');
+
+    dispatch(userInputLocation(lat, lng, address));
+
+    dispatch(sendUserInputAddress());
   };
 };
 
@@ -121,6 +154,9 @@ export default function (state = {}, action) {
     //   return { ...state, watchId: null };
     case MY_LOCATION_UPDATED:
       return { lat: action.lat, lng: action.lng };
+
+    case USER_INPUT_LOCATION:
+      return { lat: action.lat, lng: action.lng, address: action.address };
     default:
       return state;
   }

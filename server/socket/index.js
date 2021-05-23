@@ -38,6 +38,13 @@ module.exports = (io) => {
     socket.on('disconnect', () => {
       console.info('user disconnected: ' + socket.id);
     });
+
+    socket.on('send-my-address', (userId, sessionId, address) => {
+      const roomName = 'room_' + sessionId;
+      
+      io.to(roomName).emit('user-location-changed', userId, address);
+      
+    });
   });
 };
 

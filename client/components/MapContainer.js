@@ -119,7 +119,7 @@ const MapContainer = (props) => {
     }
   }, [props.allUsersInSession]);
 
-  console.log(props);
+ 
   return (
     <div>
       {props.session.status === 'Completed' ? (

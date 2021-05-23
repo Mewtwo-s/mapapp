@@ -17,6 +17,20 @@ import { Button, Container } from '../GlobalStyles';
 // =======================================================================
 const Map = withScriptjs(
   withGoogleMap((props) => {
+    
+    const geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(-34.397, 150.644);
+
+    geocoder.geocode( { 'address': '740 Broadway NY 10003'}, function(results, status) {
+      if (status == 'OK') {
+        console.log('ALL WE WANT ', results[0].geometry.location.lat(), results[0].geometry.location.lng());
+       
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+
+
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
@@ -152,7 +166,7 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
-    console.log('here...', props.session);
+  
     return (
       <Container>
         {myLocationIsValid && (
