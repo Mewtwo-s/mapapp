@@ -18,20 +18,19 @@ const Place = (props) => {
             {/* <p>Open: {open}</p> */}
             <p style={{ textAlign:'center'}}>Price: {"$".repeat(`${price}`)} </p>
             <p style={{ textAlign: 'center' }}>Rating: {rating}</p>
-            <div style={{alignItems: 'center'}}>
-            <Button onClick={onTrigger}>Select</Button>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Button onClick={onTrigger} style={{margin: "5px"}}>Select</Button>
             </div>
         </Card>
     )
 }
-// <div style={{ display: 'flex', flexDirection: 'column'}}>
 
 const Card = styled.div`
     border: solid 2px #51adcf;
     border-radius: 10px;
-    width: 300px;
+    width: 200px;
     background-color: #e4efe7;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 5px 20px rgb(48,181,204, 0.5);
      &:hover {
     background-color: #e4efe5;
     }

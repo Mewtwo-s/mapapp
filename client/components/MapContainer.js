@@ -226,9 +226,11 @@ const mapDispatch = (dispatch) => {
 };
 
 const PlaceStyles = styled.div`
-  max-width: 1400px;
+  max-width: 900px;
   display: flex;
-  justify-content: space-between;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+
 
   @media screen and (max-width: 600px) {
     padding: 8px;

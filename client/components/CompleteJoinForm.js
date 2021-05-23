@@ -23,7 +23,7 @@ class CompleteJoinForm extends React.Component {
       <form onSubmit={handleSubmit} name="join">
       {isLoggedIn ? 
       <div>
-        <h1>Welcome, </h1>
+        <h3>Welcome, </h3>
       </div>
       : <div>  
         <div>

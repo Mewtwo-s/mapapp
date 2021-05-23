@@ -23,9 +23,9 @@ html {
 body{
     font-family: 'Nunito', sans-serif;
     font-weight: 400;
-    line-height: 1.6;
+    line-height: 1;
     font-size: 1.6rem;
-    background: #faf1e6;
+    background: #faf1e6ad;
     color: #333;
     @media only screen and (max-width: 600px){
         min-height: 100vh;
@@ -112,4 +112,9 @@ export const Label = styled.label`
 export const Select = styled.select`
   border: solid 0.5px #1F817F;
   border-radius: 3px;
+  height: 30px;
+
+  @media screen and (max-width: 600px) {
+    height: 2rem;
+  }
 `

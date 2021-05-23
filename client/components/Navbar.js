@@ -14,14 +14,17 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
   <Nav>
     <NavbarContainer>
       {/* <div style={{backgroundImage: '/public/mapLogo.png'}}></div> */}
-        <h2 style={{ textShadow: '2px 2px white'}}>Meedle</h2>
+        <h1 style={{ textShadow: '4px 4px white'}}>Meedle</h1>
+        {/* <h1 className="logo">
+          Meedle
+        </h1> */}
       
       {
           isLoggedIn && 
           <div>{
               photo ?
               <ProfilePhoto src={`${photo}`} /> :
-              <Name>{firstName}</Name>
+              <Name>{firstName.slice(0,1)}</Name>
           }</div>
       }
     
@@ -78,8 +81,7 @@ const Nav = styled.nav`
   top: 0;
   height: 80px;
   background-color: #a5ecd7;
-  /* box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5); */
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 5px 20px rgb(48,181,204, 0.5); 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -99,7 +101,7 @@ const Nav = styled.nav`
 
   @media screen and (max-width:600px){
     display: flex;
-    justify-content: space-stretch;
+    justify-content: space-between;
   }
   ${Container};
 `;
@@ -193,25 +195,22 @@ const StyledBurger = styled.div`
 const ProfilePhoto = styled.img`
   border: solid 1px white;
   border-radius: 50%;
-  height: 70px;
-  width: 70px;
+  height: 65px;
+  width: 65px;
   @media screen and (max-width:600px){
     height: 60px;
     width: 60px;
   }
 `
 
-const Name = styled.h4`
+const Name = styled.h1`
   border: solid 1px white;
   text-align:center;
   padding-top: 35%;
   border-radius: 50%;
-  height: 70px;
-  width: 70px;
+  height: 60px;
+  width: 60px;
   background-color: #faf1e6;
-  @media screen and (max-width:600px){
-    height: 60px;
-    width: 60px;
-  }
 `
+
 export default connect(mapState, mapDispatch)(Navbar)

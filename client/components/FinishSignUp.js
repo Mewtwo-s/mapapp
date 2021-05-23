@@ -20,7 +20,7 @@ function FinishSignUp(props) {
     }
     return (
         <div>
-            <h1>Complete Ya Sign Up,  Ya Badass Friends Are WAITING</h1>
+            <h3>Complete Ya Sign Up,  Ya Badass Friends Are WAITING</h3>
             <form name="join" onSubmit={handleSubmit}>
             {<div>  
                 <div>

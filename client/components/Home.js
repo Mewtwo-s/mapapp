@@ -29,21 +29,25 @@ export const Home = props => {
         {' '}
         View Past Sessions{' '}
       </Link>
-      <div
-        style={{
+      <div style={{
           display: 'flex',
           flexDirection: 'column',
           justtifyContent: 'center',
           alignItems: 'center',
         }}
       >
+
+        <h1 className="logo">
+          Meedle
+        </h1>
+        
         <JoinRoom history={props.history} />
-        <h2>{`Active Sessions (${activeSessions.length})`} </h2>
+        <h3>{`Active Sessions (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
             return (
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
-                <Card>
+                <Card style={{ backgroundColor: '#f3efd5'}}>
                   <p style={{ textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
                   <p style={{ textAlign: 'center', fontWeight: 'bold'}}>{`${session.locationName}`}</p>
                   <p style={{ textAlign: 'center'}}>{`Session Code: ${session.code}`}</p>
@@ -53,7 +57,7 @@ export const Home = props => {
             );
           })}
         </CardsContainer>
-        <h2>{`Pending Sessions (${pendingSessions.length})`} </h2>
+        <h3>{`Pending Sessions (${pendingSessions.length})`} </h3>
         <CardsContainer>
           {pendingSessions.map((session) => {
             return (
@@ -74,35 +78,35 @@ export const Home = props => {
 };
 
 const Card = styled.div`
-  margin: 0.5rem;
+  margin: 1rem;
   border: solid 2px #51adcf;
   border-radius: 10px;
-  max-width: 300px;
-
+  width: 200px;
   padding: 8px;
   background-color: #efefef;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
-
+  box-shadow: 0px 5px 20px rgb(48,181,204, 0.5);
   &:hover {
     background-color: #e4efe5;
   }
-
-  @media screen and (max-width: 600px) {
-    padding: 8px;
-    width: 275px;
+   @media screen and (max-width: 600px) {
+    padding: 4px;
+    width: 130px;
   }
 `;
 
 const CardsContainer = styled.div`
-  max-width: 1400px;
+  padding: 10px;
+  max-width: 800px;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-basis: 33.333333%
+   -webkit-justify-content: space-around;
+  justify-content: space-around;
 
   @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
-    flex-direction: column;
-    just
+    flex-basis: 50%
   }
 `;
 
