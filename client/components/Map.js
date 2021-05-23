@@ -153,7 +153,6 @@ const Map = withScriptjs(
             return modifiedUsers;
           }, []);
 
-
         // Create the marker to render
 
         return otherUsers.map((user) => (
