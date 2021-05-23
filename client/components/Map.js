@@ -111,25 +111,25 @@ const Map = withScriptjs(
       scaledSize: new google.maps.Size(40, 40), // scaled size
     }
 
-    const renderUser = () => {
-      return parseFloat(props.myLocation.lat) ? (
-        <MarkerWithLabel
-          key={props.user.id}
-          icon={userIcon}
-          position={{
-            lat: parseFloat(props.myLocation.lat),
-            lng: parseFloat(props.myLocation.lng),
-          }}
-          labelAnchor={new google.maps.Point(0, 0)}
-          zIndex={100}
-          labelStyle={markerLabelStyle}
-        >
-          <div>{getUserName()}</div>
-        </MarkerWithLabel>
-      ) : (
-        console.log('location not reader')
-      );
-    };
+    // const renderUser = () => {
+    //   return parseFloat(props.myLocation.lat) ? (
+    //     <MarkerWithLabel
+    //       key={props.user.id}
+    //       icon={userIcon}
+    //       position={{
+    //         lat: parseFloat(props.myLocation.lat),
+    //         lng: parseFloat(props.myLocation.lng),
+    //       }}
+    //       labelAnchor={new google.maps.Point(0, 0)}
+    //       zIndex={100}
+    //       labelStyle={markerLabelStyle}
+    //     >
+    //       <div>{getUserName()}</div>
+    //     </MarkerWithLabel>
+    //   ) : (
+    //     console.log('location not reader')
+    //   );
+    // };
 
 
    
@@ -242,7 +242,10 @@ const Map = withScriptjs(
             {(props.myLocation || savedLocation) && (
               <MarkerWithLabel
                 key={props.user.id}
-                icon={props.user.photo}
+                icon= {{
+                  url: `${props.user.photo}`, // url
+                      scaledSize: new google.maps.Size(40, 40), // scaled size
+                }}
                 position={props.myLocation ? props.myLocation : savedLocation}
                 labelAnchor={new google.maps.Point(0, 0)}
                 zIndex={100}
