@@ -17,9 +17,11 @@ import { point, featureCollection } from '@turf/helpers';
 import center from '@turf/center';
 import axios from 'axios';
 import Place from './Place';
-import { arriveThunkCreator, getSessionUsersThunkCreator } from '../store/userSessions'
+import {
+  arriveThunkCreator,
+  getSessionUsersThunkCreator,
+} from '../store/userSessions';
 import EndedSession from './EndedSession';
-
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
@@ -86,7 +88,7 @@ const MapContainer = (props) => {
   }, []);
 
   useEffect(() => {
-    if (props.session.id && props.myLocation.lat && joined === false) {
+    if (props.session.id && joined === false) {
       props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
       setJoin(true);
     }
@@ -105,85 +107,93 @@ const MapContainer = (props) => {
   }, [midPoint]);
 
   useEffect(() => {
-    if (props.session.status === "Active") {
-      const allArrived= props.allUsersInSession.every(user => user.arrived === true);
+    if (props.session.status === 'Active') {
+      const allArrived = props.allUsersInSession.every(
+        (user) => user.arrived === true
+      );
       //this is just super inaccurate and not very realistic
       // const allLocationsMatch = props.allUsersInSession.every(user => user.currentLat === props.session.lat && user.currentLng === props.session.lng);
       if (allArrived === true) {
         props.endSession(props.session.id);
       }
     }
-   
   }, [props.allUsersInSession]);
-  
-  console.log(props)
+
+  console.log(props);
   return (
-
     <div>
-     {props.session.status === "Completed" ? <EndedSession /> :
-    <div>
-    {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
-      <Container>
-      <Link to='/home'> Back To Home </Link>
-      <div style={{textAlign:'center'}}>
-        <h4>Session Code: {props.session.code}</h4>
-        <p>In this session:</p>
-        {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
-      </div>
-      
-  
-  {props.session.status === 'Pending' &&
-          props.session.hostId === props.user.id && (
-            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-          )
-          
-          }
-          <PlaceStyles>
-          {props.session.status === 'Pending' && topPlaces
-            ? topPlaces.map((place) => (
+      {props.session.status === 'Completed' ? (
+        <EndedSession />
+      ) : (
+        <div>
+          {joined === false && props.session.status !== 'Completed' ? (
+            <Loading message="your map" />
+          ) : (
+            <Container>
+              <Link to="/home"> Back To Home </Link>
+              <div style={{ textAlign: 'center' }}>
+                <h4>Session Code: {props.session.code}</h4>
+                <p>In this session:</p>
+                {props.session.users ? (
+                  <p> {`You, ${friendsJoined}`} </p>
+                ) : (
+                  'Finding friends'
+                )}
+              </div>
 
-              <Place
-                handle={placeSelected}
-                key={place.place_id}
-                location={place.geometry.location}
-                name={place.name}
-                open={place.opening_hours ? place.opening_hours.open_now : null}
-                price={place.price_level}
-                rating={place.rating}
-                place={place.image}
+              {props.session.status === 'Pending' &&
+                props.session.hostId === props.user.id && (
+                  <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+                )}
+              <PlaceStyles>
+                {props.session.status === 'Pending' && topPlaces
+                  ? topPlaces.map((place) => (
+                      <Place
+                        handle={placeSelected}
+                        key={place.place_id}
+                        location={place.geometry.location}
+                        name={place.name}
+                        open={
+                          place.opening_hours
+                            ? place.opening_hours.open_now
+                            : null
+                        }
+                        price={place.price_level}
+                        rating={place.rating}
+                        place={place.image}
+                      />
+                    ))
+                  : null}
+              </PlaceStyles>
+
+              {props.session.status === 'Active' && (
+                <Button onClick={userArrives}> I have arrived </Button>
+              )}
+
+              {props.session.hostId === props.user.id && (
+                <Button onClick={() => props.endSession(props.session.id)}>
+                  End Session
+                </Button>
+              )}
+
+              <Map
+                topPlaces={topPlaces}
+                match={props.match}
+                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
+                loadingElement={<div className="loader" />}
+                containerElement={
+                  <div
+                    className="mapContainer"
+                    style={{ height: '70vh', width: '100%' }}
+                  />
+                }
+                mapElement={<div className="map" style={{ height: '100%' }} />}
               />
-              
-            ))
-
-            : null}
-        </PlaceStyles>
-
-        {props.session.status === 'Active' &&
-            <Button onClick={userArrives}> I have arrived </Button>
-          
-          }
-
-        {props.session.hostId === props.user.id && 
-            <Button onClick={() => props.endSession(props.session.id)}>End Session</Button>}
-
-      <Map
-        topPlaces={topPlaces}
-        match={props.match}
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
-        loadingElement={<div className="loader" />}
-        containerElement={
-          <div
-            className="mapContainer"
-            style={{ height: '70vh', width: '100%' }}
-          />
-        }
-        mapElement={<div className="map" style={{ height: '100%' }} />}
-      />
-      </Container>
-    }
+            </Container>
+          )}
+        </div>
+      )}{' '}
     </div>
-} </div>
-
   );
 };
 
@@ -192,9 +202,8 @@ const mapState = (state) => {
     user: state.auth,
     session: state.sessionReducer,
     myLocation: state.myLocation,
-    allLocations: state.allLocations, 
-    allUsersInSession: state.userSessionsReducer
-
+    allLocations: state.allLocations,
+    allUsersInSession: state.userSessionsReducer,
   };
 };
 

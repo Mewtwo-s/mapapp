@@ -60,7 +60,7 @@ const Map = withScriptjs(
         {
           origin: props.myLocation,
           destination: loc,
-          travelMode: props.session.travelMode || 'WALKING'
+          travelMode: props.session.travelMode || 'WALKING',
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -152,7 +152,7 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
-    console.log('here...', props.session)
+    console.log('here...', props.session);
     return (
       <Container>
         {myLocationIsValid && (
@@ -208,7 +208,20 @@ const Map = withScriptjs(
             {renderOthers()}
 
             {/* Draw the current user's marker */}
-            {renderUser()}
+            {/* {renderUser()} */}
+
+            {(props.myLocation || savedLocation) && (
+              <MarkerWithLabel
+                key={props.user.id}
+                icon={props.user.photo}
+                position={props.myLocation ? props.myLocation : savedLocation}
+                labelAnchor={new google.maps.Point(0, 0)}
+                zIndex={100}
+                labelStyle={markerLabelStyle}
+              >
+                <div>{getUserName()}</div>
+              </MarkerWithLabel>
+            )}
           </GoogleMap>
         )}
       </Container>
@@ -224,6 +237,10 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     isLoggedIn: !!state.auth.id,
     session: state.sessionReducer,
+    savedLocation: {
+      lat: state.sessionReducer.currentLat,
+      lng: state.sessionReducer.currentLng,
+    },
   };
 };
 

@@ -1,11 +1,14 @@
 import { sendMyLocation } from './locationSharing';
 import store from '../store';
 import socket, { lastPersistedTimesObj } from '../socket';
+import axios from 'axios';
+import history from '../history';
 
 // actions
 const MY_LOCATION_UPDATED = 'MY_LOCATION_UPDATED';
 const LOCATION_WATCH_STOPPED = 'LOCATION_WATCH_STOPPED';
 const LOCATION_WATCH_STARTED = 'LOCATION_WATCH_STARTED';
+const LOCATION_ERROR = 'LOCATION_ERROR';
 
 // action creator
 export const myLocationUpdated = (lat, lng) => {
@@ -51,12 +54,24 @@ export const watchMyLocation = (userId) => {
     };
 
     // callback for when location check fails
-    const watchFail = (err) => {
+    const watchFail = async (err) => {
       alert('Unable to detect your location');
-      console.error(err);
+      console.error('Unable to detect your location:', err);
       //make a db call to find their coords
       //if coords exist, we emit them in updateMyLocation
       //if coords don't exist, we take them off the map? show a field to input location?
+      const sessionId = store.getState().sessionReducer.id;
+      console.log('SESSION ID:', sessionId);
+      console.log('HISTORY:', history);
+      if (sessionId) {
+        // this should return all the users in this session
+        const { data } = axios.get(`/api/usersessions/${sessionId}`);
+        console.log('USER SESSON:', data);
+        // if (data) {
+        //   console.log('FOUND SAVED LOC');
+        //   dispatch(updateMyLocation(data.currentLat, data.currentLng));
+        // }
+      }
     };
 
     const options = {
