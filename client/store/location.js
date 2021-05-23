@@ -57,6 +57,8 @@ export const watchMyLocation = (userId) => {
     const watchFail = async (err) => {
       alert('Unable to detect your location');
       console.error('Unable to detect your location:', err);
+      dispatch(updateMyLocation(23.111548543393226, 113.2436214181923));
+      
       //make a db call to find their coords
       //if coords exist, we emit them in updateMyLocation
       //if coords don't exist, we take them off the map? show a field to input location?
