@@ -88,7 +88,7 @@ const MapContainer = (props) => {
   }, []);
 
   useEffect(() => {
-    if (props.session.id && joined === false) {
+    if (props.session.id && props.myLocation.lat && joined === false) {
       props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
       setJoin(true);
     }
