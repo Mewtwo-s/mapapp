@@ -69,6 +69,9 @@ module.exports = {
     ]
   },
   resolve: {
+    alias: {
+      process: "process/browser"
+   },
     fallback: {
       "buffer": false,
       "stream": false,
