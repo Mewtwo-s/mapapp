@@ -153,10 +153,7 @@ const Map = withScriptjs(
             return modifiedUsers;
           }, []);
 
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of 1965ae3 (user input geolocation)
         // Create the marker to render
 
         return otherUsers.map((user) => (
