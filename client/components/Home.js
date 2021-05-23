@@ -36,11 +36,6 @@ export const Home = props => {
           alignItems: 'center',
         }}
       >
-
-        <h1 className="logo">
-          Meedle
-        </h1>
-        
         <JoinRoom history={props.history} />
         <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>

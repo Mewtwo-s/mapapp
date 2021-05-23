@@ -24,7 +24,6 @@ const AuthForm = props => {
 
   }
   const {handleSubmit, error} = props 
-  console.log(pathName, displayName);
   return (
     
     <FormContainer>
