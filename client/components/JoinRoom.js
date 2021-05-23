@@ -155,7 +155,7 @@ export class JoinRoom extends React.Component {
                   <Input name="email" type="email" 
                       value={this.state.email}
                       onChange = {this.handleChange}
-                      placeholder="enter friend's email here"
+                      placeholder="enter friend's email"
                       />
                       <Button style={{margin: '0px'}}type="submit">Submit</Button>
                 </div>

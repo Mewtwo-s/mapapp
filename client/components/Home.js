@@ -51,7 +51,15 @@ export const Home = props => {
                   <p style={{ textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
                   <p style={{ textAlign: 'center', fontWeight: 'bold'}}>{`${session.locationName}`}</p>
                   <p style={{ textAlign: 'center'}}>{`Event Code: ${session.code}`}</p>
-                  {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}
+
+                  {
+                  session.hostId === props.userId ? 
+                  <p style={{ textAlign: 'center' }}>Hosts by you!</p> :
+                  <p>{`Hosts by ${session.host.firstName} ${session.host.lastName}`}</p>
+                }
+
+
+
                 </Card>
               </Link>
             );
@@ -66,7 +74,12 @@ export const Home = props => {
                   {/* replace with place name */}
                   <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Meetup Spot: TBD </p>
                   <p style={{ textAlign: 'center' }}>{`Event Code: ${session.code}`}</p>
-                  {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}
+                  {
+                    session.hostId === props.userId ? 
+                    <p style={{ textAlign: 'center' }}>Hosts by you!</p> : 
+                    <p>{`Hosts by ${session.host.firstName} ${session.host.lastName}`}</p>
+                  }
+                  
                 </Card>
               </Link>
             );

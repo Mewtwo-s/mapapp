@@ -31,6 +31,7 @@ export const PastSessions = props => {
                                  'Location was not selected'
                                  } 
                                  </h5>
+                              <p>{`Hosted by ${session.host.firstName} ${session.host.lastName}`}</p>
                               {/* TODO: change Date format */}
                               <p>{`Event ended: ${session.updatedAt}`}</p>
                            </Card>

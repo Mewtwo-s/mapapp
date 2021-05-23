@@ -14,7 +14,7 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
   <Nav>
     <NavbarContainer>
       {/* <div style={{backgroundImage: '/public/mapLogo.png'}}></div> */}
-        <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1>
+        <Link to='/'> <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1> </Link>
 
         {/* <h1 className="logo">
           Meedle
@@ -59,7 +59,6 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
  * CONTAINER
  */
 const mapState = state => {
-  console.log('state auth nav', state.auth.photo)
   return {
     isLoggedIn: !!state.auth.id,
     photo: state.auth.photo,
