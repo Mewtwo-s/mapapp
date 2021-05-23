@@ -14,12 +14,21 @@ import axios from 'axios'
  */
 const AuthForm = props => {
 
+  let pathName=props.location.pathname.substring(1);
+  let displayName
+  if (pathName === "signup") {
+    displayName = "Sign Up";
+  } else {
+    displayName = "Login"
+    pathName="login"
 
-  const {name, displayName, handleSubmit, error} = props 
+  }
+  const {handleSubmit, error} = props 
+  console.log(pathName, displayName);
   return (
     
     <FormContainer>
-      <form onSubmit={handleSubmit} name={name}>
+      <form onSubmit={handleSubmit} name={pathName}>
           <FormGroup>
             <div>
               <Label htmlFor="email">
@@ -36,7 +45,7 @@ const AuthForm = props => {
           </FormGroup>
        
 
-        {props.name==='signup'? 
+        {pathName==='signup'? 
         <div> 
           <FormGroup>
               <div>
@@ -51,56 +60,7 @@ const AuthForm = props => {
                 </Label>
                 <Input name="lastName" type="text" required placeholder='required'/>
               </div>
-              {/* <div>
-                <Label htmlFor="phoneNum">
-                  <small>Phone Number</small>
-                </Label>
-                <Input name="phoneNum" type="text" />
-              </div> */}
           </FormGroup> 
-          
-        {/* <FormGroup>
-            <h4 style={{ color: 'white', marginBottom: '0px', marginTop: '1rem' }}>
-              Default address:
-          </h4>
-        </FormGroup>
-            
-        <FormGroup>
-          <div>
-            <Label htmlFor="street">
-              <small>Street</small>
-            </Label>
-            <Input name="street" type="text" />
-          </div>
-          <div>
-            <Label htmlFor="city">
-              <small>City</small>
-            </Label>
-            <Input name="city" type="text" />
-          </div>
-
-          <div>
-            <Label htmlFor="state">
-              <small>State</small>
-            </Label>
-            <Input name="state" type="text" />
-          </div>
-        </FormGroup>
-
-        <FormGroup>
-          <div>
-            <Label htmlFor="zipCode">
-              <small>Zip Code</small>
-            </Label>
-            <Input name="zipCode" type="text" />
-          </div>
-          <div>
-            <Label htmlFor="country">
-              <small>Country</small>
-            </Label>
-            <Input name="country" type="text" />
-          </div>
-        </FormGroup> */}
         
         <FormGroup>
           <div>
@@ -133,8 +93,7 @@ const AuthForm = props => {
  */
 const mapLogin = state => {
   return {
-    name: 'login',
-    displayName: 'Login',
+    
     error: state.auth.error
   }
 }
@@ -143,8 +102,6 @@ const mapSignup = state => {
   const roomCode = history.location.pathname.split('/')[history.location.pathname.split.length]
 
   return {
-    name: 'signup',
-    displayName: 'Sign Up',
     error: state.auth.error,
     code: roomCode
   }
@@ -166,15 +123,6 @@ const mapDispatch = dispatch => {
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
-        // const phoneNum = evt.target.phoneNum.value
-       // const preferTransportation = evt.target.preferTransportation.value
-        // const street = evt.target.street.value
-        // const city = evt.target.city.value
-        // const state = evt.target.state.value
-        // const country = evt.target.country.value
-        // const zipCode = evt.target.zipCode.value
-        
-        //const photo = evt.target.photo.value ||'http://maps.google.com/mapfiles/ms/icons/golfer.png'
         const photo = evt.target.photo.value || ''
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))

@@ -15,10 +15,6 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
     <NavbarContainer>
       {/* <div style={{backgroundImage: '/public/mapLogo.png'}}></div> */}
         <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1>
-
-        {/* <h1 className="logo">
-          Meedle
-        </h1> */}
       
       {
           isLoggedIn && 
@@ -33,7 +29,7 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
         <NavMenu open={open}>
           {/* The navbar will show these links after you log in */}
           <NavLink to="/home">Home</NavLink> 
-          <NavLink to="/" onClick={handleClick}>
+          <NavLink to="/home" onClick={handleClick}>
             Logout
           </NavLink>
         </NavMenu>
