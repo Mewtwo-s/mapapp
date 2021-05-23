@@ -39,19 +39,19 @@ class Routes extends Component {
             <Switch>
               <Route exact path='/friend/:gamecode' component={Test}></Route>
               <Route exact path="/friend/" component={UserJoinSession} />
-              <Route path="/map/:code" component={MapContainer} />
-              <Route path="/pastSessions" component={PastSessions} />
-              <Route path='/emailInvite' component={InviteForm} />
-              <Route path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
-              <Route exact path="/home" component={Home} />
+              <Route exact path="/map/:code" component={MapContainer} />
+              <Route exact path="/pastSessions" component={PastSessions} />
+              <Route exact path='/emailInvite' component={InviteForm} />
+              <Route exact path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
+              <Route path="/home" component={Home} />
               <Redirect to="/home" />
             </Switch>
           ) : (
             <Switch>
               {/* <Route path="/map" component={MapContainer} /> */}
-              <Route path='/friend' component={Test}></Route>
-              <Route exact path="/" component={Login} />
-              <Route exact path="/home" component={Login} />
+              <Route exact path='/friend' component={Test}></Route>
+              <Route path="/" component={Login} />
+              <Route path="/home" component={Login} />
               <Route path="/login" component={Login} />
               <Route exact path="/signup/:gamecode/:usercode" component={FinishSignUp} />
               <Route exact path="/signup" component={Signup} />

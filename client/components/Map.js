@@ -17,6 +17,20 @@ import { Button, Container } from '../GlobalStyles';
 // =======================================================================
 const Map = withScriptjs(
   withGoogleMap((props) => {
+    
+    const geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(-34.397, 150.644);
+
+    geocoder.geocode( { 'address': '740 Broadway NY 10003'}, function(results, status) {
+      if (status == 'OK') {
+        console.log('ALL WE WANT ', results[0].geometry.location.lat(), results[0].geometry.location.lng());
+       
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+
+
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
@@ -60,7 +74,7 @@ const Map = withScriptjs(
         {
           origin: props.myLocation,
           destination: loc,
-          travelMode: props.session.travelMode || 'WALKING'
+          travelMode: props.session.travelMode || 'WALKING',
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -90,12 +104,18 @@ const Map = withScriptjs(
         return firstName !== '' ? firstName : 'You';
       }
     };
+    //icon = { props.user.photo }
+    //resize icon
+    const userIcon = {
+      url: `${ props.user.photo }`, // url
+      scaledSize: new google.maps.Size(40, 40), // scaled size
+    }
 
     const renderUser = () => {
       return parseFloat(props.myLocation.lat) ? (
         <MarkerWithLabel
           key={props.user.id}
-          icon={props.user.photo}
+          icon={userIcon}
           position={{
             lat: parseFloat(props.myLocation.lat),
             lng: parseFloat(props.myLocation.lng),
@@ -110,6 +130,9 @@ const Map = withScriptjs(
         console.log('location not reader')
       );
     };
+
+
+   
 
     const renderOthers = () => {
       // creates a list of objects with consolidated user
@@ -131,15 +154,21 @@ const Map = withScriptjs(
           }, []);
 
         // Create the marker to render
+
         return otherUsers.map((user) => (
           <MarkerWithLabel
             key={`user_${user.id}`}
-            icon={user.photo}
+            //icon={user.photo}
+            icon= {{
+                url: `${user.photo}`, // url
+                    scaledSize: new google.maps.Size(40, 40), // scaled size
+              }}
             position={{ lat: user.lat, lng: user.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
             zIndex={100}
             labelStyle={markerLabelStyle}
           >
+            {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
             <div>{user.firstName}</div>
           </MarkerWithLabel>
         ));
@@ -152,7 +181,7 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
-    console.log('here...', props.session)
+  
     return (
       <Container>
         {myLocationIsValid && (
@@ -186,7 +215,7 @@ const Map = withScriptjs(
                       >
                         <div>
                           <h3>{selectedPlace.name}</h3>
-                          <h5>{selectedPlace.vicinity}</h5>
+                          <p>{selectedPlace.vicinity}</p>
                           <p>
                             {selectedPlace.opening_hours.open_now
                               ? 'Open Now'
@@ -208,7 +237,20 @@ const Map = withScriptjs(
             {renderOthers()}
 
             {/* Draw the current user's marker */}
-            {renderUser()}
+            {/* {renderUser()} */}
+
+            {(props.myLocation || savedLocation) && (
+              <MarkerWithLabel
+                key={props.user.id}
+                icon={props.user.photo}
+                position={props.myLocation ? props.myLocation : savedLocation}
+                labelAnchor={new google.maps.Point(0, 0)}
+                zIndex={100}
+                labelStyle={markerLabelStyle}
+              >
+                <div>{getUserName()}</div>
+              </MarkerWithLabel>
+            )}
           </GoogleMap>
         )}
       </Container>
@@ -224,6 +266,10 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     isLoggedIn: !!state.auth.id,
     session: state.sessionReducer,
+    savedLocation: {
+      lat: state.sessionReducer.currentLat,
+      lng: state.sessionReducer.currentLng,
+    },
   };
 };
 

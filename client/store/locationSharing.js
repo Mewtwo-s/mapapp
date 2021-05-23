@@ -57,6 +57,18 @@ export const sendMyLocation = () => {
   };
 };
 
+export const sendUserInputAddress = () => {
+  return (dispatch) => {
+    const userId = store.getState().auth.id;
+    const address = store.getState().address;
+    const sessionId = store.getState().sessionReducer.id;
+    console.log('send my location running', userId, address, sessionId)
+    if (address) {
+      socket.emit('send-my-address', userId, sessionId, address);
+    }
+  };
+};
+
 /**
  * REDUCER
  */

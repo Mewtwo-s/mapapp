@@ -12,36 +12,33 @@ const Place = (props) => {
     return (
         <Card>
             <h3 style={{textAlign: 'center'}}>{name}</h3>
-            <div style={{ display: 'flex', justifyContent: 'space-around'}}>
-     
-                <div style={{ display: 'flex', flexDirection: 'column', wrap: 'nowrap'}}>
-                    <p>{open
-                        ? 'Open Now'
-                        : 'Closed Now'}</p>
-                    {/* <p>Open: {open}</p> */}
-                    <p>Price: {"$".repeat(`${price}`)} </p>
-                    <p>Rating: {rating}</p>
-                
-                </div>
-                <Button onClick={onTrigger} style={{width: '50%'}} >Select</Button>
+            
+            <p style={{ textAlign:'center'}}>
+                {open ? 'Open Now' : 'Closed Now'}</p>
+            {/* <p>Open: {open}</p> */}
+            <p style={{ textAlign:'center'}}>Price: {"$".repeat(`${price}`)} </p>
+            <p style={{ textAlign: 'center' }}>Rating: {rating}</p>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Button onClick={onTrigger} style={{margin: "5px"}}>Select</Button>
             </div>
         </Card>
     )
 }
 
-
 const Card = styled.div`
     border: solid 2px #51adcf;
     border-radius: 10px;
-    max-width: 1300px;
-    width: 25%;
+    width: 200px;
     background-color: #e4efe7;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
-    @media screen and (max-width:600px){
-        padding: 16px;
-        width: 90%;
-        margin: 10px;
+    box-shadow: 0px 5px 20px rgb(48,181,204, 0.5);
+     &:hover {
+    background-color: #e4efe5;
     }
+    @media screen and (max-width: 600px) {
+    padding: 8px;
+    width: 275px;
+  }
+
 `
 
 export default Place

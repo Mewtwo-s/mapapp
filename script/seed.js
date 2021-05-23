@@ -5,38 +5,22 @@ const {db, models: {User, Session, UserSession} } = require('../server/db')
 /**
  * seed - this function clears the database, updates tables to
  *      match the models, and populates the database.
+ * 
  */
+
+//secrets:
+const usersSeed = require('./usersSeed.js')
+
 async function seed() {
   await db.sync({ force: true }) // clears db and matches models to tables
   console.log('db synced!')
 
-  // Creating Users
-  const users = await Promise.all([
-    User.create({ email: 'mac@mapapp.com', 
-    password: '123',
-  firstName:'mac',
-  lastName:'mac',
-  phoneNum:'888-888-8888',
-  }),
-  User.create({ email: 'joe@mapapp.com', 
-  password: '123',
-firstName:'joe',
-lastName:'joe',
-phoneNum:'888-888-8881',
-}),
-User.create({ email: 'hannah@mail.com', 
-  password: 'hannah123',
-firstName:'Hannah',
-lastName:'Smith',
-phoneNum:'111-111-1111',
-}),
-User.create({ email: 'iris@mail.com', 
-  password: 'iris123',
-firstName:'Iris',
-lastName:'Smith',
-phoneNum:'222-222-2222',
-}),
-  ])
+  // Create Users
+  const users = await Promise.all(
+    usersSeed.map(user => {
+      return User.create(user);
+    })
+  );
 
   const sessions = await Promise.all([
     Session.create(),
