@@ -32,7 +32,6 @@ class Routes extends Component {
     const { isLoggedIn } = this.props;
     return (
       <div>
-
           <GlobalStyles/>
           <Navbar />
           {isLoggedIn ? (
@@ -54,7 +53,7 @@ class Routes extends Component {
               <Route path="/home" component={Login} />
               <Route path="/login" component={Login} />
               <Route exact path="/signup/:gamecode/:usercode" component={FinishSignUp} />
-              <Route exact path="/signup" component={Signup} />
+              <Route path="/signup" component={Signup} />
               <Redirect to="/" />
             </Switch>
           )}
