@@ -102,9 +102,9 @@ export class JoinRoom extends React.Component {
             </p>
             
             <Container style={{display: 'flex', justifyItems:'stretch'}}>
-              <Button onClick={this.handleCreate}>Create New Session</Button>
+              <Button onClick={this.handleCreate}>Create New Event</Button>
               <Button onClick={() => this.handleClick('join')}>
-                Join a Session
+                Join an Event
               </Button>
             </Container>
           </div>
@@ -114,7 +114,7 @@ export class JoinRoom extends React.Component {
             <form onSubmit={this.handleJoin}>
               <div>
                 <Label style={{ color: '#0f3057'}} htmlFor="code">
-                  Join Existing Session
+                  Join Existing Event
                 </Label>
                 <Input required placeholder='enter code here' style={{ boder: "solid 10px #51adcf", backgroundColor: '#e4efe5', width: 'fit-content'}}name="code" type="text" />
                 <Button type="submit">Join</Button>
@@ -128,7 +128,7 @@ export class JoinRoom extends React.Component {
             <div>
               {/* <h3 style={{textAlign: 'center'}}>Invite friends using the code: {this.props.session.code} </h3> */}
         
-              <h3>Your session is ready! </h3>
+              <h3>Your event is ready! </h3>
               <h3>Invite friends and {' '}
                 <Link to={`/map/${this.props.session.code}`}>
                 <span style={{ textDecoration: 'underline' }}>Join now</span>
@@ -137,7 +137,7 @@ export class JoinRoom extends React.Component {
               {/* <Link to={`/map/${this.props.session.code}`}>
                 <Button>Go to session</Button>
               </Link> */}
-              <h5>Invite friends using the code: {this.props.session.code} </h5>
+              <h5>Invite friends using code: {this.props.session.code} </h5>
 
               {
                 (this.props.friends.length > 0) && <h5>Add previous friends: </h5>

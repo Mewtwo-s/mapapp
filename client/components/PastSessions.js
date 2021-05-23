@@ -17,9 +17,9 @@ export const PastSessions = props => {
      <Container>
          <Link to='/home' className='small-link'> Back To Home </Link>
          <div style={{ display: 'flex', flexDirection: 'column', justtifyContent: 'center', alignItems: 'center' }}>
-            <h3>Past Sessions</h3>
+            <h3>Past Events</h3>
             <CardsContainer>
-               { (pastSessions.length === 0) ? <h2>There are no past sessions</h2> :
+               { (pastSessions.length === 0) ? <h2>There are no past events</h2> :
                   pastSessions.map(session => {
                      return (
                         <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
@@ -32,7 +32,7 @@ export const PastSessions = props => {
                                  } 
                                  </h5>
                               {/* TODO: change Date format */}
-                              <p>{`Session ended: ${session.updatedAt}`}</p>
+                              <p>{`Event ended: ${session.updatedAt}`}</p>
                            </Card>
                         </Link>
 

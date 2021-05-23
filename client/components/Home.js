@@ -27,7 +27,7 @@ export const Home = props => {
     <Container>
       <Link to="/pastSessions" className="small-link">
         {' '}
-        View Past Sessions{' '}
+        View Past Events{' '}
       </Link>
       <div style={{
           display: 'flex',
@@ -42,7 +42,7 @@ export const Home = props => {
         </h1>
         
         <JoinRoom history={props.history} />
-        <h3>{`Active Sessions (${activeSessions.length})`} </h3>
+        <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
             return (
@@ -50,14 +50,14 @@ export const Home = props => {
                 <Card style={{ backgroundColor: '#f3efd5'}}>
                   <p style={{ textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
                   <p style={{ textAlign: 'center', fontWeight: 'bold'}}>{`${session.locationName}`}</p>
-                  <p style={{ textAlign: 'center'}}>{`Session Code: ${session.code}`}</p>
+                  <p style={{ textAlign: 'center'}}>{`Event Code: ${session.code}`}</p>
                   {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}
                 </Card>
               </Link>
             );
           })}
         </CardsContainer>
-        <h3>{`Pending Sessions (${pendingSessions.length})`} </h3>
+        <h3>{`Pending Events (${pendingSessions.length})`} </h3>
         <CardsContainer>
           {pendingSessions.map((session) => {
             return (
@@ -65,7 +65,7 @@ export const Home = props => {
                 <Card>
                   {/* replace with place name */}
                   <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Meetup Spot: TBD </p>
-                  <p style={{ textAlign: 'center' }}>{`Session Code: ${session.code}`}</p>
+                  <p style={{ textAlign: 'center' }}>{`Event Code: ${session.code}`}</p>
                   {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}
                 </Card>
               </Link>

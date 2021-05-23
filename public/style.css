@@ -58,17 +58,18 @@ form div {
 }
 
 .logo{
+ -webkit-text-stroke: 1px rgb(19, 121, 119);
+  background-color: aquamarine;
   font-size: 8vh;
   line-height: 6vw;
-  margin: 0;
-
+  margin-top: 0.5em;
   font-weight: 900;
   background: url(https://www.maptiler.com/img/cloud/map-img.png);
   /* background: url(https://i.pinimg.com/originals/6a/9e/19/6a9e19e90637715a2fd483ee75bdc9d3.gif); */
   background-size: 60%;
   background-position: 50% 50%;
   -webkit-background-clip: text;
-  color: rgba(0,0,0,0.08);
+  color: #e8b7432e;
   animation: zoomout 10s ease 500ms forwards;
 }
 

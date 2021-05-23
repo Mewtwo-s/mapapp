@@ -14,7 +14,8 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
   <Nav>
     <NavbarContainer>
       {/* <div style={{backgroundImage: '/public/mapLogo.png'}}></div> */}
-        <h1 style={{ textShadow: '4px 4px white'}}>Meedle</h1>
+        <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1>
+
         {/* <h1 className="logo">
           Meedle
         </h1> */}
@@ -121,7 +122,6 @@ const NavLink = styled(Link)`
       color: #32e0c4;
   }
   @media screen and (max-width:600px){
-    color: #a5ecd7;
     padding: 14px 16px;
     text-decoration: none
     font-size: 17px;
@@ -129,7 +129,6 @@ const NavLink = styled(Link)`
     width: 100%;
 
     &:hover { 
-      color: #1F817F;
       background-color: #fff;
     }
   }

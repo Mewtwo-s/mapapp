@@ -125,8 +125,8 @@ const MapContainer = (props) => {
       <Container>
       <Link to='/home' className='small-link'> Back To Home </Link>
       <div style={{textAlign:'center'}}>
-        <h4>Session Code: {props.session.code}</h4>
-        <p>In this session:</p>
+        <h4>Event Code: {props.session.code}</h4>
+        <p>In this event:</p>
         {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
       </div>
    
@@ -144,7 +144,7 @@ const MapContainer = (props) => {
           }
 
         {props.session.hostId === props.user.id && 
-            <Button onClick={() => props.endSession(props.session.id)}>End Session</Button>}
+            <Button onClick={() => props.endSession(props.session.id)}>End Event</Button>}
       </div>
               <PlaceStyles>
                 {props.session.status === 'Pending' && topPlaces

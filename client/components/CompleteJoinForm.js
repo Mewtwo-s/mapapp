@@ -62,7 +62,7 @@ class CompleteJoinForm extends React.Component {
         </div>
         }
         {error && error.response && <div> {error.response.data} </div>}
-        <button type="submit">Join Session</button>
+        <button type="submit">Join Event</button>
       </form>
     </div>
   )

@@ -116,9 +116,9 @@ const AuthForm = props => {
       
 
         {error && error.response && <div> {error.response.data} </div>}
-        <FormGroup>
-         <Button type="submit">{displayName}</Button>
-        </FormGroup>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+         <Button type="submit" style={{padding: "0.25em 3em"}}>{displayName}</Button>
+        </div>
       </form>
     </FormContainer>
   )

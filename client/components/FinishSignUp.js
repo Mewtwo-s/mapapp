@@ -57,7 +57,7 @@ function FinishSignUp(props) {
                 </div>
                 }
 
-        <button type="submit">Submit And Join Session</button>
+        <button type="submit">Submit And Join Event</button>
       </form>
         </div>
     )
