@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { sessionStarted, clearAllLocations } from './locationSharing';
 import socket from '../socket';
+import {addASession, editASession } from './allSessions';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
@@ -56,6 +57,7 @@ export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) =
     });
     const session = response.data;
     dispatch(activateSession(session));
+    dispatch(editASession(session))
     socket.emit('updated-session', session)
   };
 };
@@ -67,6 +69,7 @@ export const endSessionThunkCreator = (sessionId) => {
     });
     const session = response.data;
     dispatch(endSession(session));
+    dispatch(editASession(session))
     socket.emit('updated-session', session)
   };
 };
@@ -97,6 +100,7 @@ export const joinSessionThunkCreator = (userId, code, history) => {
       const session = response.data;
       await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
       await dispatch(joinSession(session));
+      dispatch(addASession(session))
       socket.emit('updated-session', session)
       history.push(`/map/${code}`);
     } catch (err) {
@@ -115,6 +119,7 @@ export const createSessionThunkCreator = (hostId, travelMode, history) => {
       const session = response.data;
       await axios.put(`/api/usersessions/${hostId}/${session.id}`, {accepted: true})
       await dispatch(createSession(session));
+      dispatch(addASession(session))
     } catch (err) {
       console.error(err)
     }
