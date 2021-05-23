@@ -94,12 +94,18 @@ const Map = withScriptjs(
         return firstName !== '' ? firstName : 'You';
       }
     };
+    //icon = { props.user.photo }
+    //resize icon
+    const userIcon = {
+      url: `${ props.user.photo }`, // url
+      scaledSize: new google.maps.Size(40, 40), // scaled size
+    }
 
     const renderUser = () => {
       return parseFloat(props.myLocation.lat) ? (
         <MarkerWithLabel
           key={props.user.id}
-          icon={props.user.photo}
+          icon={userIcon}
           position={{
             lat: parseFloat(props.myLocation.lat),
             lng: parseFloat(props.myLocation.lng),
@@ -114,6 +120,9 @@ const Map = withScriptjs(
         console.log('location not reader')
       );
     };
+
+
+   
 
     const renderOthers = () => {
       // creates a list of objects with consolidated user
@@ -134,18 +143,23 @@ const Map = withScriptjs(
             return modifiedUsers;
           }, []);
 
-  
 
         // Create the marker to render
+
         return otherUsers.map((user) => (
           <MarkerWithLabel
             key={`user_${user.id}`}
-            icon={user.photo}
+            //icon={user.photo}
+            icon= {{
+                url: `${user.photo}`, // url
+                    scaledSize: new google.maps.Size(40, 40), // scaled size
+              }}
             position={{ lat: user.lat, lng: user.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
             zIndex={100}
             labelStyle={markerLabelStyle}
           >
+            {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
             <div>{user.firstName}</div>
           </MarkerWithLabel>
         ));
@@ -215,7 +229,7 @@ const Map = withScriptjs(
                       >
                         <div>
                           <h3>{selectedPlace.name}</h3>
-                          <h5>{selectedPlace.vicinity}</h5>
+                          <p>{selectedPlace.vicinity}</p>
                           <p>
                             {selectedPlace.opening_hours.open_now
                               ? 'Open Now'

@@ -23,6 +23,11 @@ module.exports = {
     filename: './public/bundle.js'
   },
   devtool: 'source-map',
+  resolve: {
+    fallback: {
+      util: require.resolve("util/")
+    }
+  },
   module: {
     rules: [
       {
@@ -34,23 +39,54 @@ module.exports = {
             '@babel/preset-react'
           ]
         }
+      },
+      {
+        test: /\.(png)$/,
+        use: {
+          loader: 'url-loader'
+        }
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      }, {
+        test: /\.(sass|scss|css)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+      {
+        test: /\.(svg|eot|woff|woff2|ttf)(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'public/map-logo.png',
+            outputPath: 'fonts/'
+          }
+        }
       }
     ]
   },
-//   resolve: {
-//     fallback: {
-//       "buffer": false,
-//       "stream": false,
-//       "net": false,
-//       "path": false,
-//       "zlib": false,
-//       "http": false,
-//       "https": false,
-//       "crypto": false,
-//       "cheerio": false,
-//       "parse5": false
-//     } 
-// }
+  resolve: {
+    fallback: {
+      "buffer": false,
+      "stream": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "crypto": false,
+      "cheerio": false,
+      "parse5": false
+    } 
+},
   plugins: [
    environmentConfig
   ]

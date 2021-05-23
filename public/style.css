@@ -3,23 +3,31 @@ body {
   margin: 0;
 }
 
-a {
-  text-decoration: none;
+.small-link {
+  text-decoration: underline;
 }
 
 label {
   display: block;
 }
 
-/* nav a {
-  display: inline-block;
-  margin: 1em;
-} */
+a {
+  color: #0f3057;
+}
+a:visited {
+  color:#0f3057;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+}
 
 form div {
   margin: 0 0.5rem;
 }
 
+/* loading component */
 .loader {
   border: 16px solid #f3f3f3;
   border-top: 16px solid #3498db;
@@ -40,4 +48,36 @@ form div {
   display: block;
   margin: 50px auto;
   text-align: center;
+}
+
+.icon {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.logo{
+ -webkit-text-stroke: 1px rgb(19, 121, 119);
+  background-color: aquamarine;
+  font-size: 8vh;
+  line-height: 6vw;
+  margin-top: 0.5em;
+  font-weight: 900;
+  background: url(https://www.maptiler.com/img/cloud/map-img.png);
+  /* background: url(https://i.pinimg.com/originals/6a/9e/19/6a9e19e90637715a2fd483ee75bdc9d3.gif); */
+  background-size: 60%;
+  background-position: 50% 50%;
+  -webkit-background-clip: text;
+  color: #e8b7432e;
+  animation: zoomout 10s ease 500ms forwards;
+}
+
+@keyframes zoomout {
+  from {
+    background-size: 50%;
+  }
+  to {
+    background-size: 10%;
+  }
 }

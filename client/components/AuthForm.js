@@ -19,9 +19,7 @@ const AuthForm = props => {
   return (
     
     <FormContainer>
-
       <form onSubmit={handleSubmit} name={name}>
-        <div>
           <FormGroup>
             <div>
               <Label htmlFor="email">
@@ -36,7 +34,7 @@ const AuthForm = props => {
               <Input name="password" type="password" required placeholder='required'/>
             </div>
           </FormGroup>
-        </div>
+       
 
         {props.name==='signup'? 
         <div> 
@@ -51,7 +49,7 @@ const AuthForm = props => {
                 <Label htmlFor="lastName">
                   <small>Last Name</small>
                 </Label>
-                <Input name="lastName" type="text" />
+                <Input name="lastName" type="text" required placeholder='required'/>
               </div>
               {/* <div>
                 <Label htmlFor="phoneNum">
@@ -106,10 +104,10 @@ const AuthForm = props => {
         
         <FormGroup>
           <div>
-            <Label htmlFor="photo">
-              <small>Image URL</small>
-            </Label>
-            <Input name="photo" type="text" />
+              <Label htmlFor="photo">
+                <small>Image URL</small>
+              </Label>
+              <Input name="photo" type="text" placeholder='e.g. https://image.png'/>
           </div>
         </FormGroup>
       </div>: 
@@ -118,10 +116,9 @@ const AuthForm = props => {
       
 
         {error && error.response && <div> {error.response.data} </div>}
-        <FormGroup>
-         <Button type="submit">{displayName}</Button>
-        </FormGroup>
-        
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+         <Button type="submit" style={{padding: "0.25em 3em"}}>{displayName}</Button>
+        </div>
       </form>
     </FormContainer>
   )
@@ -170,7 +167,7 @@ const mapDispatch = dispatch => {
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
         // const phoneNum = evt.target.phoneNum.value
-        // // const preferTransportation = evt.target.preferTransportation.value
+       // const preferTransportation = evt.target.preferTransportation.value
         // const street = evt.target.street.value
         // const city = evt.target.city.value
         // const state = evt.target.state.value
@@ -192,12 +189,17 @@ const mapDispatch = dispatch => {
 }
 
 const FormContainer = styled.div`
-  width: 90%;
   border-radius: 5px;
-  background-color:#51adcf;
-  margin: 25px 25px;
+  background-color:#41adcf;
+  margin: 0 auto;
   padding: 20px;
+  width: fit-content;
+   @media screen and (max-width:600px){
+     width: 90vw
+   }
 `
+
+
 
 export const Login = connect(mapLogin, mapDispatch)(AuthForm)
 export const Signup = connect(mapSignup, mapDispatch)(AuthForm)

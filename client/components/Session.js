@@ -14,7 +14,7 @@ function Session(props) {
         <div>
             <span>{code}</span>
             <span><Link to={`/emailInvite/${id}`}>Send To Friend</Link></span>
-            <button onClick={handleStart}>Start Session</button>
+            <button onClick={handleStart}>Start Event</button>
         </div>
     )
 }

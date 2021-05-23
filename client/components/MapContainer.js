@@ -122,80 +122,72 @@ const MapContainer = (props) => {
  
   return (
     <div>
-      {props.session.status === 'Completed' ? (
-        <EndedSession />
-      ) : (
-        <div>
-          {joined === false && props.session.status !== 'Completed' ? (
-            <Loading message="your map" />
-          ) : (
-            <Container>
-              <Link to="/home"> Back To Home </Link>
-              <div style={{ textAlign: 'center' }}>
-                <h4>Session Code: {props.session.code}</h4>
-                <p>In this session:</p>
-                {props.session.users ? (
-                  <p> {`You, ${friendsJoined}`} </p>
-                ) : (
-                  'Finding friends'
-                )}
-              </div>
+    {props.session.status === "Completed" ? <EndedSession /> :
+    <div>
+    {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
+      <Container>
+      <Link to='/home' className='small-link'> Back To Home </Link>
+      <div style={{textAlign:'center'}}>
+        <h4>Event Code: {props.session.code}</h4>
+        <p>In this event:</p>
+        {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
+      </div>
+   
+    <div style={{display: 'flex', justifyContent:'center'}}>
+        {
+          props.session.status === 'Pending' &&
+          props.session.hostId === props.user.id && (
+            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+          )  
+        }
+          
+        {props.session.status === 'Active' &&
+            <Button onClick={userArrives}> I have arrived </Button>
+          
+          }
 
-              {props.session.status === 'Pending' &&
-                props.session.hostId === props.user.id && (
-                  <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-                )}
+        {props.session.hostId === props.user.id && 
+            <Button onClick={() => props.endSession(props.session.id)}>End Event</Button>}
+      </div>
               <PlaceStyles>
                 {props.session.status === 'Pending' && topPlaces
                   ? topPlaces.map((place) => (
-                      <Place
-                        handle={placeSelected}
-                        key={place.place_id}
-                        location={place.geometry.location}
-                        name={place.name}
-                        open={
-                          place.opening_hours
-                            ? place.opening_hours.open_now
-                            : null
-                        }
-                        price={place.price_level}
-                        rating={place.rating}
-                        place={place.image}
-                      />
-                    ))
+
+                    <Place
+                      handle={placeSelected}
+                      key={place.place_id}
+                      location={place.geometry.location}
+                      name={place.name}
+                      open={place.opening_hours ? place.opening_hours.open_now : null}
+                      price={place.price_level}
+                      rating={place.rating}
+                      place={place.image}
+                    />
+
+                  ))
+
                   : null}
               </PlaceStyles>
 
-              {props.session.status === 'Active' && (
-                <Button onClick={userArrives}> I have arrived </Button>
-              )}
 
-              {props.session.hostId === props.user.id && (
-                <Button onClick={() => props.endSession(props.session.id)}>
-                  End Session
-                </Button>
-              )}
+      <Map
+        topPlaces={topPlaces}
+        match={props.match}
+        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
+        loadingElement={<div className="loader" />}
+        containerElement={
+          <div
+            className="mapContainer"
+            style={{ height: '70vh', width: '100%' }}
+          />
+        }
+        mapElement={<div className="map" style={{ height: '100%' }} />}
+      />
+      </Container>
+    }
 
-              <Map
-                topPlaces={topPlaces}
-                match={props.match}
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
-                loadingElement={<div className="loader" />}
-                containerElement={
-                  <div
-                    className="mapContainer"
-                    style={{ height: '70vh', width: '100%' }}
-                  />
-                }
-                mapElement={<div className="map" style={{ height: '100%' }} />}
-              />
-            </Container>
-          )}
-        </div>
-      )}{' '}
     </div>
-  );
-};
+}; </div>)}
 
 const mapState = (state) => {
   return {
@@ -234,16 +226,17 @@ const mapDispatch = (dispatch) => {
 };
 
 const PlaceStyles = styled.div`
-  max-width: 1400px;
+  max-width: 900px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+
 
   @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
     flex-direction: column;
-  }
-`;
-
+  
+  }`
+  
 export default connect(mapState, mapDispatch)(MapContainer);
