@@ -173,7 +173,9 @@ const mapDispatch = dispatch => {
         // const state = evt.target.state.value
         // const country = evt.target.country.value
         // const zipCode = evt.target.zipCode.value
-        const photo = evt.target.photo.value ||'http://maps.google.com/mapfiles/ms/icons/golfer.png'
+        
+        //const photo = evt.target.photo.value ||'http://maps.google.com/mapfiles/ms/icons/golfer.png'
+        const photo = evt.target.photo.value || ''
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))
         
