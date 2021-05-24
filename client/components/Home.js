@@ -14,44 +14,53 @@ import { clearAllLocations } from '../store/locationSharing';
 /**
  * COMPONENT
  */
-export const Home = props => {
- 
+export const Home = (props) => {
   useEffect(() => {
     props.clearAllLocationHome();
   }, []);
 
-  const activeSessions = props.userSessions.filter(session => session.status === "Active")
-  const pendingSessions = props.userSessions.filter(session => session.status === "Pending")
- 
+  const activeSessions = props.userSessions.filter(
+    (session) => session.status === 'Active'
+  );
+  const pendingSessions = props.userSessions.filter(
+    (session) => session.status === 'Pending'
+  );
+
   return (
     <Container>
       <Link to="/pastSessions" className="small-link">
         {' '}
         View Past Events{' '}
       </Link>
-      <div style={{
+      <div
+        style={{
           display: 'flex',
           flexDirection: 'column',
           justtifyContent: 'center',
           alignItems: 'center',
         }}
       >
+        <h1 className="logo">Meedle</h1>
 
-        <h1 className="logo">
-          Meedle
-        </h1>
-        
         <JoinRoom history={props.history} />
         <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
             return (
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
-                <Card style={{ backgroundColor: '#f3efd5'}}>
-                  <p style={{ textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
-                  <p style={{ textAlign: 'center', fontWeight: 'bold'}}>{`${session.locationName}`}</p>
-                  <p style={{ textAlign: 'center'}}>{`Event Code: ${session.code}`}</p>
-                  {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}
+                <Card style={{ backgroundColor: '#f3efd5' }}>
+                  <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                    Meetup Spot:{' '}
+                  </p>
+                  <p
+                    style={{ textAlign: 'center', fontWeight: 'bold' }}
+                  >{`${session.locationName}`}</p>
+                  <p
+                    style={{ textAlign: 'center' }}
+                  >{`Event Code: ${session.code}`}</p>
+                  {session.hostId === props.userId && (
+                    <p style={{ textAlign: 'center' }}>Hosts by you!</p>
+                  )}
                 </Card>
               </Link>
             );
@@ -64,9 +73,15 @@ export const Home = props => {
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
                 <Card>
                   {/* replace with place name */}
-                  <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Meetup Spot: TBD </p>
-                  <p style={{ textAlign: 'center' }}>{`Event Code: ${session.code}`}</p>
-                  {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosts by you!</p>}
+                  <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                    Meetup Spot: TBD{' '}
+                  </p>
+                  <p
+                    style={{ textAlign: 'center' }}
+                  >{`Event Code: ${session.code}`}</p>
+                  {session.hostId === props.userId && (
+                    <p style={{ textAlign: 'center' }}>Hosts by you!</p>
+                  )}
                 </Card>
               </Link>
             );
@@ -84,11 +99,11 @@ const Card = styled.div`
   width: 200px;
   padding: 8px;
   background-color: #efefef;
-  box-shadow: 0px 5px 20px rgb(48,181,204, 0.5);
+  box-shadow: 0px 5px 20px rgb(48, 181, 204, 0.5);
   &:hover {
     background-color: #e4efe5;
   }
-   @media screen and (max-width: 600px) {
+  @media screen and (max-width: 600px) {
     padding: 4px;
     width: 130px;
   }

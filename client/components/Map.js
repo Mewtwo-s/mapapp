@@ -17,19 +17,26 @@ import { Button, Container } from '../GlobalStyles';
 // =======================================================================
 const Map = withScriptjs(
   withGoogleMap((props) => {
-    
+    console.log('MAP RENDER');
     const geocoder = new google.maps.Geocoder();
     var latlng = new google.maps.LatLng(-34.397, 150.644);
 
-    geocoder.geocode( { 'address': '740 Broadway NY 10003'}, function(results, status) {
-      if (status == 'OK') {
-        console.log('ALL WE WANT ', results[0].geometry.location.lat(), results[0].geometry.location.lng());
-       
-      } else {
-        alert('Geocode was not successful for the following reason: ' + status);
+    geocoder.geocode(
+      { address: '740 Broadway NY 10003' },
+      function (results, status) {
+        if (status == 'OK') {
+          console.log(
+            'GEOCODE RESULTS:',
+            results[0].geometry.location.lat(),
+            results[0].geometry.location.lng()
+          );
+        } else {
+          alert(
+            'Geocode was not successful for the following reason: ' + status
+          );
+        }
       }
-    });
-
+    );
 
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
@@ -86,53 +93,23 @@ const Map = withScriptjs(
       );
     }
 
-    // TEMP useEffect just for easy to read feedback.
-    useEffect(() => {
-      console.log('THIS USER:', props.user.id, props.user.firstName);
-      console.log('USERS in SESSION:');
-      if (props.session.users) {
-        props.session.users.forEach((u) => console.log(u.id, u.firstName));
-      }
-    }, [props.session]);
-
     const getUserName = () => {
       if (props.session.users) {
-        const firstName = props.session.users.find(
+        const thisUser = props.session.users.find(
           (user) => user.id === props.user.id
-        ).firstName;
-
-        return firstName !== '' ? firstName : 'You';
+        );
+        if (thisUser) {
+          const firstName = thisUser.firstName;
+          return firstName !== '' ? firstName : 'You';
+        }
       }
     };
-    //icon = { props.user.photo }
-    //resize icon
-    const userIcon = {
-      url: `${ props.user.photo }`, // url
-      scaledSize: new google.maps.Size(40, 40), // scaled size
-    }
 
-    // const renderUser = () => {
-    //   return parseFloat(props.myLocation.lat) ? (
-    //     <MarkerWithLabel
-    //       key={props.user.id}
-    //       icon={userIcon}
-    //       position={{
-    //         lat: parseFloat(props.myLocation.lat),
-    //         lng: parseFloat(props.myLocation.lng),
-    //       }}
-    //       labelAnchor={new google.maps.Point(0, 0)}
-    //       zIndex={100}
-    //       labelStyle={markerLabelStyle}
-    //     >
-    //       <div>{getUserName()}</div>
-    //     </MarkerWithLabel>
-    //   ) : (
-    //     console.log('location not reader')
-    //   );
+    // //resize icon
+    // const userIcon = {
+    //   url: `${props.user.photo}`, // url
+    //   scaledSize: new google.maps.Size(40, 40), // scaled size
     // };
-
-
-   
 
     const renderOthers = () => {
       // creates a list of objects with consolidated user
@@ -159,10 +136,10 @@ const Map = withScriptjs(
           <MarkerWithLabel
             key={`user_${user.id}`}
             //icon={user.photo}
-            icon= {{
-                url: `${user.photo}`, // url
-                    scaledSize: new google.maps.Size(40, 40), // scaled size
-              }}
+            icon={{
+              url: `${user.photo}`, // url
+              scaledSize: new google.maps.Size(40, 40), // scaled size
+            }}
             position={{ lat: user.lat, lng: user.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
             zIndex={100}
@@ -181,7 +158,7 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
-  
+
     return (
       <Container>
         {myLocationIsValid && (
@@ -242,9 +219,9 @@ const Map = withScriptjs(
             {(props.myLocation || savedLocation) && (
               <MarkerWithLabel
                 key={props.user.id}
-                icon= {{
+                icon={{
                   url: `${props.user.photo}`, // url
-                      scaledSize: new google.maps.Size(40, 40), // scaled size
+                  scaledSize: new google.maps.Size(40, 40), // scaled size
                 }}
                 position={props.myLocation ? props.myLocation : savedLocation}
                 labelAnchor={new google.maps.Point(0, 0)}
@@ -262,7 +239,6 @@ const Map = withScriptjs(
 );
 
 const mapState = (state) => {
-  console.log('Map state', state);
   return {
     user: state.auth,
     allLocations: state.allLocations,
