@@ -44,7 +44,7 @@ export const joinRoom = (userId, sessionId, userLoc) => {
 };
 
 export const leaveRoom = (userId, sessionId) => {
-  console.log('LEAVE ROOM');
+  console.log('LEAVE ROOM', userId, sessionId);
   return (dispatch) => {
     if (userId && sessionId) {
       socket.emit('leave-room', userId, sessionId);
@@ -55,12 +55,10 @@ export const leaveRoom = (userId, sessionId) => {
 };
 
 export const userLeftRoom = (userId) => {
+  console.log('userLeftroom', userId);
   return (dispatch) => {
     const myId = store.getState().auth.id;
-    console.log('userLeftRoom1', userId, myId);
     if (userId !== myId) {
-      console.log('userLeftRoom2', userId, myId);
-      console.log('userLeftRoom3', userId, myId);
       dispatch(removeUser(userId));
     }
   };

@@ -17,7 +17,6 @@ import { Button, Container } from '../GlobalStyles';
 // =======================================================================
 const Map = withScriptjs(
   withGoogleMap((props) => {
-    console.log('MAP RENDER');
     const geocoder = new google.maps.Geocoder();
     var latlng = new google.maps.LatLng(-34.397, 150.644);
 

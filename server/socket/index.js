@@ -1,14 +1,17 @@
 module.exports = (io) => {
-  // const rooms = [];
+  // {socketId: {roomName:'', socketId:''}}
+  const rooms = {};
   io.on('connection', (socket) => {
     console.info(`Client ${socket.id} has connected to the server!`);
 
     socket.on('join-room', (userId, sessionId) => {
       const roomName = 'room_' + sessionId;
       socket.join(roomName);
-      // if (!rooms.includes(roomName)) {
-      //   rooms.push(roomName);
-      // }
+
+      // store rooms with associated socket and user
+      rooms[socket.id] = { userId, roomName };
+      console.log('SOCKET ROOMS', rooms);
+      console.log(rooms[socket.id]);
 
       console.info(`User ${userId} joins ${roomName}`);
       io.to(roomName).emit(
@@ -28,15 +31,7 @@ module.exports = (io) => {
       );
 
       socket.leave(roomName);
-
-      // // send message to all rooms
-      // rooms.forEach((roomName) => {
-      //   io.to(roomName).emit(
-      //     'user-left-room',
-      //     userId,
-      //     `User ${userId} left ${roomName}`
-      //   );
-      // });
+      delete rooms[socket.id];
     });
 
     socket.on('send-my-location', (userId, sessionId, lat, lng) => {
@@ -53,8 +48,24 @@ module.exports = (io) => {
       socket.broadcast.emit('updated-user-status', usersession);
     });
 
+    socket.on('disconnecting', () => {
+      console.info('user disconnecting: ' + socket.id);
+      // need to get the room and user from this socket id
+      const roomData = rooms[socket.id];
+      if (roomData) {
+        const userId = roomData.userId;
+        const room = roomData.roomName;
+        socket.broadcast.emit(
+          'user-left-room',
+          userId,
+          `User ${userId} in room ${room} is disconnecting.`
+        );
+      }
+    });
+
     socket.on('disconnect', () => {
       console.info('user disconnected: ' + socket.id);
+      // need to get the room and user from this socket id
     });
 
     socket.on('send-my-address', (userId, sessionId, address) => {

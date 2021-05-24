@@ -86,6 +86,16 @@ const MapContainer = (props) => {
     props.getSession(props.user.id, props.match.params.code);
   }, []);
 
+  // this effect occurs on unmounting only
+  useEffect(() => {
+    console.log('UseEffect MOUNT');
+    return () => {
+      console.log('UseEffect UNMOUNT');
+      props.leaveRoom(props.user.id, props.session.id);
+      props.stopWatchingMyLocation();
+    };
+  }, [props.session.id]);
+
   useEffect(() => {
     if (props.session.id && props.myLocation.lat && joined === false) {
       props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
@@ -96,17 +106,8 @@ const MapContainer = (props) => {
   useEffect(() => {
     props.startWatch(props.user.id, props.session.id);
     if (props.session.id) {
-      console.log(`*** MC MOUNTING Sesson ${props.session.id} ***`);
       props.getSessionUsers(props.session.id);
     }
-    return () => {
-      if (props.session && props.session.id) {
-        console.log(`*** MC UNMOUNTING Sesson ${props.session.id} ***`);
-        console.log(`Leaving session ${props.session.id}`);
-        props.leaveRoom(props.user.id, props.session.id);
-        props.stopWatchingMyLocation();
-      }
-    };
   }, [props.session]);
 
   useEffect(() => {
