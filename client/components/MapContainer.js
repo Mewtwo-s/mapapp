@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { DirectionsRenderer } from 'react-google-maps';
-import { sessionStarted, joinRoom } from '../store/locationSharing';
+import { joinRoom } from '../store/locationSharing';
 import { Button, Container } from '../GlobalStyles';
 import { watchMyLocation } from '../store/location';
 import {

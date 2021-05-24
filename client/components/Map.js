@@ -11,29 +11,18 @@ import {
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
-
+import UserInput from './UserInput'
+import {updateMyLocation, saveUserInputLocation} from '../store/location'
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
 const Map = withScriptjs(
   withGoogleMap((props) => {
     
-    const geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(-34.397, 150.644);
-
-    geocoder.geocode( { 'address': '740 Broadway NY 10003'}, function(results, status) {
-      if (status == 'OK') {
-        console.log('ALL WE WANT ', results[0].geometry.location.lat(), results[0].geometry.location.lng());
-       
-      } else {
-        alert('Geocode was not successful for the following reason: ' + status);
-      }
-    });
-
-
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    const [inputLoc, setInputLoc] = useState()
 
     const markerLabelStyle = {
       backgroundColor: 'black',
@@ -181,11 +170,36 @@ const Map = withScriptjs(
     const defCenter = myLocationIsValid
       ? { lat: props.myLocation.lat, lng: props.myLocation.lng }
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
+    
+      function inputHandle(address) {
+        console.log('input address ->', address)
+        const geocoder = new google.maps.Geocoder();      
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          if (status == 'OK') {
+            let lat = results[0].geometry.location.lat()
+            let lng = results[0].geometry.location.lng()
+
+            // setInputLoc({ lat: results[0].geometry.location.lat(), lng:results[0].geometry.location.lng()})
+            props.updateLocation(lat, lng)
+            props.saveInputLocation(props.user.id, lat, lng)
   
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+  
+      }
+      console.log('GEO CODE STATUS', inputLoc)
+
     return (
       <Container>
+      {props.myLocation.address?<UserInput handle={inputHandle}/>:''}
         {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
+          {inputLoc? <Marker
+                icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/arts.png"
+                position={inputLoc }
+              />:''}
             {sessionIsValid && (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
@@ -276,4 +290,16 @@ const mapState = (state) => {
   };
 };
 
-export default connect(mapState)(Map);
+const mapDispatch = (dispatch) => {
+  return {
+    updateLocation: (lat, lng) => {
+      dispatch(updateMyLocation(lat, lng));
+    },
+    saveInputLocation: (userId, lat, lng) => {
+      dispatch(saveUserInputLocation(userId, lat, lng));
+    },
+  };
+};
+
+
+export default connect(mapState, mapDispatch)(Map);

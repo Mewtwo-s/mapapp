@@ -52,4 +52,18 @@ socket.on('user-location-changed', (userId, lat, lng) => {
   store.dispatch(userLocationChanged(userId, lat, lng));
 });
 
+socket.on('user-location-changed-input', (userId, lat, lng) => {
+  const elapsedTime = Date.now() - lastSavedTimes[userId];
+    //save to db
+    const sessionId = store.getState().sessionReducer.id;
+    if (sessionId) {
+      const { data } = axios.put(`/api/usersessions/${userId}/${sessionId}`, {
+        currentLat: lat,
+        currentLng: lng,
+      });
+    }
+  
+  store.dispatch(userLocationChanged(userId, lat, lng));
+});
+
 export default socket;
