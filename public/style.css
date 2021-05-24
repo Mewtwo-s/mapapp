@@ -60,9 +60,9 @@ form div {
 .logo{
  -webkit-text-stroke: 1px #0f3057;
   background-color: aquamarine;
-  font-size: 8vh;
+  font-size: 32px;
   line-height: 6vw;
-  margin-top: 0.5em;
+  margin: 5px;
   font-weight: 900;
   background: url(https://www.maptiler.com/img/cloud/map-img.png);
   /* background: url(https://i.pinimg.com/originals/6a/9e/19/6a9e19e90637715a2fd483ee75bdc9d3.gif); */
@@ -113,8 +113,12 @@ form div {
   cursor: pointer;
 }
 
-h1, h3 {
+h1, h3, p {
   text-align: center;
+}
+
+h3 {
+  font-weight: lighter;
 }
 
 .flex {
@@ -124,11 +128,42 @@ h1, h3 {
   margin-top: 100px;
 }
 
-.flex > {
-  min-width: 50px;
-  margin: auto;
+.flexFriends {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.flexNav {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.flex>button {
+  min-width: 150px;
+  padding: 5px;
+  margin: 10px;
 }
 
 .container {
   margin: 50px 30px;
+}
+
+select {
+  margin: 20px;
+  padding: 5px;
+}
+
+.bold {
+  font-weight: bold;
+ 
+}
+
+.specialButton {
+  background-color: pink;
+  color: white;
 }

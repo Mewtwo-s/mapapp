@@ -22,7 +22,7 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName, updateSessionAction}
           Meedle
         </h1>
         </NavLink>
-      
+      <div className="flexNav">
       {isLoggedIn ? (
         <NavMenu open={open}>
           {/* The navbar will show these links after you log in */}
@@ -53,7 +53,7 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName, updateSessionAction}
           <div />
           <div />
         </StyledBurger>
-
+</div>
     </NavbarContainer>
   </Nav>
  )}
@@ -81,12 +81,11 @@ const mapDispatch = dispatch => {
 
 const Nav = styled.nav` 
   margin: 0px;
-  font-size: 18px;
   position: sticky;
   top: 0;
   height: 80px;
   background-color: #a5ecd7;
-  box-shadow: 0px 5px 20px rgb(48,181,204, 0.5); 
+  // box-shadow: 0px 5px 20px rgb(48,181,204, 0.5); 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,8 +100,6 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
-  margin: 0 auto;
 
   @media screen and (max-width:600px){
     display: flex;
@@ -113,10 +110,10 @@ const Nav = styled.nav`
 
 const NavLink = styled(Link)`
   text-decoration: none;
-  font-weight: bold;
-  font-size: 2.5rem;
+  margin: 10px;
+  // font-weight: bold;
+  font-size: 18px;
   color: #0f3057;
-  padding: 1rem 2rem;
   transition: all .2s ease;
   &:hover {
     color: #1F817F;
@@ -126,10 +123,8 @@ const NavLink = styled(Link)`
       color: #32e0c4;
   }
   @media screen and (max-width:600px){
-    padding: 14px 16px;
     text-decoration: none
     font-size: 17px;
-    display: block;
     width: 100%;
 
     &:hover { 
@@ -196,13 +191,15 @@ const StyledBurger = styled.div`
 `;
 
 const ProfilePhoto = styled.img`
-  border: solid 1px white;
+  border: solid 1px #0f3057;
   border-radius: 50%;
-  height: 65px;
-  width: 65px;
+  height: 50px;
+  width: 50px;
+  margin-left: 10px;
   @media screen and (max-width:600px){
-    height: 60px;
-    width: 60px;
+    // height: 60px;
+    // width: 60px;
+    display: none;
   }
 `
 
