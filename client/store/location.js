@@ -77,6 +77,8 @@ export const watchMyLocation = (userId, sessionId) => {
           if(data[0].currentLat){
             console.log('FOUND SAVED LOC');
             dispatch(updateMyLocation(data[0].currentLat, data[0].currentLng));
+            // watchMyLocation(store.getState().user.id, store.getState().sessionReducer.id )
+            
           }
           else{
             console.log('no location found in DB, gonna ask user to manually input')

@@ -12,7 +12,7 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
 import UserInput from './UserInput'
-import {updateMyLocation, saveUserInputLocation} from '../store/location'
+import {updateMyLocation, saveUserInputLocation, watchMyLocation} from '../store/location'
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -182,6 +182,7 @@ const Map = withScriptjs(
             // setInputLoc({ lat: results[0].geometry.location.lat(), lng:results[0].geometry.location.lng()})
             props.updateLocation(lat, lng)
             props.saveInputLocation(props.user.id, lat, lng)
+            props.startWatch(props.user.id, props.session.id);
   
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
@@ -297,6 +298,9 @@ const mapDispatch = (dispatch) => {
     },
     saveInputLocation: (userId, lat, lng) => {
       dispatch(saveUserInputLocation(userId, lat, lng));
+    },
+    startWatch: (userId, sessionId) => {
+      dispatch(watchMyLocation(userId, sessionId));
     },
   };
 };
