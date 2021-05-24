@@ -43,7 +43,7 @@ export const getAllSessionsThunkCreator = (userId) => {
 };
 
 
-export default function sessionReducer(sessions = [], action) {
+export default function allSessionsReducer(sessions = [], action) {
   switch (action.type) {
     case GET_ALL_SESSIONS:
       return action.sessions;
