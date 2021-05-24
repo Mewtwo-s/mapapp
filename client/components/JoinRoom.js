@@ -76,27 +76,22 @@ export class JoinRoom extends React.Component {
  
   render() {
     return (
-      <div>
-        
-        <h3>{`Hello ${this.props.user.firstName} !`}</h3>
+      <div className="container">
+        {this.props.sessionAction !== null &&
+        <Button onClick={() => this.props.updateSessionAction(null)}>Back</Button>
+        }
         {this.props.sessionAction === null && (
           <div>
-            <h3> In the mood to hang out today? </h3>  
-            <p> Choose your type of transportation :  
-              <span> 
-                <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
-                <option value="WALKING">Walking</option>
-                  <option value="BICYCLING">Cycling</option>
-                  <option value="DRIVING">Driving</option>
-                  <option value="TRANSIT">Transit</option>
-                </Select>
-              </span> 
-            </p>
+            <h1>{`Hello ${this.props.user.firstName}!`}</h1>
+            <h1>Are you the mood to hang out today?</h1>  
             
-            <Container style={{display: 'flex', justifyItems:'stretch'}}>
+            <Container className="flex">
               <Button onClick={this.handleCreate}>Create New Event</Button>
               <Button onClick={() => this.props.updateSessionAction('join')}>
                 Join an Event
+              </Button>
+              <Button onClick={() => this.props.updateSessionAction('all')}>
+                View your events
               </Button>
             </Container>
           </div>
@@ -118,9 +113,19 @@ export class JoinRoom extends React.Component {
         {this.props.sessionAction === 'host' && (
           <div>
             <div>
-              {/* <h3 style={{textAlign: 'center'}}>Invite friends using the code: {this.props.session.code} </h3> */}
-        
-              <h3>Your event is ready! </h3>
+            <h1>Your event is ready! </h1>
+              <p> Choose your type of transportation :  
+              <span> 
+                <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
+                <option value="WALKING">Walking</option>
+                  <option value="BICYCLING">Cycling</option>
+                  <option value="DRIVING">Driving</option>
+                  <option value="TRANSIT">Transit</option>
+                </Select>
+                <button>Submit</button>
+              </span> 
+            </p>
+              
               <h3>Invite friends and {' '}
                 <Link to={`/map/${this.props.session.code}`}>
                 <span style={{ textDecoration: 'underline' }}>Join now</span>

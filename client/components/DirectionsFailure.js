@@ -19,7 +19,7 @@ class DirectionsFailure extends React.Component {
                     <span className="close" onClick={this.handleClick}>
                     &times;
                     </span>
-                        <h3>Sorry, your route is not possible!</h3>
+                        <h3>Sorry, this route is not possible!</h3>
                 </div>
             </div>
         );

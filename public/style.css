@@ -112,3 +112,23 @@ form div {
   color: #0f3057;
   cursor: pointer;
 }
+
+h1, h3 {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+.flex > {
+  min-width: 50px;
+  margin: auto;
+}
+
+.container {
+  margin: 50px 30px;
+}

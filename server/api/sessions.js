@@ -12,8 +12,8 @@ router.get('/allSessions/:userId', async (req, res, next) => {
         where: {
           id: req.params.userId,
         },
-        attributes: [],
-      },
+        attributes: ['firstName', 'id'],
+      }
     });
     res.send(mySessions);
   } catch (err) {
