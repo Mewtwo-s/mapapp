@@ -83,7 +83,6 @@ const MapContainer = (props) => {
   };
 
   useEffect(() => {
-    props.startWatch(props.user.id);
     props.getSession(props.user.id, props.match.params.code);
   }, []);
 
@@ -95,6 +94,7 @@ const MapContainer = (props) => {
   }, [props.session.id, props.myLocation.lat]);
 
   useEffect(() => {
+    props.startWatch(props.user.id, props.session.id);
     if (props.session.id) {
       console.log(`*** MC MOUNTING Sesson ${props.session.id} ***`);
       props.getSessionUsers(props.session.id);
@@ -223,8 +223,8 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    startWatch: (userId) => {
-      dispatch(watchMyLocation(userId));
+    startWatch: (userId, sessionId) => {
+      dispatch(watchMyLocation(userId, sessionId));
     },
     getSession: (userId, sessionCode) => {
       dispatch(getSessionThunkCreator(userId, sessionCode));

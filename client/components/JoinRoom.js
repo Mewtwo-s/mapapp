@@ -11,16 +11,15 @@ import { Button, Label, FormGroup, Input, Container, Select } from '../GlobalSty
 import { getFriendsThunk } from '../store/user';
 import { inviteSessionUsersThunkCreator } from '../store/userSessions';
 import TravelMode from './TravelMode'
+import { updateSessionAction } from '../store/homeStatus';
 
 export class JoinRoom extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
     this.state = {
       currentSession: null,
-      sessionAction: null,
       travelMode: 'WALKING'
     };
     this.handleCreate = this.handleCreate.bind(this);
@@ -28,16 +27,14 @@ export class JoinRoom extends React.Component {
     this.handleChangeMode = this.handleChangeMode.bind(this)
   }
 
+  componentDidMount() {
+    this.props.updateSessionAction(null);
+  }
+
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value
   })
-  }
-
-  handleClick(action) {
-    this.setState({
-      sessionAction: action,
-    });
   }
 
   async handleAddFriendViaEmail (evt) {
@@ -61,12 +58,10 @@ export class JoinRoom extends React.Component {
 
    handleChangeMode(e){
     this.setState({travelMode: e.target.value})
-    console.log('mode->', this.state.travelMode)
   }
 
   async handleCreate(evt) {
     evt.preventDefault();
-
     await this.props.getFriends(this.props.user.id);
     const session = this.props.session;
     if (session && session.id) {
@@ -75,9 +70,7 @@ export class JoinRoom extends React.Component {
     }
 
 
-    this.setState({
-      sessionAction: 'host',
-    });
+    this.props.updateSessionAction('host');
     await this.props.createSession(this.props.user.id, this.state.travelMode);
   }
  
@@ -86,30 +79,29 @@ export class JoinRoom extends React.Component {
       <div>
         
         <h3>{`Hello ${this.props.user.firstName} !`}</h3>
-     
-        {this.state.sessionAction === null && (
+        {this.props.sessionAction === null && (
           <div>
             <h3> In the mood to hang out today? </h3>  
             <p> Choose your type of transportation :  
               <span> 
-                <Select name="travelMode" onChange={this.handleChangeMode}>
+                <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
+                <option value="WALKING">Walking</option>
                   <option value="BICYCLING">Cycling</option>
                   <option value="DRIVING">Driving</option>
                   <option value="TRANSIT">Transit</option>
-                  <option value="WALKING">Walking</option>
                 </Select>
               </span> 
             </p>
             
             <Container style={{display: 'flex', justifyItems:'stretch'}}>
               <Button onClick={this.handleCreate}>Create New Event</Button>
-              <Button onClick={() => this.handleClick('join')}>
+              <Button onClick={() => this.props.updateSessionAction('join')}>
                 Join an Event
               </Button>
             </Container>
           </div>
         )}
-        {this.state.sessionAction === 'join' && (
+        {this.props.sessionAction === 'join' && (
           <div>
             <form onSubmit={this.handleJoin}>
               <div>
@@ -123,7 +115,7 @@ export class JoinRoom extends React.Component {
             </form>
           </div>
         )}
-        {this.state.sessionAction === 'host' && (
+        {this.props.sessionAction === 'host' && (
           <div>
             <div>
               {/* <h3 style={{textAlign: 'center'}}>Invite friends using the code: {this.props.session.code} </h3> */}
@@ -134,9 +126,6 @@ export class JoinRoom extends React.Component {
                 <span style={{ textDecoration: 'underline' }}>Join now</span>
                 </Link>
               </h3>
-              {/* <Link to={`/map/${this.props.session.code}`}>
-                <Button>Go to session</Button>
-              </Link> */}
               <h5>Invite friends using code: {this.props.session.code} </h5>
 
               {
@@ -171,7 +160,8 @@ const mapState = (state) => {
   return {
     user: state.auth,
     session: state.sessionReducer,
-    friends: state.friendReducer
+    friends: state.friendReducer, 
+    sessionAction: state.sessionAction
   };
 };
 
@@ -184,7 +174,8 @@ const mapDispatch = (dispatch, { history }) => {
     stopWatchingMyLocation: () => dispatch(stopWatchingMyLocation()),
     leaveRoom: (userId, sessionId) => dispatch(leaveRoom(userId, sessionId)),
     getFriends: (userId) => dispatch(getFriendsThunk(userId)),
-    inviteFriend: (sessionId, email, hostName) => dispatch(inviteSessionUsersThunkCreator(sessionId, email, hostName))
+    inviteFriend: (sessionId, email, hostName) => dispatch(inviteSessionUsersThunkCreator(sessionId, email, hostName)),
+    updateSessionAction: (action)=> dispatch(updateSessionAction(action))
   };
 };
 export default connect(mapState, mapDispatch)(JoinRoom);

@@ -8,7 +8,7 @@ import axios from 'axios';
 
 import sessionReducer from '../store/session';
 import { Container } from '../GlobalStyles';
-
+import { getAllSessionsThunkCreator } from '../store/allSessions';
 import { clearAllLocations } from '../store/locationSharing';
 
 /**
@@ -19,19 +19,19 @@ export const Home = (props) => {
     props.clearAllLocationHome();
   }, []);
 
-  const activeSessions = props.userSessions.filter(
+  useEffect(() => {
+    props.getAllSessions(props.userId);
+  }, [props.userId]);
+
+  const activeSessions = props.allSessions.filter(
     (session) => session.status === 'Active'
   );
-  const pendingSessions = props.userSessions.filter(
+  const pendingSessions = props.allSessions.filter(
     (session) => session.status === 'Pending'
   );
-
+  console.log(props);
   return (
     <Container>
-      <Link to="/pastSessions" className="small-link">
-        {' '}
-        View Past Events{' '}
-      </Link>
       <div
         style={{
           display: 'flex',
@@ -40,9 +40,9 @@ export const Home = (props) => {
           alignItems: 'center',
         }}
       >
-        <h1 className="logo">Meedle</h1>
-
+        <Link to={'/pastSessions'}>View Past Events</Link>
         <JoinRoom history={props.history} />
+
         <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
@@ -130,7 +130,7 @@ const mapState = (state) => {
   return {
     email: state.auth.email,
     userId: state.auth.id,
-    userSessions: state.auth.allSessions,
+    allSessions: state.allSessionsReducer,
   };
 };
 
@@ -138,6 +138,9 @@ const mapDispatch = (dispatch) => {
   return {
     clearAllLocationHome: () => {
       dispatch(clearAllLocations());
+    },
+    getAllSessions: (userId) => {
+      dispatch(getAllSessionsThunkCreator(userId));
     },
   };
 };

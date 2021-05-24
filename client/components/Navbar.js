@@ -5,35 +5,29 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store';
 import { ProgressPlugin } from 'webpack';
+import { updateSessionAction } from '../store/homeStatus';
 //import mapLogo from '../../public/mapLogo.png'  -> module not found 
 
 
-const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
+const Navbar = ({handleClick, isLoggedIn, photo, firstName, updateSessionAction}) => {
+
   const [open, setOpen] = useState(false)
+
   return (
   <Nav>
     <NavbarContainer>
-      {/* <div style={{backgroundImage: '/public/mapLogo.png'}}></div> */}
-        <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1>
-
-        {/* <h1 className="logo">
+        {/* <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1> */}
+        <NavLink to="/home" onClick={() => updateSessionAction(null)}>
+        <h1 className="logo">
           Meedle
-        </h1> */}
+        </h1>
+        </NavLink>
       
-      {
-          isLoggedIn && 
-          <div>{
-              photo ?
-              <ProfilePhoto src={`${photo}`} /> :
-              <Name>{firstName.slice(0,1)}</Name>
-          }</div>
-      }
-    
       {isLoggedIn ? (
         <NavMenu open={open}>
           {/* The navbar will show these links after you log in */}
-          <NavLink to="/home">Home</NavLink> 
-          <NavLink to="/" onClick={handleClick}>
+          <NavLink to="/home" onClick={() => updateSessionAction(null)}>Home</NavLink> 
+          <NavLink to="/home" onClick={handleClick}>
             Logout
           </NavLink>
         </NavMenu>
@@ -44,6 +38,15 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName}) => {
           <NavLink to="/signup">Sign Up</NavLink>
         </NavMenu>
       )}
+      {
+          isLoggedIn && 
+          <div>{
+              photo ?
+              <ProfilePhoto src={`${photo}`} /> :
+              <Name>{firstName.slice(0,1)}</Name>
+          }</div>
+      }
+    
       
         <StyledBurger open={open} onClick={() => setOpen(!open)}>
           <div />
@@ -71,7 +74,8 @@ const mapDispatch = dispatch => {
   return {
     handleClick() {
       dispatch(logout())
-    }
+    },
+    updateSessionAction: (action)=> dispatch(updateSessionAction(action)),
   }
 }
 
