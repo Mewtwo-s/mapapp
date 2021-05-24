@@ -27,8 +27,8 @@ import DirectionsFailure from "./DirectionsFailure";
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
   let friendsJoined;
-  if (props.session.users && props.session.users.length>1) {
-    friendsJoined = props.session.users
+  if (props.allUsersInSession && props.allUsersInSession.length>1) {
+    friendsJoined = props.allUsersInSession
       .filter((user) => user.id !== props.user.id)
       .map((user) => user.firstName)
       .join(", ");

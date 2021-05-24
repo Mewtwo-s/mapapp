@@ -114,7 +114,7 @@ const Map = withScriptjs(
           if (currentLocationUser.length === 0) {
             location = {lat: user.lat, lng: user.lng, userId: user.id};
           } else {
-            location = {lat: currentLocationUser[0].lat, lng: currentLocationUser[0].lng, userId: user.id}
+            location = {lat: currentLocationUser[0].session.userSession.lat, lng: currentLocationUser[0].session.userSession.lng, userId: user.id}
           }
         return (
           <MarkerWithLabel
