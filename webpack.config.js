@@ -6,9 +6,12 @@ if (process.env.NODE_ENV !== 'production') {
   environmentConfig = new Dotenv();
 } else {
   environmentConfig = new DefinePlugin({
-    'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(
-      process.env.GOOGLE_MAPS_API_KEY
-    ),
+    'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.GOOGLE_MAPS_API_KEY),
+    'process.env.MAIL_USERNAME': JSON.stringify(process.env.MAIL_USERNAME),
+    'process.env.MAIL_PASSWORD': JSON.stringify(process.env.MAIL_PASSWORD),
+    'process.env.OAUTH_CLIENTID': JSON.stringify(process.env.OAUTH_CLIENTID),
+    'process.env.OAUTH_CLIENT_SECRET': JSON.stringify(process.env.OAUTH_CLIENT_SECRET),
+    'process.env.OAUTH_REFRESH_TOKEN': JSON.stringify(process.env.OAUTH_REFRESH_TOKEN),
   });
 }
 module.exports = {
