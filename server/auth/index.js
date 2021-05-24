@@ -47,15 +47,24 @@ router.get('/me', async (req, res, next) => {
   try {
     const user = await User.findByToken(req.headers.authorization)
     //get all sessions belongs to users
-    const allSessions = await user.getSessions()
-    //console.log('allSessions', allSessions.map(session => session.dataValues))
+    let allSessions = await user.getSessions()
+    //find host's name
+    allSessions = await Promise.all(allSessions.map(async (session) => {
+      const hostId = session.hostId;
+      const host = await User.findByPk(hostId, {
+        attributes: ['firstName', 'lastName']
+      });
+      return {
+        ...session.dataValues,
+        host: host.dataValues
+      };
+    }))
+    //console.log('allsessions', allSessions);
     res.send({
       ...user.dataValues,
-      allSessions: allSessions.map(session => session.dataValues)
-    })
+      allSessions
+    });
   } catch (err) {
-    next(err)
+    next(err);
   }
 })
-
-
