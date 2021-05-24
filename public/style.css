@@ -60,7 +60,7 @@ form div {
 .logo{
  -webkit-text-stroke: 1px #0f3057;
   background-color: aquamarine;
-  font-size: 32px;
+  font-size: 38px;
   line-height: 6vw;
   margin: 5px;
   font-weight: 900;
@@ -166,4 +166,11 @@ select {
 .specialButton {
   background-color: pink;
   color: white;
+}
+
+.clickToOpen {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }

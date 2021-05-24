@@ -7,7 +7,7 @@ import {
 } from '../store/session';
 import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
-import { Button, Label, FormGroup, Input, Container, Select } from '../GlobalStyles';
+import { Button, Label, SpecialButton, FriendButton, FormGroup, Input, Container, Select } from '../GlobalStyles';
 import { getFriendsThunk } from '../store/user';
 import { inviteSessionUsersThunkCreator } from '../store/userSessions';
 import TravelMode from './TravelMode'
@@ -21,12 +21,15 @@ export class JoinRoom extends React.Component {
     this.state = {
       currentSession: null,
       travelMode: 'WALKING',
-      createSessionDisplay: null
+      createSessionDisplay: null, 
+      friendAdded: null
     };
     this.handleCreate = this.handleCreate.bind(this);
     this.handleAddFriendViaEmail = this.handleAddFriendViaEmail.bind(this)
     this.handleChangeMode = this.handleChangeMode.bind(this)
     this.createSessionDisplay=this.createSessionDisplay.bind(this)
+    this.addAFriend=this.addAFriend.bind(this)
+    this.goBack=this.goBack.bind(this);
   }
 
   componentDidMount() {
@@ -78,15 +81,37 @@ export class JoinRoom extends React.Component {
 
   createSessionDisplay(word) {
     this.setState({
-      createSessionDisplay: word
+      createSessionDisplay: word,
+      friendAdded: null
     })
+  }
+
+  addAFriend (friendEmail, friendName) {
+    if (this.state.friendAdded === friendName) {
+      this.setState({
+        friendAdded: null
+      })
+    } else {
+      this.setState({
+        friendAdded: friendName
+      })
+    }
+    this.props.inviteFriend(this.props.session.id, friendEmail, this.props.user.firstName)
+  }
+
+  goBack() {
+    this.setState({
+      createSessionDisplay: null,
+      friendAdded: null
+    })
+    this.props.updateSessionAction(null)
   }
  
   render() {
     return (
       <div className="container">
         {this.props.sessionAction !== null &&
-        <Button onClick={() => this.props.updateSessionAction(null)}>Back</Button>
+        <Button onClick={this.goBack}>Back</Button>
         }
         {this.props.sessionAction === null && (
           <div>
@@ -125,16 +150,22 @@ export class JoinRoom extends React.Component {
             </Link>
             <div className="flexFriends">
             {/* need to add functionality here */}
-            <Button className="specialButton">Go to your event</Button>
+            <div className="clickToOpen">
+            <Link to={`/map/${this.props.session.code}`}>
+                <SpecialButton>Go to your event</SpecialButton>
+              </Link> 
+              </div>
             <Button onClick={() => this.createSessionDisplay("code")}>Invite friends by code</Button>
             {this.state.createSessionDisplay === "code" && 
+            <div className="clickToOpen">
             <h3>Your custom event code is: 
             <span className="bold">{` ${this.props.session.code}`}</span> 
          </h3>
-            
+            </div>
             }
             <Button onClick={() => this.createSessionDisplay("email")}>Invite friends by email</Button>
             {this.state.createSessionDisplay === "email" && 
+            <div className="clickToOpen">
             <form onSubmit={this.handleAddFriendViaEmail}>
               <h3>Invite a friend via email (one at a time)</h3>
               <div style={{ display: 'flex' }}>
@@ -146,22 +177,28 @@ export class JoinRoom extends React.Component {
                     <Button style={{margin: '0px'}}type="submit">Submit</Button>
               </div>
             </form>
+            </div>
             }
             {(this.props.friends.length > 0) && 
             <Button onClick={() => this.createSessionDisplay("auto")}>Click to auto add friends</Button>}
             {this.state.createSessionDisplay === "auto" && 
+            <div className="clickToOpen">
+              <div className="clickToOpen">
+              {this.state.friendAdded && <p>Added {this.state.friendAdded}</p>}
+              </div>
               <div className="flexFriends">
-      
               {this.props.friends.map(friend =>  (
         
-              <Button key={friend.id} onClick={() => this.props.inviteFriend( this.props.session.id, friend.email, this.props.user.firstName)}>
+              <FriendButton key={friend.id} onClick={() => this.addAFriend(friend.email, friend.firstName)}>
                   {friend.firstName} {friend.lastName}
-              </Button>
+              </FriendButton>
               ))}
+              </div>
               </div>
             }
             <Button onClick={() => this.createSessionDisplay("transportation")}>Edit transportation</Button>
             {this.state.createSessionDisplay === "transportation" &&
+            <div className="clickToOpen">
             <p> Choose your group's method of transportation:  
             <span> 
               <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
@@ -172,21 +209,8 @@ export class JoinRoom extends React.Component {
               </Select>
             </span> 
           </p>
-            
-            }
             </div>
-            <div>
-      
-            
-          </div>
-          <div>
-  
-              
-              
-            {/* <Link to={`/map/${this.props.session.code}`}>
-                <span style={{ textDecoration: 'underline' }}>Join now</span>
-                </Link> */}
-             
+            }
             </div>
           </div>
         )}

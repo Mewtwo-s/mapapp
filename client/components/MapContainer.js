@@ -128,11 +128,11 @@ const MapContainer = (props) => {
     <div>
     {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
       <Container>
-      <Link to='/home' className='small-link'> Back To Home </Link>
+      {/* <Link to='/home' className='small-link'> Back To Home </Link> */}
       <div style={{textAlign:'center'}}>
         <h4>Event Code: {props.session.code}</h4>
-        <p>In this event:</p>
-        {props.session.users ? <p> {`You, ${friendsJoined}`} </p> : 'Finding friends'}
+        <p>Friends in this event:</p>
+        {(props.session.users.length === 1) ? <p> {`${friendsJoined}`} </p> : <p>Just you!</p>}
       </div>
    
     <div style={{display: 'flex', justifyContent:'center'}}>
