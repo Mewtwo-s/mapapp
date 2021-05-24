@@ -88,9 +88,7 @@ const MapContainer = (props) => {
 
   // this effect occurs on unmounting only
   useEffect(() => {
-    console.log('UseEffect MOUNT');
     return () => {
-      console.log('UseEffect UNMOUNT');
       props.leaveRoom(props.user.id, props.session.id);
       props.stopWatchingMyLocation();
     };

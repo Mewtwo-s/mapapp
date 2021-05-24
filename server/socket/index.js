@@ -1,5 +1,4 @@
 module.exports = (io) => {
-  // {socketId: {roomName:'', socketId:''}}
   const rooms = {};
   io.on('connection', (socket) => {
     console.info(`Client ${socket.id} has connected to the server!`);
@@ -8,10 +7,8 @@ module.exports = (io) => {
       const roomName = 'room_' + sessionId;
       socket.join(roomName);
 
-      // store rooms with associated socket and user
+      // store room and user with associated socket
       rooms[socket.id] = { userId, roomName };
-      console.log('SOCKET ROOMS', rooms);
-      console.log(rooms[socket.id]);
 
       console.info(`User ${userId} joins ${roomName}`);
       io.to(roomName).emit(
@@ -23,7 +20,7 @@ module.exports = (io) => {
 
     socket.on('leave-room', (userId, sessionId) => {
       const roomName = 'room_' + sessionId;
-      console.log(`User ${userId} leaves ${roomName}`);
+      console.info(`User ${userId} leaves ${roomName}`);
       io.to(roomName).emit(
         'user-left-room',
         userId,
@@ -49,12 +46,11 @@ module.exports = (io) => {
     });
 
     socket.on('disconnecting', () => {
-      console.info('user disconnecting: ' + socket.id);
-      // need to get the room and user from this socket id
       const roomData = rooms[socket.id];
       if (roomData) {
         const userId = roomData.userId;
         const room = roomData.roomName;
+        console.info(`user ${userId} disconnecting from ${room} `);
         socket.broadcast.emit(
           'user-left-room',
           userId,
@@ -65,7 +61,6 @@ module.exports = (io) => {
 
     socket.on('disconnect', () => {
       console.info('user disconnected: ' + socket.id);
-      // need to get the room and user from this socket id
     });
 
     socket.on('send-my-address', (userId, sessionId, address) => {

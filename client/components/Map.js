@@ -40,6 +40,7 @@ const Map = withScriptjs(
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    const prevLocations = useRef();
 
     const markerLabelStyle = {
       backgroundColor: 'black',
@@ -60,10 +61,15 @@ const Map = withScriptjs(
       mapRef.current.fitBounds(bounds);
     };
 
-    // Fit bounds on mount, and when the markers change
     useEffect(() => {
-      if (props.allLocations.length > 1) {
+      console.log('PREV LOCS', prevLocations.current);
+      console.log('ALL LOCS', props.allLocations);
+      if (!prevLocations.current) {
         fitBounds();
+        prevLocations.current = props.allLocations;
+      } else if (props.allLocations.length > prevLocations.current.length) {
+        fitBounds();
+        prevLocations.current = props.allLocations;
       }
     }, [props.allLocations]);
 
@@ -244,6 +250,7 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     isLoggedIn: !!state.auth.id,
     session: state.sessionReducer,
+    allUsersInSession: state.userSessionsReducer,
     savedLocation: {
       lat: state.sessionReducer.currentLat,
       lng: state.sessionReducer.currentLng,
