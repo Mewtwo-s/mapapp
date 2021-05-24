@@ -36,16 +36,36 @@ router.put('/:userId/:sessionId', async (req, res, next) => {
     }
   })
 
+  // router.get('/:sessionId', async (req, res, next) => {
+  //   try {
+  //     const sessionUsers = await UserSession.findAll({
+  //         where: {
+  //             sessionId: req.params.sessionId
+  //         }, 
+  //         include: {
+  //           model: User
+  //         }
+  //     });
+  //     res.send(sessionUsers);
+  //   } catch (err) {
+  //     next(err)
+  //   }
+  // })
+
+
   router.get('/:sessionId', async (req, res, next) => {
     try {
-      const sessionUsers = await UserSession.findAll({
+      const sessionUsers = await User.findAll({
+        include: {
+          model: Session, 
           where: {
-              sessionId: req.params.sessionId
-          }
+            id: req.params.sessionId
+          },
+          attributes: ['id']
+        }
       });
       res.send(sessionUsers);
     } catch (err) {
       next(err)
     }
   })
-

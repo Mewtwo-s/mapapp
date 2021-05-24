@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-
 function runMailer (senderName, toEmail, gameCode, toName, userCode, userId) {
   console.log('in node mailer', userId)
 let transporter = nodemailer.createTransport({
@@ -13,9 +12,7 @@ let transporter = nodemailer.createTransport({
       refreshToken: process.env.OAUTH_REFRESH_TOKEN
     }
   });
-
   if(toName === 'Guest'){
-
     let mailOptions = {
       from: 'mapappproduction@gmail.com',
       to: toEmail,
@@ -23,10 +20,8 @@ let transporter = nodemailer.createTransport({
       html: 
           `
           <p> Welcome To Meedle!</p>
-          
-          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="https://mapapp999.herokuapp.com/signup/${gameCode}/${userId}">here</a></p>`
+          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="https://meedleapp.herokuapp.com/signup/${gameCode}/${userId}">here</a></p>`
     };
-
     transporter.sendMail(mailOptions, function(err, data) {
       if (err) {
         console.log("Error " + err);
@@ -34,7 +29,6 @@ let transporter = nodemailer.createTransport({
         console.log("Email sent successfully");
       }
     });
-    
   }
   else{
   let mailOptions = {
@@ -44,10 +38,8 @@ let transporter = nodemailer.createTransport({
     html: 
         `
         <p>Hi ${toName}! </p>
-        
-        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://mapapp999.herokuapp.com/friend/${gameCode}">here</a></p>`
+        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://meedleapp.herokuapp.com/friend/${gameCode}">here</a></p>`
   };
-
   transporter.sendMail(mailOptions, function(err, data) {
     if (err) {
       console.log("Error " + err);
@@ -56,7 +48,5 @@ let transporter = nodemailer.createTransport({
     }
   });
 }
-
 }
-
 module.exports = runMailer

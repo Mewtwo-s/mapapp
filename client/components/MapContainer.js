@@ -1,37 +1,41 @@
-import Map from './Map';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { DirectionsRenderer } from 'react-google-maps';
-import { joinRoom, leaveRoom } from '../store/locationSharing';
-import { Button, Container } from '../GlobalStyles';
-import { watchMyLocation, stopWatchingMyLocation } from '../store/location';
+import Map from "./Map";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { DirectionsRenderer } from "react-google-maps";
+import { joinRoom, leaveRoom } from "../store/locationSharing";
+import { Button, Container } from "../GlobalStyles";
+import { watchMyLocation, stopWatchingMyLocation } from "../store/location";
 import {
   getSessionThunkCreator,
   activateSessionThunkCreator,
   endSessionThunkCreator,
-} from '../store/session';
-import Loading from './Loading';
-import { point, featureCollection } from '@turf/helpers';
-import center from '@turf/center';
-import axios from 'axios';
-import Place from './Place';
+} from "../store/session";
+import Loading from "./Loading";
+import { point, featureCollection } from "@turf/helpers";
+import center from "@turf/center";
+import axios from "axios";
+import Place from "./Place";
 import {
   arriveThunkCreator,
   getSessionUsersThunkCreator,
-} from '../store/userSessions';
-import EndedSession from './EndedSession';
-import DirectionsFailure from './DirectionsFailure';
+} from "../store/userSessions";
+import EndedSession from "./EndedSession";
+import DirectionsFailure from "./DirectionsFailure";
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
   let friendsJoined;
-  if (props.session.users) {
-    friendsJoined = props.session.users
+  if (props.allUsersInSession && props.allUsersInSession.length>1) {
+    friendsJoined = props.allUsersInSession
       .filter((user) => user.id !== props.user.id)
       .map((user) => user.firstName)
-      .join(', ');
+      .join(", ");
+      console.log(friendsJoined);
+      console.log(props);
+  } else {
+    friendsJoined ='Just you!';
   }
   const [joined, setJoin] = useState(false);
   const [topPlaces, setTopPlaces] = useState();
@@ -41,7 +45,7 @@ const MapContainer = (props) => {
     try {
       if (lat && lng) {
         const places = await (
-          await axios.post('/api/google', { lat: lat, lng: lng })
+          await axios.post("/api/google", { lat: lat, lng: lng })
         ).data;
         setTopPlaces(places);
       }
@@ -116,7 +120,7 @@ const MapContainer = (props) => {
   }, [midPoint]);
 
   useEffect(() => {
-    if (props.session.status === 'Active') {
+    if (props.session.status === "Active") {
       const allArrived = props.allUsersInSession.every(
         (user) => user.arrived === true
       );
@@ -127,38 +131,43 @@ const MapContainer = (props) => {
       }
     }
   }, [props.allUsersInSession]);
- 
+
   return (
     <div>
-      {props.directionsFailed === true && 
-            <DirectionsFailure />
-        }
-    {props.session.status === "Completed" ? <EndedSession /> :
-    <div>
-    {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
-      <Container>
-      <div style={{textAlign:'center'}}>
-        <h4>Event Code: {props.session.code}</h4>
-        <p>Friends in this event:</p>
-        {(props.session.users.length === 1) ? <p> {`${friendsJoined}`} </p> : <p>Just you!</p>}
-      </div>
-   
-    <div style={{display: 'flex', justifyContent:'center'}}>
-        {
-          props.session.status === 'Pending' &&
-          props.session.hostId === props.user.id && (
-            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-          )  
-        }
-          
-        {props.session.status === 'Active' &&
-            <Button onClick={userArrives}> I have arrived </Button>          
-          }
-        {props.session.hostId === props.user.id && 
-            <Button onClick={() => props.endSession(props.session.id)}>End Event</Button>}
-      </div>
+      {props.directionsFailed === true && <DirectionsFailure />}
+      {props.session.status === "Completed" ? (
+        <EndedSession />
+      ) : (
+        <div>
+          {joined === false && props.session.status !== "Completed" ? (
+            <Loading message="your map" />
+          ) : (
+            <Container>
+              <div style={{ textAlign: "center" }}>
+                <h4>Event Code: {props.session.code}</h4>
+                <p>Friends in this event:</p>
+                {props.session.users && 
+                  <p> {`${friendsJoined}`} </p>
+                }
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {props.session.status === "Pending" &&
+                  props.session.hostId === props.user.id && (
+                    <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+                  )}
+
+                {props.session.status === "Active" && (
+                  <Button onClick={userArrives}> I have arrived </Button>
+                )}
+                {props.session.hostId === props.user.id && (
+                  <Button onClick={() => props.endSession(props.session.id)}>
+                    End Event
+                  </Button>
+                )}
+              </div>
               <PlaceStyles>
-                {props.session.status === 'Pending' && topPlaces
+                {props.session.status === "Pending" && topPlaces
                   ? topPlaces.map((place) => (
                       <Place
                         handle={placeSelected}
@@ -186,16 +195,16 @@ const MapContainer = (props) => {
                 containerElement={
                   <div
                     className="mapContainer"
-                    style={{ height: '70vh', width: '100%' }}
+                    style={{ height: "70vh", width: "100%" }}
                   />
                 }
-                mapElement={<div className="map" style={{ height: '100%' }} />}
+                mapElement={<div className="map" style={{ height: "100%" }} />}
               />
             </Container>
-          }
+          )}
         </div>
-      }
-      ; {' '}
+      )}
+      ;{" "}
     </div>
   );
 };
@@ -207,7 +216,7 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     allLocations: state.allLocations,
     allUsersInSession: state.userSessionsReducer,
-    directionsFailed: state.directionsFailedReducer
+    directionsFailed: state.directionsFailedReducer,
   };
 };
 
@@ -233,7 +242,6 @@ const mapDispatch = (dispatch) => {
     },
     endSession: (sessionId) => {
       dispatch(endSessionThunkCreator(sessionId));
-
     },
     stopWatchingMyLocation: () => {
       dispatch(stopWatchingMyLocation());
