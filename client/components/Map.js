@@ -12,7 +12,7 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
 import UserInput from './UserInput'
-import {updateMyLocation} from '../store/location'
+import {updateMyLocation, saveUserInputLocation} from '../store/location'
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -23,7 +23,7 @@ const Map = withScriptjs(
     const [currentLine, setCurrentLine] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
     const [inputLoc, setInputLoc] = useState()
-    
+
     const markerLabelStyle = {
       backgroundColor: 'black',
       color: 'white',
@@ -176,9 +176,12 @@ const Map = withScriptjs(
         const geocoder = new google.maps.Geocoder();      
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == 'OK') {
-            console.log('GEOCODE => ', results[0].geometry.location.lat(), results[0].geometry.location.lng());
+            let lat = results[0].geometry.location.lat()
+            let lng = results[0].geometry.location.lng()
+
             // setInputLoc({ lat: results[0].geometry.location.lat(), lng:results[0].geometry.location.lng()})
-            props.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng())
+            props.updateLocation(lat, lng)
+            props.saveInputLocation(props.user.id, lat, lng)
   
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
@@ -291,6 +294,9 @@ const mapDispatch = (dispatch) => {
   return {
     updateLocation: (lat, lng) => {
       dispatch(updateMyLocation(lat, lng));
+    },
+    saveInputLocation: (userId, lat, lng) => {
+      dispatch(saveUserInputLocation(userId, lat, lng));
     },
   };
 };
