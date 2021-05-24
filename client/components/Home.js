@@ -54,8 +54,9 @@ export const Home = (props) => {
         <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
-            //this is broken
-             let host = session.users.filter(user => user.id === session.hostId);
+          
+            //  let host = props.user.allSessions.host;
+            //  console.log(host);
             
             return (
               <Link to={`/map/${session.code}`} key={`code-${session.code}`}>
@@ -63,12 +64,18 @@ export const Home = (props) => {
                   <p style={{ textAlign: 'center', fontWeight:'bold'}}>Meetup Spot: </p>
                   <p style={{ textAlign: 'center', fontWeight: 'bold'}}>{`${session.locationName}`}</p>
                   <p style={{ textAlign: 'center'}}>{`Event Code: ${session.code}`}</p>
-                  {host.id === props.userId ? <p style={{ textAlign: 'center' }}>Hosted by you!</p> :
+                  {/* {host.id === props.userId ? <p style={{ textAlign: 'center' }}>Hosted by you!</p> :
                   host.id ? 
                   <p>Hosted by {host.firstName} </p>: null
                      
-                    }
-                
+                    } */}
+              
+                {/* {session && (
+                host.id=== props.userId ? 
+                <p style={{ textAlign: 'center' }}>Hosted by you!</p> : 
+                <p>{`Hosted by ${host.firstName} ${host.lastName}`}</p>
+
+                )} */}
 
                 </Card>
               </Link>
@@ -85,7 +92,11 @@ export const Home = (props) => {
                   <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Meetup Spot: TBD </p>
                   <p style={{ textAlign: 'center' }}>{`Event Code: ${session.code}`}</p>
                   {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosted by you!</p>}
-
+                  {/* {
+                    session.hostId === props.userId ? 
+                    <p style={{ textAlign: 'center' }}>Hosts by you!</p> : 
+                    <p>{`Hosts by ${session.host.firstName} ${session.host.lastName}`}</p>
+                  } */}
                 </Card>
               </Link>
             );
@@ -139,7 +150,8 @@ const mapState = (state) => {
     email: state.auth.email,
     userId: state.auth.id,
     allSessions: state.allSessionsReducer,
-    sessionAction: state.sessionAction
+    sessionAction: state.sessionAction,
+    user: state.auth
 
   };
 };
