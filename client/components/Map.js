@@ -101,47 +101,81 @@ const Map = withScriptjs(
       scaledSize: new google.maps.Size(40, 40), // scaled size
     }
 
-
     const renderOthers = () => {
       // creates a list of objects with consolidated user
       // and loc data for rendering
-      const users = props.session.users;
+      console.log(props);
+      const users = props.allUsersInSession;
 
-      if (users && props.allLocations) {
-        const otherUsers = users
-          .filter((user) => user.id !== props.user.id)
-          .reduce((modifiedUsers, user) => {
-            // find user location
-            const loc = props.allLocations.find(
-              (loc) => loc.userId === user.id
-            );
-            if (loc) {
-              modifiedUsers.push({ ...user, lat: loc.lat, lng: loc.lng });
-            }
-            return modifiedUsers;
-          }, []);
-
-        // Create the marker to render
-
-        return otherUsers.map((user) => (
+      if (users) {
+        return users.map((user) => {
+          let location;
+          let currentLocationUser = props.allLocations.filter(location => location.id===user.id)
+          if (currentLocationUser.length === 0) {
+            location = {lat: user.lat, lng: user.lng, userId: user.id};
+          } else {
+            location = {lat: currentLocationUser[0].lat, lng: currentLocationUser[0].lng, userId: user.id}
+          }
+        return (
           <MarkerWithLabel
             key={`user_${user.id}`}
-            //icon={user.photo}
             icon={{
               url: `${user.photo}`, // url
               scaledSize: new google.maps.Size(40, 40), // scaled size
             }}
-            position={{ lat: user.lat, lng: user.lng }}
+            position={{ lat: location.lat, lng: location.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
             zIndex={100}
             labelStyle={markerLabelStyle}
           >
             {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
             <div>{user.firstName}</div>
-          </MarkerWithLabel>
-        ));
+          </MarkerWithLabel>)
+          });
       }
     };
+
+
+    // const renderOthers = () => {
+    //   // creates a list of objects with consolidated user
+    //   // and loc data for rendering
+    //   const users = props.session.users;
+
+    //   if (users && props.allLocations) {
+    //     const otherUsers = users
+    //       .filter((user) => user.id !== props.user.id)
+    //       .reduce((modifiedUsers, user) => {
+    //         // find user location
+    //         const loc = props.allLocations.find(
+    //           (loc) => loc.userId === user.id
+    //         );
+    //         if (loc) {
+    //           modifiedUsers.push({ ...user, lat: loc.lat, lng: loc.lng });
+    //         }
+    //         return modifiedUsers;
+    //       }, []);
+
+    //     // Create the marker to render
+
+    //     return otherUsers.map((user) => (
+    //       <MarkerWithLabel
+    //         key={`user_${user.id}`}
+    //         //icon={user.photo}
+    //         icon={{
+    //           url: `${user.photo}`, // url
+    //           scaledSize: new google.maps.Size(40, 40), // scaled size
+    //         }}
+    //         position={{ lat: user.lat, lng: user.lng }}
+    //         labelAnchor={new google.maps.Point(0, 0)}
+    //         zIndex={100}
+    //         labelStyle={markerLabelStyle}
+    //       >
+    //         {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
+    //         <div>{user.firstName}</div>
+    //       </MarkerWithLabel>
+    //     ));
+    //   }
+    // };
 
     const myLocationIsValid = props.myLocation.lat;
     const sessionIsValid =
