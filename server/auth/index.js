@@ -45,26 +45,10 @@ router.post('/accept', async (req, res, next) => {
 
 router.get('/me', async (req, res, next) => {
   try {
-    const user = await User.findByToken(req.headers.authorization)
-    //get all sessions belongs to users
-    let allSessions = await user.getSessions()
-    //find host's name
-    allSessions = await Promise.all(allSessions.map(async (session) => {
-      const hostId = session.hostId;
-      const host = await User.findByPk(hostId, {
-        attributes: ['firstName', 'lastName']
-      });
-      return {
-        ...session.dataValues,
-        host: host.dataValues
-      };
-    }))
-    //console.log('allsessions', allSessions);
-    res.send({
-      ...user.dataValues,
-      allSessions
-    });
+    res.send(await User.findByToken(req.headers.authorization))
   } catch (err) {
-    next(err);
+    next(err)
   }
 })
+
+

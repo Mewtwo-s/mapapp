@@ -6,16 +6,21 @@ module.exports = router;
 
 router.get('/allSessions/:userId', async (req, res, next) => {
   try {
-    const mySessions = await Session.findAll({
-      include: {
-        model: User,
-        where: {
-          id: req.params.userId,
-        },
-        attributes: ['firstName', 'id'],
-      }
-    });
-    res.send(mySessions);
+    const user = await User.findByPk(req.params.userId);
+    let allSessions = await user.getSessions();
+    allSessions = await Promise.all(allSessions.map(async (session) => {
+      const hostId = session.hostId;
+      const host = await User.findByPk(hostId, {
+        attributes: ['firstName', 'lastName', 'id']
+      });
+      return {
+        ...session.dataValues,
+        host: host.dataValues
+      };
+    }))
+    res.send(
+      allSessions
+    );
   } catch (err) {
     next(err);
   }

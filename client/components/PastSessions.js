@@ -11,7 +11,7 @@ import { Container } from '../GlobalStyles'
  */
 export const PastSessions = props => {
 
-   const pastSessions = props.userSessions.filter(session => session.status === 'Completed')
+   const pastSessions = props.allSessions.filter(session => session.status === 'Completed')
 
    return (
      <Container>
@@ -31,8 +31,11 @@ export const PastSessions = props => {
                                  'Location was not selected'
                                  } 
                                  </h5>
-                              {/* TODO: change Date format */}
+                                 {session.host.id === props.userId ? <p style={{ textAlign: 'center' }}>Hosted by you!</p> :
+                  <p>Hosted by {session.host.firstName} </p>
+                    }
                               <p>{`Event ended: ${session.updatedAt}`}</p>
+
                            </Card>
                         </Link>
 
@@ -47,7 +50,8 @@ export const PastSessions = props => {
 
 const mapState = state => {
    return {
-      userSessions: state.auth.allSessions
+      allSessions: state.allSessionsReducer,
+      userId: state.auth.id
    }
 }
 
