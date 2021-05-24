@@ -22,6 +22,7 @@ import {
   getSessionUsersThunkCreator,
 } from '../store/userSessions';
 import EndedSession from './EndedSession';
+import DirectionsFailure from './DirectionsFailure';
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
@@ -126,30 +127,41 @@ const MapContainer = (props) => {
       }
     }
   }, [props.allUsersInSession]);
-
+ 
   return (
     <div>
-      {props.session.status === 'Completed' ? (
-        <EndedSession />
-      ) : (
-        <div>
-          {joined === false && props.session.status !== 'Completed' ? (
-            <Loading message="your map" />
-          ) : (
-            <Container>
-              <Link to="/home" className="small-link">
-                {' '}
-                Back To Home{' '}
-              </Link>
-              <div style={{ textAlign: 'center' }}>
-                <h4>Event Code: {props.session.code}</h4>
-                <p>In this event:</p>
-                {props.session.users ? (
-                  <p> {`You, ${friendsJoined}`} </p>
-                ) : (
-                  'Finding friends'
-                )}
-              </div>
+      {props.directionsFailed === true && 
+            <DirectionsFailure />
+        }
+    {props.session.status === "Completed" ? <EndedSession /> :
+    <div>
+    {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
+      <Container>
+      {/* <Link to='/home' className='small-link'> Back To Home </Link> */}
+      <div style={{textAlign:'center'}}>
+        <h4>Event Code: {props.session.code}</h4>
+        <p>Friends in this event:</p>
+        {(props.session.users.length === 1) ? <p> {`${friendsJoined}`} </p> : <p>Just you!</p>}
+      </div>
+   
+    <div style={{display: 'flex', justifyContent:'center'}}>
+        {
+          props.session.status === 'Pending' &&
+          props.session.hostId === props.user.id && (
+            <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+          )  
+        }
+          
+        {props.session.status === 'Active' &&
+            <Button onClick={userArrives}> I have arrived </Button>          
+          }
+        {props.session.hostId === props.user.id && 
+            <Button onClick={() => props.endSession(props.session.id)}>End Event</Button>}
+      </div>
+              <PlaceStyles>
+                {props.session.status === 'Pending' && topPlaces
+                  ? topPlaces.map((place) => (
+
 
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {props.session.status === 'Pending' &&
@@ -217,6 +229,7 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     allLocations: state.allLocations,
     allUsersInSession: state.userSessionsReducer,
+    directionsFailed: state.directionsFailedReducer
   };
 };
 
@@ -242,6 +255,7 @@ const mapDispatch = (dispatch) => {
     },
     endSession: (sessionId) => {
       dispatch(endSessionThunkCreator(sessionId));
+
     },
     stopWatchingMyLocation: () => {
       dispatch(stopWatchingMyLocation());

@@ -12,7 +12,9 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
 import UserInput from './UserInput'
+import { directionsFailed } from '../store/directionsFailure';
 import {updateMyLocation, saveUserInputLocation, watchMyLocation} from '../store/location'
+
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -24,6 +26,7 @@ const Map = withScriptjs(
     const [selectedPlace, setselectedPlace] = useState(null);
     const prevLocations = useRef();
     const [inputLoc, setInputLoc] = useState()
+
 
 
     const markerLabelStyle = {
@@ -76,7 +79,7 @@ const Map = withScriptjs(
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
           } else {
-            console.error(`error fetching directions ${result}`);
+            props.directionsFailed(true);
           }
         }
       );
@@ -93,12 +96,11 @@ const Map = withScriptjs(
         }
       }
     };
+    const userIcon = {
+      url: `${ props.user.photo }`, // url
+      scaledSize: new google.maps.Size(40, 40), // scaled size
+    }
 
-    // //resize icon
-    // const userIcon = {
-    //   url: `${props.user.photo}`, // url
-    //   scaledSize: new google.maps.Size(40, 40), // scaled size
-    // };
 
     const renderOthers = () => {
       // creates a list of objects with consolidated user
@@ -149,14 +151,15 @@ const Map = withScriptjs(
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
     
       function inputHandle(address) {
-      
+        console.log('input address ->', address)
+
         const geocoder = new google.maps.Geocoder();      
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == 'OK') {
             let lat = results[0].geometry.location.lat()
             let lng = results[0].geometry.location.lng()
-
             setInputLoc({ lat: results[0].geometry.location.lat(), lng:results[0].geometry.location.lng()})
+
             props.updateLocation(lat, lng)
             props.saveInputLocation(props.user.id, lat, lng)
   
@@ -173,6 +176,10 @@ const Map = withScriptjs(
       {props.myLocation.address?<UserInput handle={inputHandle}/>:''}
         {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
+          {inputLoc? <Marker
+                icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/arts.png"
+                position={inputLoc }
+              />:''}
             {sessionIsValid && (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
@@ -271,9 +278,11 @@ const mapDispatch = (dispatch) => {
     saveInputLocation: (userId, lat, lng) => {
       dispatch(saveUserInputLocation(userId, lat, lng));
     },
+    directionsFailed: (value) => dispatch(directionsFailed(value))
     startWatch: (userId, sessionId) => {
       dispatch(watchMyLocation(userId, sessionId));
     },
+
   };
 };
 
