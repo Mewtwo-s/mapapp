@@ -12,18 +12,22 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
 import UserInput from './UserInput'
-import {updateMyLocation, saveUserInputLocation} from '../store/location'
 import { directionsFailed } from '../store/directionsFailure';
+import {updateMyLocation, saveUserInputLocation, watchMyLocation} from '../store/location'
+
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
 const Map = withScriptjs(
   withGoogleMap((props) => {
-    
+
     const mapRef = useRef(null);
     const [currentLine, setCurrentLine] = useState();
     const [selectedPlace, setselectedPlace] = useState(null);
+    const prevLocations = useRef();
     const [inputLoc, setInputLoc] = useState()
+
+
 
     const markerLabelStyle = {
       backgroundColor: 'black',
@@ -44,10 +48,15 @@ const Map = withScriptjs(
       mapRef.current.fitBounds(bounds);
     };
 
-    // Fit bounds on mount, and when the markers change
     useEffect(() => {
-      if (props.allLocations.length > 1) {
+      // console.log('PREV LOCS', prevLocations.current);
+      // console.log('ALL LOCS', props.allLocations);
+      if (!prevLocations.current) {
         fitBounds();
+        prevLocations.current = props.allLocations;
+      } else if (props.allLocations.length > prevLocations.current.length) {
+        fitBounds();
+        prevLocations.current = props.allLocations;
       }
     }, [props.allLocations]);
 
@@ -76,28 +85,22 @@ const Map = withScriptjs(
       );
     }
 
-    // TEMP useEffect just for easy to read feedback.
-    useEffect(() => {
-      console.log('THIS USER:', props.user.id, props.user.firstName);
-      console.log('USERS in SESSION:');
-      if (props.session.users) {
-        props.session.users.forEach((u) => console.log(u.id, u.firstName));
-      }
-    }, [props.session]);
-
     const getUserName = () => {
       if (props.session.users) {
-        const firstName = props.session.users.find(
+        const thisUser = props.session.users.find(
           (user) => user.id === props.user.id
-        ).firstName;
-
-        return firstName !== '' ? firstName : 'You';
+        );
+        if (thisUser) {
+          const firstName = thisUser.firstName;
+          return firstName !== '' ? firstName : 'You';
+        }
       }
     };
     const userIcon = {
       url: `${ props.user.photo }`, // url
       scaledSize: new google.maps.Size(40, 40), // scaled size
     }
+
 
     const renderOthers = () => {
       // creates a list of objects with consolidated user
@@ -124,10 +127,10 @@ const Map = withScriptjs(
           <MarkerWithLabel
             key={`user_${user.id}`}
             //icon={user.photo}
-            icon= {{
-                url: `${user.photo}`, // url
-                    scaledSize: new google.maps.Size(40, 40), // scaled size
-              }}
+            icon={{
+              url: `${user.photo}`, // url
+              scaledSize: new google.maps.Size(40, 40), // scaled size
+            }}
             position={{ lat: user.lat, lng: user.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
             zIndex={100}
@@ -149,13 +152,14 @@ const Map = withScriptjs(
     
       function inputHandle(address) {
         console.log('input address ->', address)
+
         const geocoder = new google.maps.Geocoder();      
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == 'OK') {
             let lat = results[0].geometry.location.lat()
             let lng = results[0].geometry.location.lng()
+            setInputLoc({ lat: results[0].geometry.location.lat(), lng:results[0].geometry.location.lng()})
 
-            // setInputLoc({ lat: results[0].geometry.location.lat(), lng:results[0].geometry.location.lng()})
             props.updateLocation(lat, lng)
             props.saveInputLocation(props.user.id, lat, lng)
   
@@ -232,9 +236,9 @@ const Map = withScriptjs(
             {(props.myLocation || savedLocation) && (
               <MarkerWithLabel
                 key={props.user.id}
-                icon= {{
+                icon={{
                   url: `${props.user.photo}`, // url
-                      scaledSize: new google.maps.Size(40, 40), // scaled size
+                  scaledSize: new google.maps.Size(40, 40), // scaled size
                 }}
                 position={props.myLocation ? props.myLocation : savedLocation}
                 labelAnchor={new google.maps.Point(0, 0)}
@@ -252,13 +256,13 @@ const Map = withScriptjs(
 );
 
 const mapState = (state) => {
-  console.log('Map state', state);
   return {
     user: state.auth,
     allLocations: state.allLocations,
     myLocation: state.myLocation,
     isLoggedIn: !!state.auth.id,
     session: state.sessionReducer,
+    allUsersInSession: state.userSessionsReducer,
     savedLocation: {
       lat: state.sessionReducer.currentLat,
       lng: state.sessionReducer.currentLng,
@@ -275,6 +279,10 @@ const mapDispatch = (dispatch) => {
       dispatch(saveUserInputLocation(userId, lat, lng));
     },
     directionsFailed: (value) => dispatch(directionsFailed(value))
+    startWatch: (userId, sessionId) => {
+      dispatch(watchMyLocation(userId, sessionId));
+    },
+
   };
 };
 

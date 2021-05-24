@@ -14,8 +14,7 @@ import { clearAllLocations } from '../store/locationSharing';
 /**
  * COMPONENT
  */
-export const Home = props => {
- 
+export const Home = (props) => {
   useEffect(() => {
     props.clearAllLocationHome();
   }, []);
@@ -23,15 +22,18 @@ export const Home = props => {
   useEffect(() => {
     props.getAllSessions(props.userId);
   }, [props.userId]);
-
-  const activeSessions = props.allSessions.filter(session => session.status === "Active")
-  const pendingSessions = props.allSessions.filter(session => session.status === "Pending")
+  const activeSessions = props.allSessions.filter(
+    (session) => session.status === 'Active'
+  );
+  const pendingSessions = props.allSessions.filter(
+    (session) => session.status === 'Pending'
+  );
   const completedSessions = props.allSessions.filter(session => session.status === "Completed")
- console.log(props)
- 
+  console.log(props);
   return (
-    <Container > 
-      <div style={{
+    <Container>
+      <div
+        style={{
           display: 'flex',
           flexDirection: 'column',
           justtifyContent: 'center',
@@ -48,6 +50,7 @@ export const Home = props => {
        </Link>
           }
        
+
         <h3>{`Active Events (${activeSessions.length})`} </h3>
         <CardsContainer>
           {activeSessions.map((session) => {
@@ -66,6 +69,7 @@ export const Home = props => {
                      
                     }
                 
+
                 </Card>
               </Link>
             );
@@ -81,6 +85,7 @@ export const Home = props => {
                   <p style={{ textAlign: 'center', fontWeight: 'bold' }}>Meetup Spot: TBD </p>
                   <p style={{ textAlign: 'center' }}>{`Event Code: ${session.code}`}</p>
                   {session.hostId === props.userId && <p style={{ textAlign: 'center' }}>Hosted by you!</p>}
+
                 </Card>
               </Link>
             );
@@ -102,11 +107,11 @@ const Card = styled.div`
   width: 200px;
   padding: 8px;
   background-color: #efefef;
-  box-shadow: 0px 5px 20px rgb(48,181,204, 0.5);
+  box-shadow: 0px 5px 20px rgb(48, 181, 204, 0.5);
   &:hover {
     background-color: #e4efe5;
   }
-   @media screen and (max-width: 600px) {
+  @media screen and (max-width: 600px) {
     padding: 4px;
     width: 130px;
   }
@@ -135,6 +140,7 @@ const mapState = (state) => {
     userId: state.auth.id,
     allSessions: state.allSessionsReducer,
     sessionAction: state.sessionAction
+
   };
 };
 
@@ -144,8 +150,8 @@ const mapDispatch = (dispatch) => {
       dispatch(clearAllLocations());
     },
     getAllSessions: (userId) => {
-      dispatch(getAllSessionsThunkCreator(userId))
-    }
+      dispatch(getAllSessionsThunkCreator(userId));
+    },
   };
 };
 

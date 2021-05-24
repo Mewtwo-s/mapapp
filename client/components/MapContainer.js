@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { joinRoom } from '../store/locationSharing';
+import { DirectionsRenderer } from 'react-google-maps';
+import { joinRoom, leaveRoom } from '../store/locationSharing';
 import { Button, Container } from '../GlobalStyles';
-import { watchMyLocation } from '../store/location';
+import { watchMyLocation, stopWatchingMyLocation } from '../store/location';
 import {
   getSessionThunkCreator,
   activateSessionThunkCreator,
@@ -86,6 +87,14 @@ const MapContainer = (props) => {
     props.getSession(props.user.id, props.match.params.code);
   }, []);
 
+  // this effect occurs on unmounting only
+  useEffect(() => {
+    return () => {
+      props.leaveRoom(props.user.id, props.session.id);
+      props.stopWatchingMyLocation();
+    };
+  }, [props.session.id]);
+
   useEffect(() => {
     if (props.session.id && props.myLocation.lat && joined === false) {
       props.userJoinRoom(props.user.id, props.session.id, props.myLocation);
@@ -153,41 +162,65 @@ const MapContainer = (props) => {
                 {props.session.status === 'Pending' && topPlaces
                   ? topPlaces.map((place) => (
 
-                    <Place
-                      handle={placeSelected}
-                      key={place.place_id}
-                      location={place.geometry.location}
-                      name={place.name}
-                      open={place.opening_hours ? place.opening_hours.open_now : null}
-                      price={place.price_level}
-                      rating={place.rating}
-                      place={place.image}
-                    />
 
-                  ))
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                {props.session.status === 'Pending' &&
+                  props.session.hostId === props.user.id && (
+                    <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+                  )}
 
+                {props.session.status === 'Active' && (
+                  <Button onClick={userArrives}> I have arrived </Button>
+                )}
+
+                {props.session.hostId === props.user.id && (
+                  <Button onClick={() => props.endSession(props.session.id)}>
+                    End Event
+                  </Button>
+                )}
+              </div>
+              <PlaceStyles>
+                {props.session.status === 'Pending' && topPlaces
+                  ? topPlaces.map((place) => (
+                      <Place
+                        handle={placeSelected}
+                        key={place.place_id}
+                        location={place.geometry.location}
+                        name={place.name}
+                        open={
+                          place.opening_hours
+                            ? place.opening_hours.open_now
+                            : null
+                        }
+                        price={place.price_level}
+                        rating={place.rating}
+                        place={place.image}
+                      />
+                    ))
                   : null}
               </PlaceStyles>
 
-
-      <Map
-        topPlaces={topPlaces}
-        match={props.match}
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
-        loadingElement={<div className="loader" />}
-        containerElement={
-          <div
-            className="mapContainer"
-            style={{ height: '70vh', width: '100%' }}
-          />
-        }
-        mapElement={<div className="map" style={{ height: '100%' }} />}
-      />
-      </Container>
-    }
-
+              <Map
+                topPlaces={topPlaces}
+                match={props.match}
+                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`}
+                loadingElement={<div className="loader" />}
+                containerElement={
+                  <div
+                    className="mapContainer"
+                    style={{ height: '70vh', width: '100%' }}
+                  />
+                }
+                mapElement={<div className="map" style={{ height: '100%' }} />}
+              />
+            </Container>
+          )}
+        </div>
+      )}
+      ;{' '}
     </div>
-}; </div>)}
+  );
+};
 
 const mapState = (state) => {
   return {
@@ -222,7 +255,14 @@ const mapDispatch = (dispatch) => {
     },
     endSession: (sessionId) => {
       dispatch(endSessionThunkCreator(sessionId));
-    }
+
+    },
+    stopWatchingMyLocation: () => {
+      dispatch(stopWatchingMyLocation());
+    },
+    leaveRoom: (userId, sessionId) => {
+      dispatch(leaveRoom(userId, sessionId));
+    },
   };
 };
 
@@ -232,12 +272,11 @@ const PlaceStyles = styled.div`
   -webkit-justify-content: space-around;
   justify-content: space-around;
 
-
   @media screen and (max-width: 600px) {
     padding: 8px;
     display: flex;
     flex-direction: column;
-  
-  }`
-  
+  }
+`;
+
 export default connect(mapState, mapDispatch)(MapContainer);

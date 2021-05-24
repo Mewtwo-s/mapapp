@@ -4,7 +4,7 @@ import { Container } from '../GlobalStyles';
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store';
-import { ProgressPlugin } from 'webpack';
+// import { ProgressPlugin } from 'webpack';
 import { updateSessionAction } from '../store/homeStatus';
 //import mapLogo from '../../public/mapLogo.png'  -> module not found 
 
