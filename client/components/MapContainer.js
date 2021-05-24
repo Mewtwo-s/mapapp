@@ -137,7 +137,6 @@ const MapContainer = (props) => {
     <div>
     {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
       <Container>
-      {/* <Link to='/home' className='small-link'> Back To Home </Link> */}
       <div style={{textAlign:'center'}}>
         <h4>Event Code: {props.session.code}</h4>
         <p>Friends in this event:</p>
@@ -158,27 +157,6 @@ const MapContainer = (props) => {
         {props.session.hostId === props.user.id && 
             <Button onClick={() => props.endSession(props.session.id)}>End Event</Button>}
       </div>
-              <PlaceStyles>
-                {props.session.status === 'Pending' && topPlaces
-                  ? topPlaces.map((place) => (
-
-
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                {props.session.status === 'Pending' &&
-                  props.session.hostId === props.user.id && (
-                    <Button onClick={handleMagic}> Show Meetup Spots! </Button>
-                  )}
-
-                {props.session.status === 'Active' && (
-                  <Button onClick={userArrives}> I have arrived </Button>
-                )}
-
-                {props.session.hostId === props.user.id && (
-                  <Button onClick={() => props.endSession(props.session.id)}>
-                    End Event
-                  </Button>
-                )}
-              </div>
               <PlaceStyles>
                 {props.session.status === 'Pending' && topPlaces
                   ? topPlaces.map((place) => (
@@ -214,10 +192,10 @@ const MapContainer = (props) => {
                 mapElement={<div className="map" style={{ height: '100%' }} />}
               />
             </Container>
-          )}
+          }
         </div>
-      )}
-      ;{' '}
+      }
+      ; {' '}
     </div>
   );
 };

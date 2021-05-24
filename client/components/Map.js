@@ -278,7 +278,7 @@ const mapDispatch = (dispatch) => {
     saveInputLocation: (userId, lat, lng) => {
       dispatch(saveUserInputLocation(userId, lat, lng));
     },
-    directionsFailed: (value) => dispatch(directionsFailed(value))
+    directionsFailed: (value) => dispatch(directionsFailed(value)),
     startWatch: (userId, sessionId) => {
       dispatch(watchMyLocation(userId, sessionId));
     },
