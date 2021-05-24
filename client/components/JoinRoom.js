@@ -58,12 +58,10 @@ export class JoinRoom extends React.Component {
 
    handleChangeMode(e){
     this.setState({travelMode: e.target.value})
-    console.log('mode->', this.state.travelMode)
   }
 
   async handleCreate(evt) {
     evt.preventDefault();
-
     await this.props.getFriends(this.props.user.id);
     const session = this.props.session;
     if (session && session.id) {
@@ -77,22 +75,20 @@ export class JoinRoom extends React.Component {
   }
  
   render() {
-    console.log(this.props);
     return (
       <div>
         
         <h3>{`Hello ${this.props.user.firstName} !`}</h3>
-     
         {this.props.sessionAction === null && (
           <div>
             <h3> In the mood to hang out today? </h3>  
             <p> Choose your type of transportation :  
               <span> 
-                <Select name="travelMode" onChange={this.handleChangeMode}>
+                <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
+                <option value="WALKING">Walking</option>
                   <option value="BICYCLING">Cycling</option>
                   <option value="DRIVING">Driving</option>
                   <option value="TRANSIT">Transit</option>
-                  <option value="WALKING">Walking</option>
                 </Select>
               </span> 
             </p>
