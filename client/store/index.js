@@ -10,6 +10,7 @@ import sessionReducer from './session';
 import userSessionsReducer from './userSessions';
 import sessionAction from './homeStatus';
 import allSessionsReducer from './allSessions';
+import directionsFailedReducer from './directionsFailure';
 
 const reducer = combineReducers({ 
   auth, 
@@ -19,7 +20,8 @@ const reducer = combineReducers({
   userSessionsReducer,
   friendReducer,
   sessionAction,
-  allSessionsReducer
+  allSessionsReducer,
+  directionsFailedReducer
  });
 
 const middleware = composeWithDevTools(

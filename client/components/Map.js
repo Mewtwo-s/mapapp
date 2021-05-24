@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
 import UserInput from './UserInput'
 import {updateMyLocation, saveUserInputLocation} from '../store/location'
+import { directionsFailed } from '../store/directionsFailure';
 // =======================================================================
 //  GOOGLE MAPS
 // =======================================================================
@@ -69,7 +70,7 @@ const Map = withScriptjs(
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
           } else {
-            console.error(`error fetching directions ${result}`);
+            props.directionsFailed(true);
           }
         }
       );
@@ -93,35 +94,10 @@ const Map = withScriptjs(
         return firstName !== '' ? firstName : 'You';
       }
     };
-    //icon = { props.user.photo }
-    //resize icon
     const userIcon = {
       url: `${ props.user.photo }`, // url
       scaledSize: new google.maps.Size(40, 40), // scaled size
     }
-
-    // const renderUser = () => {
-    //   return parseFloat(props.myLocation.lat) ? (
-    //     <MarkerWithLabel
-    //       key={props.user.id}
-    //       icon={userIcon}
-    //       position={{
-    //         lat: parseFloat(props.myLocation.lat),
-    //         lng: parseFloat(props.myLocation.lng),
-    //       }}
-    //       labelAnchor={new google.maps.Point(0, 0)}
-    //       zIndex={100}
-    //       labelStyle={markerLabelStyle}
-    //     >
-    //       <div>{getUserName()}</div>
-    //     </MarkerWithLabel>
-    //   ) : (
-    //     console.log('location not reader')
-    //   );
-    // };
-
-
-   
 
     const renderOthers = () => {
       // creates a list of objects with consolidated user
@@ -298,6 +274,7 @@ const mapDispatch = (dispatch) => {
     saveInputLocation: (userId, lat, lng) => {
       dispatch(saveUserInputLocation(userId, lat, lng));
     },
+    directionsFailed: (value) => dispatch(directionsFailed(value))
   };
 };
 

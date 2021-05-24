@@ -21,6 +21,7 @@ import {
   getSessionUsersThunkCreator,
 } from '../store/userSessions';
 import EndedSession from './EndedSession';
+import DirectionsFailure from './DirectionsFailure';
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
@@ -117,10 +118,12 @@ const MapContainer = (props) => {
       }
     }
   }, [props.allUsersInSession]);
-
  
   return (
     <div>
+      {props.directionsFailed === true && 
+            <DirectionsFailure />
+        }
     {props.session.status === "Completed" ? <EndedSession /> :
     <div>
     {joined === false && props.session.status !== "Completed" ? <Loading message="your map"/> :
@@ -141,10 +144,8 @@ const MapContainer = (props) => {
         }
           
         {props.session.status === 'Active' &&
-            <Button onClick={userArrives}> I have arrived </Button>
-          
+            <Button onClick={userArrives}> I have arrived </Button>          
           }
-
         {props.session.hostId === props.user.id && 
             <Button onClick={() => props.endSession(props.session.id)}>End Event</Button>}
       </div>
@@ -195,6 +196,7 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     allLocations: state.allLocations,
     allUsersInSession: state.userSessionsReducer,
+    directionsFailed: state.directionsFailedReducer
   };
 };
 
@@ -220,7 +222,7 @@ const mapDispatch = (dispatch) => {
     },
     endSession: (sessionId) => {
       dispatch(endSessionThunkCreator(sessionId));
-    },
+    }
   };
 };
 

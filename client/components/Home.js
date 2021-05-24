@@ -29,7 +29,6 @@ export const Home = props => {
  console.log(props)
   return (
     <Container>
-    
       <div style={{
           display: 'flex',
           flexDirection: 'column',
