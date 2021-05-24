@@ -62,8 +62,8 @@ const Map = withScriptjs(
     };
 
     useEffect(() => {
-      console.log('PREV LOCS', prevLocations.current);
-      console.log('ALL LOCS', props.allLocations);
+      // console.log('PREV LOCS', prevLocations.current);
+      // console.log('ALL LOCS', props.allLocations);
       if (!prevLocations.current) {
         fitBounds();
         prevLocations.current = props.allLocations;
