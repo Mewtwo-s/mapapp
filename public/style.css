@@ -58,20 +58,17 @@ form div {
 }
 
 .logo{
- -webkit-text-stroke: 1px #0f3057;
-  background-color: aquamarine;
-  font-size: 38px;
+ -webkit-text-stroke: 1px hsl(213, 71%, 20%);
+  font-size: 7vh;
   line-height: 6vw;
-  margin: 5px;
   font-weight: 900;
   background: url(https://www.maptiler.com/img/cloud/map-img.png);
-  /* background: url(https://i.pinimg.com/originals/6a/9e/19/6a9e19e90637715a2fd483ee75bdc9d3.gif); */
   background-size: 60%;
   background-position: 50% 50%;
   -webkit-background-clip: text;
   color: #e8b7432e;
   animation: zoomout 10s ease 500ms forwards;
-  /* text-shadow: 4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15); */
+
 }
 
 @keyframes zoomout {

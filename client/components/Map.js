@@ -121,7 +121,8 @@ const Map = withScriptjs(
             key={`user_${user.id}`}
             icon={{
               url: `${user.photo}`, // url
-              scaledSize: new google.maps.Size(40, 40), // scaled size
+              scaledSize: new google.maps.Size(40, 40), // scaled size,
+             // path: google.maps.SymbolPath.CIRCLE,
             }}
             position={{ lat: location.lat, lng: location.lng }}
             labelAnchor={new google.maps.Point(0, 0)}
