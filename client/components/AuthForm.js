@@ -61,7 +61,7 @@ const AuthForm = props => {
               </div>
           </FormGroup> 
         
-        <FormGroup>
+        <FormGroup id="imageUrl">
           <div>
               <Label htmlFor="photo">
                 <small>Image URL</small>
@@ -140,7 +140,8 @@ const mapDispatch = dispatch => {
 const FormContainer = styled.div`
   border-radius: 5px;
   background-color:#41adcf;
-  margin: 0 auto;
+  justify-content: center;
+  margin: 50px auto;
   padding: 20px;
   width: fit-content;
    @media screen and (max-width:600px){
