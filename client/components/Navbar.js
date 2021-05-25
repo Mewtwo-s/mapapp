@@ -129,9 +129,9 @@ const NavLink = styled(Link)`
     font-size: 17px;
     width: 100%;
 
-    &:hover { 
-      background-color: #fff;
-    }
+    // &:hover { 
+    //   background-color: #fff;
+    // }
   }
 
 `;
@@ -197,10 +197,19 @@ const ProfilePhoto = styled.img`
   border-radius: 50%;
   height: 50px;
   width: 50px;
+<<<<<<< HEAD
   // margin-left: 10px;
   @media screen and (max-width:600px){
     height: 45px;
     width: 45px;
+=======
+  margin-left: 20px;
+  margin-right: 20px;
+  @media screen and (max-width:600px){
+    height: 50px;
+    width: 50px;
+    
+>>>>>>> f28e11696d68c125e247d3b6516e9729aa21436e
     // display: none;
   }
 `

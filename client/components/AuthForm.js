@@ -31,13 +31,13 @@ const AuthForm = props => {
           <FormGroup>
             <div>
               <Label htmlFor="email">
-                <small>Email*</small>
+                <small>Email *</small>
               </Label>
               <Input name="email" type="email" required placeholder='joe@mail.com'/>
             </div>
             <div>
               <Label htmlFor="password">
-                <small>Password*</small>
+                <small>Password *</small>
               </Label>
             <Input name="password" type="password" required placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"/>
             </div>
@@ -49,22 +49,22 @@ const AuthForm = props => {
           <FormGroup>
               <div>
                 <Label htmlFor="firstName">
-                  <small>First Name*</small>
+                  <small>First Name *</small>
                 </Label>
                 <Input name="firstName" type="text" required placeholder='Joe' />
               </div>
               <div>
                 <Label htmlFor="lastName">
-                  <small>Last Name*</small>
+                  <small>Last Name *</small>
                 </Label>
                 <Input name="lastName" type="text" required placeholder='Smith'/>
               </div>
           </FormGroup> 
         
-        <FormGroup>
+        <FormGroup id="imageUrl">
           <div>
               <Label htmlFor="photo">
-                <small>Image URL for Profile Photo</small>
+                <small>Image URL (optional)</small>
               </Label>
               <Input name="photo" type="text" placeholder='e.g. https://image.png'/>
           </div>
@@ -146,7 +146,8 @@ const mapDispatch = dispatch => {
 const FormContainer = styled.div`
   border-radius: 5px;
   background-color:#41adcf;
-  margin: 0 auto;
+  justify-content: center;
+  margin: 50px auto;
   padding: 20px;
   width: fit-content;
    @media screen and (max-width:600px){

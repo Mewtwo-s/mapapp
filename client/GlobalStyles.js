@@ -106,10 +106,13 @@ export const FormGroup = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
   margin: 1em;
+  
 `;
 
 export const Input = styled.input`
+  margin: 7px auto;
   width: 100%;
   font-size: 16px;
   border: solid 0.5px #1F817F;

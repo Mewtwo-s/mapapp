@@ -36,17 +36,32 @@ router.put('/:userId/:sessionId', async (req, res, next) => {
     }
   })
 
-  // router.get('/:sessionId', async (req, res, next) => {
+  router.get('/:userId/:sessionId', async (req, res, next) => {
+    try {
+      const usersession = await UserSession.findOne({
+          where: {
+              userId: req.params.userId,
+              sessionId: req.params.sessionId
+          }
+      });
+      if (usersession) {
+        res.send(usersession);
+      }
+    } catch (err) {
+      next(err)
+    }
+  })
+
+
+  // router.get('/db/:userId/:sessionId', async (req, res, next) => {
   //   try {
-  //     const sessionUsers = await UserSession.findAll({
-  //         where: {
-  //             sessionId: req.params.sessionId
-  //         }, 
-  //         include: {
-  //           model: User
-  //         }
-  //     });
-  //     res.send(sessionUsers);
+  //     const usersession = await UserSession.findOne({
+  //       where: {
+  //           userId: req.params.userId,
+  //           sessionId: req.params.sessionId
+  //       }
+  //   });
+  //     res.send(usersession);
   //   } catch (err) {
   //     next(err)
   //   }
@@ -69,3 +84,4 @@ router.put('/:userId/:sessionId', async (req, res, next) => {
       next(err)
     }
   })
+
