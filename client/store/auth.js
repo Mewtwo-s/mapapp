@@ -71,7 +71,6 @@ export const changeUserInfoThunk =
         firstName,
         lastName,
         photo,
-        sessionCode,
       });
       window.localStorage.setItem(TOKEN, res.data.token);
       await dispatch(me());
