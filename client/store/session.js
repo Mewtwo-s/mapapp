@@ -9,6 +9,7 @@ const JOIN_SESSION = 'JOIN_SESSION';
 const CREATE_SESSION = 'CREATE_SESSION';
 const ACTIVATE_SESSION = 'ACTIVATE_SESSION';
 const END_SESSION = 'END_SESSION';
+const ADD_TRANSIT = 'ADD_TRANSIT';
 
 //action creators
 const getSession = (session) => {
@@ -45,6 +46,13 @@ const createSession = (session) => {
   };
 };
 
+const addTransit = (session) => {
+  return {
+    type: ADD_TRANSIT,
+    session,
+  };
+};
+
 
 //thunks
 export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) => {
@@ -60,6 +68,18 @@ export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) =
     dispatch(activateSession(session));
     dispatch(editASession(session))
     socket.emit('updated-session', session)
+  };
+};
+
+export const addTransitThunkCreator = (sessionId, transitType) => {
+
+  return async (dispatch) => {
+    console.log(transitType);
+    const response = await axios.put(`/api/sessions/${sessionId}`, {
+      travelMode: transitType
+    });
+    const session = response.data;
+    dispatch(addTransit(session));
   };
 };
 
@@ -140,6 +160,8 @@ export default function sessionReducer(session = {}, action) {
     case ACTIVATE_SESSION:
       return action.session;
     case END_SESSION:
+      return action.session;
+    case ADD_TRANSIT:
       return action.session;
     default:
       return session;
