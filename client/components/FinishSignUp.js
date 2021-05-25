@@ -39,25 +39,25 @@ function FinishSignUp(props) {
                 <Label htmlFor="email">
                   <small>Email</small>
                 </Label>
-                <Input name="email" type="text" />
+                <Input required name="email" type="text" />
               </div>
               <div>
                 <Label htmlFor="password">
                   <small>Password</small>
                 </Label>
-                <Input name="password" type="password" />
+                <Input required name="password" type="password" />
               </div>
               <div>
                 <Label htmlFor="firstName">
                   <small>First Name</small>
                 </Label>
-                <Input name="firstName" type="text" />
+                <Input required name="firstName" type="text" />
               </div>
               <div>
                 <Label htmlFor="lastName">
                   <small>Last Name</small>
                 </Label>
-                <Input name="lastName" type="text" />
+                <Input required name="lastName" type="text" />
               </div>
               <div>
                 <Label htmlFor="photo">
@@ -67,10 +67,10 @@ function FinishSignUp(props) {
               </div>
             </FormGroup>
           }
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button type="submit">Submit And Join Event</Button>
+          </div>
         </form>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button type="submit">Submit And Join Event</Button>
-        </div>
       </FormContainer>
     </div>
   );
