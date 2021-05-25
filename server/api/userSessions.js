@@ -6,14 +6,26 @@ module.exports = router
 
 router.put('/arrive/:userId/:sessionId', async (req, res, next) => {
   try {
-    const usersession = await UserSession.findOne({
+    const throughTableRow = await UserSession.findOne({
         where: {
             userId: req.params.userId,
             sessionId: req.params.sessionId
         }
     });
     const session = await Session.findByPk(req.params.sessionId);
-    await usersession.update({arrived: true, currentLat: session.lat, currentLng: session.lng})
+    await throughTableRow.update({arrived: true, currentLat: session.lat, currentLng: session.lng})
+    const usersession = await User.findOne({
+      where: {
+        id: req.params.userId
+      },
+      include: {
+        model: Session, 
+        where: {
+          id: req.params.sessionId
+        },
+        attributes: ['id']
+      }
+    });
     res.send(usersession);
   } catch (err) {
     next(err)
@@ -22,14 +34,27 @@ router.put('/arrive/:userId/:sessionId', async (req, res, next) => {
 
 router.put('/:userId/:sessionId', async (req, res, next) => {
     try {
-      const usersession = await UserSession.findOne({
+      const userSessionThroughRow = await UserSession.findOne({
           where: {
               userId: req.params.userId,
               sessionId: req.params.sessionId
           }
       });
-      if (usersession) {
-        res.send(await usersession.update(req.body));
+      if (userSessionThroughRow) {
+        await userSessionThroughRow.update(req.body);
+        const usersession = await User.findOne({
+          where: {
+            id: req.params.userId
+          },
+          include: {
+            model: Session, 
+            where: {
+              id: req.params.sessionId
+            },
+            attributes: ['id']
+          }
+        })
+        res.send(usersession);
       }
     } catch (err) {
       next(err)
@@ -38,11 +63,17 @@ router.put('/:userId/:sessionId', async (req, res, next) => {
 
   router.get('/:userId/:sessionId', async (req, res, next) => {
     try {
-      const usersession = await UserSession.findOne({
+      const usersession = await User.findOne({
+        where: {
+          id: req.params.userId
+        },
+        include: {
+          model: Session, 
           where: {
-              userId: req.params.userId,
-              sessionId: req.params.sessionId
-          }
+            id: req.params.sessionId
+          },
+          attributes: ['id']
+        }
       });
       if (usersession) {
         res.send(usersession);
@@ -51,21 +82,6 @@ router.put('/:userId/:sessionId', async (req, res, next) => {
       next(err)
     }
   })
-
-
-  // router.get('/db/:userId/:sessionId', async (req, res, next) => {
-  //   try {
-  //     const usersession = await UserSession.findOne({
-  //       where: {
-  //           userId: req.params.userId,
-  //           sessionId: req.params.sessionId
-  //       }
-  //   });
-  //     res.send(usersession);
-  //   } catch (err) {
-  //     next(err)
-  //   }
-  // })
 
 
   router.get('/:sessionId', async (req, res, next) => {

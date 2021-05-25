@@ -121,17 +121,19 @@ const MapContainer = (props) => {
 
   useEffect(() => {
     if (props.session.status === "Active") {
+      console.log('the active use effect has been called');
       const allArrived = props.allUsersInSession.every(
-        (user) => user.arrived === true
+        (user) => user.sessions[0].userSession.arrived === true
       );
       //this is just super inaccurate and not very realistic
       // const allLocationsMatch = props.allUsersInSession.every(user => user.currentLat === props.session.lat && user.currentLng === props.session.lng);
       if (allArrived === true) {
+        console.log('all arrived is true');
         props.endSession(props.session.id);
       }
     }
   }, [props.allUsersInSession]);
-
+  console.log(props);
   return (
     <div>
       {props.directionsFailed === true && <DirectionsFailure />}
