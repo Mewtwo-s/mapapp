@@ -154,7 +154,7 @@ const MapContainer = (props) => {
               <div style={{ display: "flex", justifyContent: "center" }}>
                 {props.session.status === "Pending" &&
                   props.session.hostId === props.user.id && (
-                    <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+                    <Button onClick={handleMagic}>Select Your Meetup Spot</Button>
                   )}
 
                 {props.session.status === "Active" && (
@@ -253,15 +253,17 @@ const mapDispatch = (dispatch) => {
 };
 
 const PlaceStyles = styled.div`
-  max-width: 900px;
+  // max-width: 900px;
   display: flex;
-  -webkit-justify-content: space-around;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 20px auto;
+  // -webkit-justify-content: space-around;
+  justify-content: center;
 
   @media screen and (max-width: 600px) {
     padding: 8px;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
   }
 `;
 
