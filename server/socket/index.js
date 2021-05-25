@@ -9,6 +9,7 @@ module.exports = (io) => {
 
       // store room and user with associated socket
       rooms[socket.id] = { userId, roomName };
+      console.log('ROOMS:', rooms);
 
       console.info(`User ${userId} joins ${roomName}`);
       io.to(roomName).emit(
@@ -38,11 +39,12 @@ module.exports = (io) => {
     });
 
     socket.on('updated-session', (session) => {
-      socket.broadcast.emit('updated-session', session);
+      io.to('room_' + session.id).emit('updated-session', session);
     });
 
     socket.on('updated-user-status', (usersession) => {
-      socket.broadcast.emit('updated-user-status', usersession);
+      roomName = rooms[socket.id].roomName;
+      io.to(roomName).emit('updated-user-status', usersession);
     });
 
     socket.on('disconnecting', () => {
