@@ -92,12 +92,12 @@ const MapContainer = (props) => {
   }, []);
 
   // this effect occurs on unmounting only
-  useEffect(() => {
-    return () => {
-      props.leaveRoom(props.user.id, props.session.id);
-      props.stopWatchingMyLocation();
-    };
-  }, [props.session.id]);
+  // useEffect(() => {
+  //   return () => {
+  //     props.leaveRoom(props.user.id, props.session.id);
+  //     props.stopWatchingMyLocation();
+  //   };
+  // }, [props.session.id]);
 
   useEffect(() => {
     if (props.session.id && props.myLocation.lat && joined === false) {
@@ -111,7 +111,7 @@ const MapContainer = (props) => {
     if (props.session.id) {
       props.getSessionUsers(props.session.id);
     }
-  }, [props.session]);
+  }, [props.session.id ]);
 
   useEffect(() => {
     if (midPoint) {

@@ -70,16 +70,16 @@ export const watchMyLocation = (userId, sessionId) => {
       //if coords don't exist, we take them off the map? show a field to input location?
 
       if (sessionId) {
-        const { data } = await axios.get(`/api/usersessions/${sessionId}`);
-        console.log('USER SESSON:', data[0]);
+        const { data } = await axios.get(`/api/usersessions/${userId}/${sessionId}`);
+        console.log('USER SESSON:', data);
 
         if (data) {
-          if(data[0].currentLat){
+          if(data.currentLat){
             console.log('FOUND SAVED LOC');
-            dispatch(updateMyLocation(data[0].currentLat, data[0].currentLng));
+            dispatch(updateMyLocation(data.currentLat, data.currentLng));
           }
           else{
-            console.log('no location found in DB, gonna ask user to manually input')
+            console.log('no location found in DB, gonna ask user to manually input', data)
             dispatch(requestUserInputLocation(40.78146359807055, -73.96651380162687, 'pending'));
           }
      
@@ -146,12 +146,15 @@ export const requestUserInputLocation = (lat, lng, address) => {
 };
 
 export const saveUserInputLocation = (userId, lat, lng) => {
-
-  return (dispatch) => {
+  console.log('b4 try catch in save user thunk', userId, lat, lng)
+  return async (dispatch) => {
     try{
+     
       const sessionId = store.getState().sessionReducer.id;
+      console.log('in save geocode thunk', userId,sessionId, lat, lng)
     if (sessionId) {
-      const { data } = axios.put(`/api/usersessions/${userId}/${sessionId}`, {
+      
+      const { data } = await axios.put(`/api/usersessions/${userId}/${sessionId}`, {
         currentLat: lat,
         currentLng: lng,
       })}
