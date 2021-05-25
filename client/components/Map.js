@@ -279,10 +279,24 @@ const Map = withScriptjs(
     // useEffect(()=>{
 
     // },[props.allUsersInSession, props.allLocations])
+    function test(){
+      
+      window.open(`https://www.google.com/maps/dir/${currentLine.request.origin.location.lat()},${currentLine.request.origin.location.lng()}/${currentLine.request.destination.location.lat()},${currentLine.request.destination.location.lng()}`);
+    }
 
-    console.log('PROPS - TRAVEL', props.session.travelMode)
     return (
       <Container>
+      {currentLine? <Marker
+                onClick={()=>{test(currentLine.request.origin.location.lat(), currentLine.request.origin.location.lng())}}
+                icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/firedept.png"
+                position={{ lat: currentLine.request.origin.location.lat(), lng: currentLine.request.origin.location.lng() }}
+              />:''}
+      {currentLine? <Marker
+                onClick={()=>{test(currentLine.request.destination.location.lat(), currentLine.request.destination.location.lng())}}
+                icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/firedept.png"
+                position={{ lat: currentLine.request.destination.location.lat(), lng: currentLine.request.destination.location.lng() }}
+              />:''}
+              
         {props.myLocation.address ? <UserInput handle={inputHandle} /> : ""}
         {myLocationIsValid && (
           <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
