@@ -71,6 +71,7 @@ form div {
   -webkit-background-clip: text;
   color: #e8b7432e;
   animation: zoomout 10s ease 500ms forwards;
+  text-align: left;
   /* text-shadow: 4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15); */
 }
 
@@ -117,7 +118,7 @@ h1, h3, p {
   text-align: center;
 }
 
-h3 {
+h3, h4 {
   font-weight: lighter;
 }
 
@@ -174,3 +175,60 @@ select {
   flex-wrap: wrap;
   justify-content: center;
 }
+
+#imageUrl {
+  justify-content: flex-start;
+}
+
+@media screen and (max-width: 600px) {
+  #imageUrl {
+    justify-content: center;
+  }
+  #placeCard{
+    width: 275px;
+    padding: 8px;
+  }
+}
+
+#placeCard {
+  border: solid 1px #51adcf;
+  border-radius: 10px;
+  width: 220px;
+  padding: 8px;
+  background-color: #e4efe7;
+  margin: 10px;
+  /* box-shadow: 0px 5px 20px rgb(48,181,204, 0.5); */
+  text-align: center;
+  cursor: pointer;
+}
+
+#placeCard:hover {
+  background-color: #95e1d3;
+}
+
+#placeCard > h4 {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+#placeCard > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#placeCard > div > p {
+  margin: 5px 5px;
+  font-size: 12px;
+}
+
+
+  .red {
+    color: red;
+    /* font-weight: bold; */
+  }
+
+  .green {
+    color: green;
+    /* font-weight: bold; */
+  }

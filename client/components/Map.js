@@ -245,6 +245,7 @@ const Map = withScriptjs(
           );
 
           if (currentLocationUser.length === 0) {
+            console.log(user);
             if (user.sessions[0].userSession.currentLat) {
               location = {
                 firstName: user.firstName,
@@ -347,11 +348,11 @@ const Map = withScriptjs(
 
             {/* Draw labeled marker for each other person in the session */}
             {/* {renderOthers()} */}
-            {}
+
             {usersForMarkers &&
               usersForMarkers.map((user) => (
                 <MarkerWithLabel
-                  key={`user_${user.userId}`}
+                  // key={`user_${user.userId}`}
                   icon={{
                     url: `${user.photo}`,
                     scaledSize: new google.maps.Size(40, 40), // scaled size

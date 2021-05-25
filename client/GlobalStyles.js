@@ -71,6 +71,21 @@ export const Button = styled.button`
   } 
 `;
 
+export const PlaceButton = styled.button`
+  background-color: white;
+  color: #51adcf;
+  font-size: 12px;
+  padding: 0.25em 1em;
+  border-radius: 10px;
+  border: 1px solid #51adcf;
+  margin: 10px auto 0px;
+
+  &:hover {
+    background-color: #95e1d3;
+    color: #0f3057
+  } 
+`;
+
 export const SpecialButton = styled.button`
   background-color: #51adcf;
   color: white;
@@ -106,10 +121,13 @@ export const FormGroup = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
   margin: 1em;
+  
 `;
 
 export const Input = styled.input`
+  margin: 7px auto;
   width: 100%;
   font-size: 16px;
   border: solid 0.5px #1F817F;

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { sessionStarted, clearAllLocations } from './locationSharing';
 import socket from '../socket';
 import {addASession, editASession } from './allSessions';
+import { userJoinsSession } from './userSessions';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
@@ -98,9 +99,10 @@ export const joinSessionThunkCreator = (userId, code, history) => {
         code: code
       });
       const session = response.data;
-      await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
+      const user = await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
       await dispatch(joinSession(session));
       dispatch(addASession(session))
+      await dispatch (userJoinsSession(user.data));
       socket.emit('updated-session', session)
       history.push(`/map/${code}`);
     } catch (err) {
