@@ -24,7 +24,7 @@ let transporter = nodemailer.createTransport({
           `
           <p> Welcome To Meedle!</p>
           
-          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="https://mapapp999.herokuapp.com/signup/${gameCode}/${userId}">here</a></p>`
+          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="https://meedleapp.herokuapp.com/signup/${gameCode}/${userId}">here</a></p>`
     };
 
     transporter.sendMail(mailOptions, function(err, data) {
@@ -45,7 +45,7 @@ let transporter = nodemailer.createTransport({
         `
         <p>Hi ${toName}! </p>
         
-        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://mapapp999.herokuapp.com/friend/${gameCode}">here</a></p>`
+        <p> Your friend ${senderName} wants to meet up! Join the session <a href="https://meedleapp.herokuapp.com/friend/${gameCode}">here</a></p>`
   };
 
   transporter.sendMail(mailOptions, function(err, data) {

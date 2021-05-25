@@ -49,7 +49,7 @@ class Routes extends Component {
             <Switch>
               {/* <Route path="/map" component={MapContainer} /> */}
               <Route exact path='/friend' component={Test}></Route>
-              <Route path="/" component={Login} />
+              <Route exact path="/" component={Login} />
               <Route path="/home" component={Login} />
               <Route path="/login" component={Login} />
               <Route exact path="/signup/:gamecode/:usercode" component={FinishSignUp} />

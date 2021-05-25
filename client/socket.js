@@ -6,7 +6,7 @@ import {
   userLeftRoom,
 } from './store/locationSharing';
 import { activateSession } from './store/session';
-import { arriveAction } from './store/userSessions';
+import { arriveAction , getSessionUsersThunkCreator} from './store/userSessions';
 import axios from 'axios';
 
 const socket = io(window.location.origin, { autoConLnect: true });
@@ -30,6 +30,7 @@ socket.on('user-joined-room', (userId, message) => {
   console.info(message);
   // send out a position update so the new user knows who/where we are
   store.dispatch(sendMyLocation());
+  store.dispatch(getSessionUsersThunkCreator(store.getState().sessionReducer.id))
 });
 
 socket.on('user-left-room', (userId, message) => {

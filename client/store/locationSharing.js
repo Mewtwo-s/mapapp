@@ -2,6 +2,7 @@ import socket from '../socket';
 import store from '../store';
 
 import { stopWatchingMyLocation } from './location';
+import {getSessionUsersThunkCreator} from './userSessions'
 
 const USER_LOCATION_CHANGED = 'USER_LOCATION_CHANGED';
 const CLEAR_ALL_LOCATIONS = 'CLEAR_ALL_LOCATIONS';
@@ -31,6 +32,7 @@ export const joinRoom = (userId, sessionId, userLoc) => {
   // to do: make sure socket is connected.
   return (dispatch) => {
     dispatch(userLocationChanged(userId, userLoc.lat, userLoc.lng));
+  
     socket.emit('join-room', userId, sessionId);
     socket.emit(
       'send-my-location',

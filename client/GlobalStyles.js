@@ -108,11 +108,6 @@ export const FormGroup = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   margin: 1em;
-  @media screen and (max-width: 600px) {
-    
-    flex-wrap: wrap;
-
-  }
 `;
 
 export const Input = styled.input`

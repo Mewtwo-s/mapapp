@@ -45,14 +45,7 @@ router.post('/accept', async (req, res, next) => {
 
 router.get('/me', async (req, res, next) => {
   try {
-    const user = await User.findByToken(req.headers.authorization)
-    //get all sessions belongs to users
-    const allSessions = await user.getSessions()
-    //console.log('allSessions', allSessions.map(session => session.dataValues))
-    res.send({
-      ...user.dataValues,
-      allSessions: allSessions.map(session => session.dataValues)
-    })
+    res.send(await User.findByToken(req.headers.authorization))
   } catch (err) {
     next(err)
   }

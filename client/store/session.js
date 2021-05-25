@@ -115,7 +115,7 @@ export const createSessionThunkCreator = (hostId, travelMode, history) => {
 
     try {
       console.log('in creat session thunk', travelMode)
-      const response = await axios.post(`/api/sessions/`, { hostId: hostId, travelMode:travelMode });
+      const response = await axios.post(`/api/sessions/`, { hostId: hostId});
       const session = response.data;
       await axios.put(`/api/usersessions/${hostId}/${session.id}`, {accepted: true})
       await dispatch(createSession(session));

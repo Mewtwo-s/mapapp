@@ -4,6 +4,7 @@ import socket from '../socket';
 const GET_SESSION_USERS = "GET_SESSION_USERS"
 const ARRIVE = "ARRIVE"
 const INVITE_USER = "INVITE_USERS"
+const USER_JOIN_SESSION = "USER_JOIN_SESSION"
 
 const getSessionUsersRows = (sessionUsers) => (
     {
@@ -20,6 +21,12 @@ export const inviteAction = (user) => ({
    type: INVITE_USER,
    user
 })
+
+// export const userJoinSessionAction = (userSession) => ({
+//    type: USER_JOIN_SESSION,
+//    userSession
+
+// })
 
 
 export const getSessionUsersThunkCreator = (sessionId) => {
@@ -61,6 +68,19 @@ export const arriveThunkCreator = (userId, sessionId) => {
 }
 
 
+// export const userJoinSession = (userId, sessionId) => {
+//    return async (dispatch)=>{
+//       try{
+
+//          const {data} = await axios.get(`/api/usersessions/${sessionId}`)
+//          dispatch(getSessionUsersThunkCreator(data))
+
+//       }catch{
+//          console.log(`Failed to fetch userSession data`)
+//       }
+//    }
+// }
+
 export default function userSessionsReducer(state=[], action) {
    switch (action.type) {
     case GET_SESSION_USERS:
@@ -72,6 +92,7 @@ export default function userSessionsReducer(state=[], action) {
               else {
             return user
         }})
+
       default:
          return state
    }
