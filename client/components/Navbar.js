@@ -85,6 +85,7 @@ const Nav = styled.nav`
   top: 0;
   height: 80px;
   background-color: #a5ecd7;
+  z-index: 3;
   // box-shadow: 0px 5px 20px rgb(48,181,204, 0.5); 
   display: flex;
   justify-content: space-between;

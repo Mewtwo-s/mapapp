@@ -71,6 +71,21 @@ export const Button = styled.button`
   } 
 `;
 
+export const PlaceButton = styled.button`
+  background-color: white;
+  color: #51adcf;
+  font-size: 12px;
+  padding: 0.25em 1em;
+  border-radius: 10px;
+  border: 1px solid #51adcf;
+  margin: 10px auto 0px;
+
+  &:hover {
+    background-color: #95e1d3;
+    color: #0f3057
+  } 
+`;
+
 export const SpecialButton = styled.button`
   background-color: #51adcf;
   color: white;
