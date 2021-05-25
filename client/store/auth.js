@@ -64,13 +64,14 @@ export const changeUserInfoThunk =
   (userId, email, password, firstName, lastName, photo, sessionCode, history) =>
   async (dispatch) => {
     try {
-      console.log('in change userinfo thunk');
+      console.log('in change userinfo thunk', sessionCode);
       const res = await axios.post(`/api/users/changePassword/${userId}`, {
         email,
         password,
         firstName,
         lastName,
         photo,
+        sessionCode,
       });
       window.localStorage.setItem(TOKEN, res.data.token);
       await dispatch(me());
