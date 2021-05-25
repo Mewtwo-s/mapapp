@@ -20,7 +20,7 @@ export class JoinRoom extends React.Component {
     this.handleJoin = this.handleJoin.bind(this);
     this.state = {
       currentSession: null,
-      travelMode: 'WALKING',
+      travelMode: 'DRIVING',
       createSessionDisplay: null, 
       friendAdded: null
     };
@@ -62,6 +62,7 @@ export class JoinRoom extends React.Component {
   }
 
    handleChangeMode(e){
+    console.log('I SELECTED' , e.target.value)
     this.setState({travelMode: e.target.value})
   }
 
@@ -202,9 +203,9 @@ export class JoinRoom extends React.Component {
             <p> Choose your group's method of transportation:  
             <span> 
               <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
+              <option value="DRIVING">Driving</option>
               <option value="WALKING">Walking</option>
                 <option value="BICYCLING">Cycling</option>
-                <option value="DRIVING">Driving</option>
                 <option value="TRANSIT">Transit</option>
               </Select>
             </span> 
