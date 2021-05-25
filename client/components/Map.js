@@ -291,7 +291,7 @@ const Map = withScriptjs(
         {myLocationIsValid && (
           <GoogleMap
             ref={mapRef}
-            defaultZoom={5}
+            defaultZoom={12}
             defaultCenter={defCenter}
             options={{
               disableDefaultUI: false,
