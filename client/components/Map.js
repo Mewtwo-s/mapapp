@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useRef, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   withScriptjs,
   withGoogleMap,
@@ -7,17 +7,17 @@ import {
   Marker,
   DirectionsRenderer,
   InfoWindow,
-} from "react-google-maps";
-import MarkerWithLabel from "react-google-maps/lib/components/addons/MarkerWithLabel";
-import { connect } from "react-redux";
-import { Button, Container } from "../GlobalStyles";
-import UserInput from "./UserInput";
-import { directionsFailed } from "../store/directionsFailure";
+} from 'react-google-maps';
+import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
+import { connect } from 'react-redux';
+import { Button, Container } from '../GlobalStyles';
+import UserInput from './UserInput';
+import { directionsFailed } from '../store/directionsFailure';
 import {
   updateMyLocation,
   saveUserInputLocation,
   watchMyLocation,
-} from "../store/location";
+} from '../store/location';
 
 // =======================================================================
 //  GOOGLE MAPS
@@ -29,19 +29,20 @@ const Map = withScriptjs(
     const [selectedPlace, setselectedPlace] = useState(null);
     const prevLocations = useRef();
     const [inputLoc, setInputLoc] = useState();
-    const [usersForMarkers, setUsersForMarkers] = useState()
+    const [usersForMarkers, setUsersForMarkers] = useState();
 
     const markerLabelStyle = {
-      backgroundColor: "black",
-      color: "white",
-      fontSize: "14px",
-      border: "2px solid white",
-      borderRadius: "15px",
-      padding: "4px",
+      backgroundColor: 'black',
+      color: 'white',
+      fontSize: '14px',
+      border: '2px solid white',
+      borderRadius: '15px',
+      padding: '4px',
     };
 
     // Fit bounds function
     const fitBounds = () => {
+      console.log('FIT BOUNDS');
       const bounds = new window.google.maps.LatLngBounds();
       props.allLocations.map((item) => {
         bounds.extend({ lat: item.lat, lng: item.lng });
@@ -51,19 +52,17 @@ const Map = withScriptjs(
     };
 
     useEffect(() => {
-      // console.log('PREV LOCS', prevLocations.current);
-      // console.log('ALL LOCS', props.allLocations);
-      if (!prevLocations.current) {
-        fitBounds();
-        prevLocations.current = props.allLocations;
-      } else if (props.allLocations.length > prevLocations.current.length) {
+      if (
+        prevLocations.current &&
+        props.allLocations.length > prevLocations.current.length
+      ) {
         fitBounds();
         prevLocations.current = props.allLocations;
       }
     }, [props.allLocations]);
 
     useEffect(() => {
-      if (props.session.status === "Active") {
+      if (props.session.status === 'Active') {
         getDirections({ lat: props.session.lat, lng: props.session.lng });
       }
     }, [props.session, props.myLocation]);
@@ -75,7 +74,7 @@ const Map = withScriptjs(
         {
           origin: props.myLocation,
           destination: loc,
-          travelMode: props.session.travelMode || "DRIVING",
+          travelMode: props.session.travelMode || 'DRIVING',
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -94,7 +93,7 @@ const Map = withScriptjs(
         );
         if (thisUser) {
           const firstName = thisUser.firstName;
-          return firstName !== "" ? firstName : "You";
+          return firstName !== '' ? firstName : 'You';
         }
       }
     };
@@ -107,7 +106,7 @@ const Map = withScriptjs(
       // creates a list of objects with consolidated user
       // and loc data for rendering
 
-      console.log("render otehrs BEGIN", props);
+      console.log('render otehrs BEGIN', props);
       const users = props.allUsersInSession;
 
       if (users) {
@@ -117,12 +116,12 @@ const Map = withScriptjs(
             (location) => location.userId === user.id
           );
 
-          console.log("currentLocationUser ==>", currentLocationUser);
+          console.log('currentLocationUser ==>', currentLocationUser);
 
-          console.log("props.allLocations==>", props.allLocations);
+          console.log('props.allLocations==>', props.allLocations);
 
           if (currentLocationUser.length === 0) {
-            console.log("length ===0", location);
+            console.log('length ===0', location);
 
             if (user.lat) {
               location = { lat: user.lat, lng: user.lng, userId: user.id };
@@ -135,9 +134,9 @@ const Map = withScriptjs(
               lng: currentLocationUser[0].session.userSession.lng,
               userId: user.id,
             };
-            console.log("length !== 0", location);
+            console.log('length !== 0', location);
           }
-          console.log("render otehrs END ", location);
+          console.log('render otehrs END ', location);
 
           // return (
           //   location.lat && (
@@ -210,15 +209,15 @@ const Map = withScriptjs(
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
 
     function inputHandle(address) {
-      console.log("in handle", address);
+      console.log('in handle', address);
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ address: address }, function (results, status) {
-        if (status == "OK") {
+        if (status == 'OK') {
           let lat = results[0].geometry.location.lat();
           let lng = results[0].geometry.location.lng();
 
           console.log(
-            "should trigger update input thunk",
+            'should trigger update input thunk',
             props.user.id,
             lat,
             lng
@@ -227,18 +226,17 @@ const Map = withScriptjs(
           props.saveInputLocation(props.user.id, lat, lng);
         } else {
           alert(
-            "Geocode was not successful for the following reason: " + status
+            'Geocode was not successful for the following reason: ' + status
           );
         }
       });
     }
 
-
-
-
     useEffect(() => {
-    let users = props.allUsersInSession.filter((user)=>user.id!==props.user.id)
-     let updatedUsers = []
+      let users = props.allUsersInSession.filter(
+        (user) => user.id !== props.user.id
+      );
+      let updatedUsers = [];
       if (users) {
         let mapUsers = users.forEach((user) => {
           let location;
@@ -246,18 +244,26 @@ const Map = withScriptjs(
             (location) => location.userId === user.id
           );
 
-
           if (currentLocationUser.length === 0) {
-         console.log(user);
+            console.log(user);
             if (user.sessions[0].userSession.currentLat) {
-              location = { firstName: user.firstName, photo: user.photo, lat: user.sessions[0].userSession.currentLat, lng: user.sessions[0].userSession.currentLng, userId: user.id };
-         
+              location = {
+                firstName: user.firstName,
+                photo: user.photo,
+                lat: user.sessions[0].userSession.currentLat,
+                lng: user.sessions[0].userSession.currentLng,
+                userId: user.id,
+              };
             } else {
-              location = { firstName: user.firstName, photo: user.photo, lat: 0, lng: 0, userId: user.id };
-
+              location = {
+                firstName: user.firstName,
+                photo: user.photo,
+                lat: 0,
+                lng: 0,
+                userId: user.id,
+              };
             }
           } else {
-           
             location = {
               firstName: user.firstName,
               photo: user.photo,
@@ -265,11 +271,9 @@ const Map = withScriptjs(
               lng: currentLocationUser[0].lng,
               userId: user.id,
             };
-            console.log("length !== 0", location);
-            
+            console.log('length !== 0', location);
           }
           updatedUsers.push(location);
-
         });
 
         setUsersForMarkers(updatedUsers);
@@ -280,12 +284,21 @@ const Map = withScriptjs(
 
     // },[props.allUsersInSession, props.allLocations])
 
-    console.log('PROPS - TRAVEL', props.session.travelMode)
+    console.log('PROPS - TRAVEL', props.session.travelMode);
     return (
       <Container>
-        {props.myLocation.address ? <UserInput handle={inputHandle} /> : ""}
+        {props.myLocation.address ? <UserInput handle={inputHandle} /> : ''}
         {myLocationIsValid && (
-          <GoogleMap ref={mapRef} defaultZoom={5} defaultCenter={defCenter}>
+          <GoogleMap
+            ref={mapRef}
+            defaultZoom={5}
+            defaultCenter={defCenter}
+            options={{
+              disableDefaultUI: false,
+              controlSize: 25,
+              gestureHandling: 'greedy',
+            }}
+          >
             {sessionIsValid && (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
@@ -295,7 +308,7 @@ const Map = withScriptjs(
 
             {/* Draw markers for top places */}
 
-            {props.session.status === "Pending" &&
+            {props.session.status === 'Pending' &&
               (props.topPlaces || []).map((place, index) => {
                 return (
                   <Marker
@@ -318,8 +331,8 @@ const Map = withScriptjs(
                           <p>{selectedPlace.vicinity}</p>
                           <p>
                             {selectedPlace.opening_hours.open_now
-                              ? "Open Now"
-                              : "Closed Now"}
+                              ? 'Open Now'
+                              : 'Closed Now'}
                           </p>
                         </div>
                       </InfoWindow>
@@ -335,10 +348,9 @@ const Map = withScriptjs(
 
             {/* Draw labeled marker for each other person in the session */}
             {/* {renderOthers()} */}
-            
-            {usersForMarkers && 
+
+            {usersForMarkers &&
               usersForMarkers.map((user) => (
-            
                 <MarkerWithLabel
                   // key={`user_${user.userId}`}
                   icon={{
