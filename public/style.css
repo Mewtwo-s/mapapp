@@ -71,6 +71,7 @@ form div {
   -webkit-background-clip: text;
   color: #e8b7432e;
   animation: zoomout 10s ease 500ms forwards;
+  text-align: left;
   /* text-shadow: 4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15); */
 }
 
