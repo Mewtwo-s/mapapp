@@ -157,6 +157,7 @@ h3, h4 {
 select {
   margin: 20px;
   padding: 5px;
+  min-width: 100px;
 }
 
 .bold {
