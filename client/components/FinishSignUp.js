@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { joinSessionThunkCreator } from '../store/session';
 import { changeUserInfoThunk } from '../store/auth';
+import { FormGroup, Label, Input, Button } from '../GlobalStyles';
+import styled from 'styled-components';
 
 function FinishSignUp(props) {
   function handleSubmit(evt) {
@@ -28,48 +30,63 @@ function FinishSignUp(props) {
   console.log('FinishSignUp props', props);
   return (
     <div>
-      <h3>Complete Ya Sign Up, Ya Badass Friends Are WAITING</h3>
-      <form name="join" onSubmit={handleSubmit}>
-        {
-          <div>
-            <div>
-              <label htmlFor="email">
-                <small>Email</small>
-              </label>
-              <input name="email" type="text" />
-            </div>
-            <div>
-              <label htmlFor="password">
-                <small>Password</small>
-              </label>
-              <input name="password" type="password" />
-            </div>
-            <div>
-              <label htmlFor="firstName">
-                <small>First Name</small>
-              </label>
-              <input name="firstName" type="text" />
-            </div>
-            <div>
-              <label htmlFor="lastName">
-                <small>Last Name</small>
-              </label>
-              <input name="lastName" type="text" />
-            </div>
-            <div>
-              <label htmlFor="photo">
-                <small>Photo</small>
-              </label>
-              <input name="photo" type="text" />
-            </div>
-          </div>
-        }
-
-        <button type="submit">Submit And Join Event</button>
-      </form>
+      <h3>Please complete your signup to join your event</h3>
+      <FormContainer>
+        <form name="join" onSubmit={handleSubmit}>
+          {
+            <FormGroup>
+              <div>
+                <Label htmlFor="email">
+                  <small>Email</small>
+                </Label>
+                <Input name="email" type="text" />
+              </div>
+              <div>
+                <Label htmlFor="password">
+                  <small>Password</small>
+                </Label>
+                <Input name="password" type="password" />
+              </div>
+              <div>
+                <Label htmlFor="firstName">
+                  <small>First Name</small>
+                </Label>
+                <Input name="firstName" type="text" />
+              </div>
+              <div>
+                <Label htmlFor="lastName">
+                  <small>Last Name</small>
+                </Label>
+                <Input name="lastName" type="text" />
+              </div>
+              <div>
+                <Label htmlFor="photo">
+                  <small>Photo</small>
+                </Label>
+                <Input name="photo" type="text" />
+              </div>
+            </FormGroup>
+          }
+        </form>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Button type="submit">Submit And Join Event</Button>
+        </div>
+      </FormContainer>
     </div>
   );
 }
+
+const FormContainer = styled.div`
+  border-radius: 5px;
+  background-color: #41adcf;
+  justify-content: center;
+  margin: 50px auto;
+  padding: 20px;
+  width: fit-content;
+  @media screen and (max-width: 600px) {
+    width: 90vw;
+  }
+`;
 
 const mapState = (state) => {
   return {
