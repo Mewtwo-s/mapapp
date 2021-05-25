@@ -174,3 +174,13 @@ select {
   flex-wrap: wrap;
   justify-content: center;
 }
+
+#imageUrl {
+  justify-content: flex-start;
+}
+
+@media screen and (max-width: 600px) {
+  #imageUrl {
+    justify-content: center;
+  }
+}
