@@ -113,7 +113,7 @@ const NavbarContainer = styled(Container)`
 const NavLink = styled(Link)`
   text-decoration: none;
   margin: 10px;
-  // font-weight: bold;
+  font-weight: bold;
   font-size: 18px;
   color: #0f3057;
   transition: all .2s ease;
@@ -125,7 +125,7 @@ const NavLink = styled(Link)`
       color: #32e0c4;
   }
   @media screen and (max-width:600px){
-    text-decoration: none
+    text-decoration: none;
     font-size: 17px;
     width: 100%;
 
