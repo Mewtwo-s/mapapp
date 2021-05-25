@@ -10,15 +10,18 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import MapContainer from './components/MapContainer';
-import {AcceptWithAccount, AcceptWithoutAccount} from './components/CompleteJoinForm';
-import InviteForm from './components/InviteForm'
-import Navbar from './components/Navbar'
+import {
+  AcceptWithAccount,
+  AcceptWithoutAccount,
+} from './components/CompleteJoinForm';
+import InviteForm from './components/InviteForm';
+import Navbar from './components/Navbar';
 import PastSessions from './components/PastSessions';
 import GlobalStyles from './GlobalStyles';
-import TravelMode from './components/TravelMode'
-import UserJoinSession from './components/UserJoinSession'
-import Test from './components/Test'
-import FinishSignUp from './components/FinishSignUp'
+import TravelMode from './components/TravelMode';
+import UserJoinSession from './components/UserJoinSession';
+import Test from './components/Test';
+import FinishSignUp from './components/FinishSignUp';
 
 /**
  * COMPONENT
@@ -32,31 +35,38 @@ class Routes extends Component {
     const { isLoggedIn } = this.props;
     return (
       <div>
-          <GlobalStyles/>
-          <Navbar />
-          {isLoggedIn ? (
-            <Switch>
-              <Route exact path='/friend/:gamecode' component={Test}></Route>
-              <Route exact path="/friend/" component={UserJoinSession} />
-              <Route exact path="/map/:code" component={MapContainer} />
-              <Route exact path="/pastSessions" component={PastSessions} />
-              <Route exact path='/emailInvite' component={InviteForm} />
-              <Route exact path="/accept/:userCode/:gameCode" component={AcceptWithAccount}/>
-              <Route path="/home" component={Home} />
-              <Redirect to="/home" />
-            </Switch>
-          ) : (
-            <Switch>
-              {/* <Route path="/map" component={MapContainer} /> */}
-              <Route exact path='/friend' component={Test}></Route>
-              <Route exact path="/" component={Login} />
-              <Route path="/home" component={Login} />
-              <Route path="/login" component={Login} />
-              <Route exact path="/signup/:gamecode/:usercode" component={FinishSignUp} />
-              <Route path="/signup" component={Signup} />
-              <Redirect to="/" />
-            </Switch>
-          )}
+        <GlobalStyles />
+        <Navbar />
+        {isLoggedIn ? (
+          <Switch>
+            <Route path="/friend/:gamecode" component={Test} />
+            <Route exact path="/map/:code" component={MapContainer} />
+            <Route exact path="/pastSessions" component={PastSessions} />
+            <Route exact path="/emailInvite" component={InviteForm} />
+            <Route
+              exact
+              path="/accept/:userCode/:gameCode"
+              component={AcceptWithAccount}
+            />
+            <Route path="/home" component={Home} />
+            <Redirect to="/home" />
+          </Switch>
+        ) : (
+          <Switch>
+            {/* <Route path="/map" component={MapContainer} /> */}
+            <Route exact path="/friend" component={Test}></Route>
+            <Route path="/home" component={Login} />
+            <Route path="/login" component={Login} />
+            <Route
+              exact
+              path="/signup/:gamecode/:usercode"
+              component={FinishSignUp}
+            />
+            <Route path="/signup" component={Signup} />
+            <Route path="/" component={Login} />
+            <Redirect to="/" />
+          </Switch>
+        )}
       </div>
     );
   }
