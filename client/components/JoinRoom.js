@@ -59,6 +59,7 @@ export class JoinRoom extends React.Component {
     }
 
     await this.props.joinSession(this.props.user.id, evt.target.code.value);
+
   }
 
    handleChangeMode(e){
@@ -224,7 +225,8 @@ const mapState = (state) => {
     user: state.auth,
     session: state.sessionReducer,
     friends: state.friendReducer, 
-    sessionAction: state.sessionAction
+    sessionAction: state.sessionAction,
+    error: state.errorMessage
   };
 };
 

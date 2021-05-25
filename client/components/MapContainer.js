@@ -22,7 +22,7 @@ import {
   getSessionUsersThunkCreator,
 } from "../store/userSessions";
 import EndedSession from "./EndedSession";
-import DirectionsFailure from "./DirectionsFailure";
+import ErrorPopUp from "./ErrorPopUp";
 
 const MapContainer = (props) => {
   // const isValidLocation = Object.keys(props.myLocation).length > 0;
@@ -92,12 +92,12 @@ const MapContainer = (props) => {
   }, []);
 
   // this effect occurs on unmounting only
-  useEffect(() => {
-    return () => {
-      props.leaveRoom(props.user.id, props.session.id);
-      props.stopWatchingMyLocation();
-    };
-  }, [props.session.id]);
+  // useEffect(() => {
+  //   return () => {
+  //     props.leaveRoom(props.user.id, props.session.id);
+  //     props.stopWatchingMyLocation();
+  //   };
+  // }, [props.session.id]);
 
   useEffect(() => {
     if (props.session.id && props.myLocation.lat && joined === false) {
@@ -134,7 +134,7 @@ const MapContainer = (props) => {
 
   return (
     <div>
-      {props.directionsFailed === true && <DirectionsFailure />}
+      {props.error === true && <ErrorPopUp />}
       {props.session.status === "Completed" ? (
         <EndedSession />
       ) : (
@@ -216,7 +216,7 @@ const mapState = (state) => {
     myLocation: state.myLocation,
     allLocations: state.allLocations,
     allUsersInSession: state.userSessionsReducer,
-    directionsFailed: state.directionsFailedReducer,
+    error: state.errorMessage
   };
 };
 

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { sessionStarted, clearAllLocations } from './locationSharing';
 import socket from '../socket';
 import {addASession, editASession } from './allSessions';
+import {emitErrorMessage} from './error';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
@@ -49,16 +50,21 @@ const createSession = (session) => {
 export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) => {
 
   return async (dispatch) => {
-    const response = await axios.put(`/api/sessions/${sessionId}`, {
-      status: 'Active',
-      lat: lat,
-      lng: lng,
-      locationName: locationName
-    });
-    const session = response.data;
-    dispatch(activateSession(session));
-    dispatch(editASession(session))
-    socket.emit('updated-session', session)
+    try {
+      const response = await axios.put(`/api/sessions/${sessionId}`, {
+        status: 'Active',
+        lat: lat,
+        lng: lng,
+        locationName: locationName
+      });
+      const session = response.data;
+      dispatch(activateSession(session));
+      dispatch(editASession(session))
+      socket.emit('updated-session', session)
+    } catch (err) {
+      console.log(err)
+    }
+   
   };
 };
 
@@ -104,6 +110,7 @@ export const joinSessionThunkCreator = (userId, code, history) => {
       socket.emit('updated-session', session)
       history.push(`/map/${code}`);
     } catch (err) {
+      dispatch(emitErrorMessage('Sorry, that session code is invalid'));
       console.error(err)
     }
 

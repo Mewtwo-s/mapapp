@@ -12,7 +12,7 @@ import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithL
 import { connect } from 'react-redux';
 import { Button, Container } from '../GlobalStyles';
 import UserInput from './UserInput'
-import { directionsFailed } from '../store/directionsFailure';
+import { emitErrorMessage } from '../store/error';
 import {updateMyLocation, saveUserInputLocation, watchMyLocation} from '../store/location'
 
 // =======================================================================
@@ -79,7 +79,7 @@ const Map = withScriptjs(
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
           } else {
-            props.directionsFailed(true);
+            props.directionsFailed("Sorry, that route is not possible!");
           }
         }
       );
@@ -105,12 +105,12 @@ const Map = withScriptjs(
       // creates a list of objects with consolidated user
       // and loc data for rendering
       console.log(props);
-      const users = props.allUsersInSession;
-
+      const users = props.allUsersInSession.filter(user => user.id !== props.user.id) ;
       if (users) {
         return users.map((user) => {
           let location;
-          let currentLocationUser = props.allLocations.filter(location => location.id===user.id)
+          let currentLocationUser = props.allLocations.filter(location => location.userId===user.id);
+          console.log(currentLocationUser);
           if (currentLocationUser.length === 0) {
             location = {lat: user.lat, lng: user.lng, userId: user.id};
           } else {
@@ -312,7 +312,7 @@ const mapDispatch = (dispatch) => {
     saveInputLocation: (userId, lat, lng) => {
       dispatch(saveUserInputLocation(userId, lat, lng));
     },
-    directionsFailed: (value) => dispatch(directionsFailed(value)),
+    directionsFailed: (value) => dispatch(emitErrorMessage(value)),
     startWatch: (userId, sessionId) => {
       dispatch(watchMyLocation(userId, sessionId));
     },
