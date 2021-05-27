@@ -18,7 +18,6 @@ export const clearAllLocations = () => {
 };
 
 export const removeUser = (userId) => {
-  console.log('removeUser', userId);
   return { type: REMOVE_USER, userId };
 };
 
@@ -28,7 +27,6 @@ export const removeUser = (userId) => {
 // my socket Id to that room so all my communication is
 // shared with others in that room
 export const joinRoom = (userId, sessionId, userLoc) => {
-  console.log(`USER ${userId} JOIN ROOM ${sessionId}`);
   // to do: make sure socket is connected.
   return (dispatch) => {
     dispatch(userLocationChanged(userId, userLoc.lat, userLoc.lng));
@@ -46,7 +44,6 @@ export const joinRoom = (userId, sessionId, userLoc) => {
 };
 
 export const leaveRoom = (userId, sessionId) => {
-  console.log('LEAVE ROOM', userId, sessionId);
   return (dispatch) => {
     if (userId && sessionId) {
       socket.emit('leave-room', userId, sessionId);
@@ -57,7 +54,6 @@ export const leaveRoom = (userId, sessionId) => {
 };
 
 export const userLeftRoom = (userId) => {
-  console.log('userLeftroom', userId);
   return (dispatch) => {
     const myId = store.getState().auth.id;
     if (userId !== myId) {
@@ -73,7 +69,6 @@ export const sendMyLocation = () => {
     const userId = store.getState().auth.id;
     const loc = store.getState().myLocation;
     const sessionId = store.getState().sessionReducer.id;
-    console.log('send my location running', userId, loc, sessionId);
     if (loc.lat) {
       socket.emit('send-my-location', userId, sessionId, loc.lat, loc.lng);
     }
@@ -85,7 +80,6 @@ export const sendUserInputAddress = () => {
     const userId = store.getState().auth.id;
     const address = store.getState().address;
     const sessionId = store.getState().sessionReducer.id;
-    console.log('send my location running', userId, address, sessionId);
     if (address) {
       socket.emit('send-my-address', userId, sessionId, address);
     }
@@ -116,7 +110,6 @@ export default function (state = [], action) {
         });
       }
     case REMOVE_USER:
-      console.log(state.filter((loc) => loc.userId !== action.userId));
       return state.filter((loc) => loc.userId !== action.userId);
     case CLEAR_ALL_LOCATIONS:
       return [];

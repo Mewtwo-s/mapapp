@@ -25,10 +25,8 @@ function FinishSignUp(props) {
       photo,
       props.match.params.gamecode
     );
-    // console.log(email, password, firstName, lastName , userId, photo)
+  
   }
-  console.log('FinishSignUp props', props.match.params.gamecode);
-
   return (
     <div>
       <h3>Please complete your signup to join your event</h3>

@@ -42,7 +42,6 @@ const Map = withScriptjs(
 
     // Fit bounds function
     const fitBounds = () => {
-      console.log('FIT BOUNDS');
       const bounds = new window.google.maps.LatLngBounds();
       props.allLocations.map((item) => {
         bounds.extend({ lat: item.lat, lng: item.lng });
@@ -105,8 +104,6 @@ const Map = withScriptjs(
     const renderOthers = () => {
       // creates a list of objects with consolidated user
       // and loc data for rendering
-
-      console.log('render otehrs BEGIN', props);
       const users = props.allUsersInSession;
 
       if (users) {
@@ -116,12 +113,7 @@ const Map = withScriptjs(
             (location) => location.userId === user.id
           );
 
-          console.log('currentLocationUser ==>', currentLocationUser);
-
-          console.log('props.allLocations==>', props.allLocations);
-
           if (currentLocationUser.length === 0) {
-            console.log('length ===0', location);
 
             if (user.lat) {
               location = { lat: user.lat, lng: user.lng, userId: user.id };
@@ -134,9 +126,7 @@ const Map = withScriptjs(
               lng: currentLocationUser[0].session.userSession.lng,
               userId: user.id,
             };
-            console.log('length !== 0', location);
           }
-          console.log('render otehrs END ', location);
 
           // return (
           //   location.lat && (
@@ -209,19 +199,11 @@ const Map = withScriptjs(
       : { lat: 38.42595092237637, lng: -98.93746523313702 };
 
     function inputHandle(address) {
-      console.log('in handle', address);
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ address: address }, function (results, status) {
         if (status == 'OK') {
           let lat = results[0].geometry.location.lat();
           let lng = results[0].geometry.location.lng();
-
-          console.log(
-            'should trigger update input thunk',
-            props.user.id,
-            lat,
-            lng
-          );
           props.updateLocation(lat, lng);
           props.saveInputLocation(props.user.id, lat, lng);
         } else {
@@ -245,7 +227,6 @@ const Map = withScriptjs(
           );
 
           if (currentLocationUser.length === 0) {
-            console.log(user);
             if (user.sessions[0].userSession.currentLat) {
               location = {
                 firstName: user.firstName,
@@ -271,7 +252,6 @@ const Map = withScriptjs(
               lng: currentLocationUser[0].lng,
               userId: user.id,
             };
-            console.log('length !== 0', location);
           }
           updatedUsers.push(location);
         });
@@ -283,8 +263,6 @@ const Map = withScriptjs(
     // useEffect(()=>{
 
     // },[props.allUsersInSession, props.allLocations])
-
-    console.log('PROPS - TRAVEL', props.session.travelMode);
     return (
       <Container>
         {props.myLocation.address ? <UserInput handle={inputHandle} /> : ''}

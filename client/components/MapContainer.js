@@ -30,10 +30,15 @@ const MapContainer = (props) => {
   if (props.allUsersInSession && props.allUsersInSession.length>1) {
     friendsJoined = props.allUsersInSession
       .filter((user) => user.id !== props.user.id)
-      .map((user) => user.firstName)
+      .map((user) => {user.firstName})
       .join(", ");
-      console.log(friendsJoined);
-      console.log(props);
+      if (friendsJoined.length === 0) {
+        if (props.allUsersInSession.length === 2) {
+        friendsJoined = `${props.allUsersInSession.length -1} friend pending`} 
+        else {
+          friendsJoined = `${props.allUsersInSession.length -1} friends pending`}
+        }
+     
   } else {
     friendsJoined ='Just you!';
   }
@@ -121,19 +126,16 @@ const MapContainer = (props) => {
 
   useEffect(() => {
     if (props.session.status === "Active") {
-      console.log('the active use effect has been called');
       const allArrived = props.allUsersInSession.every(
         (user) => user.sessions[0].userSession.arrived === true
       );
       //this is just super inaccurate and not very realistic
       // const allLocationsMatch = props.allUsersInSession.every(user => user.currentLat === props.session.lat && user.currentLng === props.session.lng);
       if (allArrived === true) {
-        console.log('all arrived is true');
         props.endSession(props.session.id);
       }
     }
   }, [props.allUsersInSession]);
-  console.log(props);
   return (
     <div>
       {props.directionsFailed === true && <DirectionsFailure />}

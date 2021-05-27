@@ -34,7 +34,6 @@ export const me = () => async (dispatch) => {
 export const getTempUserThunkCreator =
   (confirmationCode) => async (dispatch) => {
     try {
-      console.log('the thunk is working');
       const result = await axios.put(`/api/users/${confirmationCode}`);
       dispatch(await setTempUser(result.data));
     } catch (err) {
@@ -45,7 +44,6 @@ export const getTempUserThunkCreator =
 export const authenticate =
   (email, password, method, firstName, lastName, photo) => async (dispatch) => {
     try {
-      console.log('in authenticate thunk');
       const res = await axios.post(`/auth/${method}`, {
         email,
         password,
@@ -64,7 +62,6 @@ export const changeUserInfoThunk =
   (userId, email, password, firstName, lastName, photo, sessionCode, history) =>
   async (dispatch) => {
     try {
-      console.log('in change userinfo thunk', sessionCode);
       const res = await axios.post(`/api/users/changePassword/${userId}`, {
         email,
         password,

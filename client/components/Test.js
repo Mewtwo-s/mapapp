@@ -8,7 +8,6 @@ import { joinSessionThunkCreator } from '../store/session';
 
 function Test(props) {
   // const [roomCode, setCode] = useState('');
-  console.log('Test', props);
 
   // useEffect(() => {
   //   setCode(props.match.params.gamecode);

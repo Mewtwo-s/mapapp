@@ -130,7 +130,6 @@ const CardsContainer = styled.div`
 `;
 
 const mapState = (state) => {
-  console.log('state home', state);
   return {
     email: state.auth.email,
     userId: state.auth.id,

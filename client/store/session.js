@@ -74,7 +74,6 @@ export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) =
 export const addTransitThunkCreator = (sessionId, transitType) => {
 
   return async (dispatch) => {
-    console.log(transitType);
     const response = await axios.put(`/api/sessions/${sessionId}`, {
       travelMode: transitType
     });
@@ -96,8 +95,6 @@ export const endSessionThunkCreator = (sessionId) => {
 };
 
 export const getSessionThunkCreator = (userId, code) => {
-
-
   return async (dispatch) => {
     try {
       const response = await axios.get(`/api/sessions/${code}`);
@@ -114,7 +111,6 @@ export const joinSessionThunkCreator = (userId, code, history) => {
 
   return async (dispatch) => {
     try {
-      console.log('in join session thunk')
       const response = await axios.put(`/api/users/add/${userId}`, {
         code: code
       });
@@ -136,7 +132,6 @@ export const createSessionThunkCreator = (hostId, travelMode, history) => {
   return async (dispatch) => {
 
     try {
-      console.log('in creat session thunk', travelMode)
       const response = await axios.post(`/api/sessions/`, { hostId: hostId});
       const session = response.data;
       await axios.put(`/api/usersessions/${hostId}/${session.id}`, {accepted: true})

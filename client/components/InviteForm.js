@@ -12,10 +12,6 @@ function InviteForm(props) {
         alert('eysss')
     }
 
-    function handleChange(evt){
-      console.log('here', evt.target.value)
-    }
-
     const fetchAllSession = async () =>{
         const {data} = await axios.get(`/api/users`)
         setUsers(data)

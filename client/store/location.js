@@ -41,11 +41,9 @@ export const locationWatchStarted = (watchId) => {
 // Start watching my location.
 // we should add session ID into here
 export const watchMyLocation = (userId, sessionId) => {
-  console.log('location.watchMyLocation()');
   return (dispatch) => {
     // callback for when location check is successfull
     const watchSuccess = (pos) => {
-      console.log('watchSuccess', pos);
       // save my updates to the store
       dispatch(updateMyLocation(pos.coords.latitude, pos.coords.longitude));
 
@@ -71,15 +69,12 @@ export const watchMyLocation = (userId, sessionId) => {
 
       if (sessionId) {
         const { data } = await axios.get(`/api/usersessions/${userId}/${sessionId}`);
-        console.log('USER SESSON:', data);
 
         if (data) {
           if(data.currentLat){
-            console.log('FOUND SAVED LOC');
             dispatch(updateMyLocation(data.currentLat, data.currentLng));
           }
           else{
-            console.log('no location found in DB, gonna ask user to manually input', data)
             dispatch(requestUserInputLocation(40.78146359807055, -73.96651380162687, 'pending'));
           }
      
@@ -102,7 +97,6 @@ export const watchMyLocation = (userId, sessionId) => {
 };
 
 export const stopWatchingMyLocation = () => {
-  console.log('STOP watching location', location.stopWatching);
   return (dispatch) => {
     // get the watchId so we can stop the watching function
     const { watchId } = store.getState().myLocation;
@@ -115,7 +109,6 @@ export const stopWatchingMyLocation = () => {
 
 export const updateMyLocation = (lat, lng) => {
   return (dispatch) => {
-    console.log('in location.js - updateMyLocation THUNK', lat, lng);
     // update state with my current position
     dispatch(myLocationUpdated(lat, lng));
     // send update to all users
@@ -138,20 +131,15 @@ export const userInputLocation = (lat, lng, address) => {
 
 export const requestUserInputLocation = (lat, lng, address) => {
   return (dispatch) => {
-
-    console.log('in location.js - request GEOCODE THUNK');
-
     dispatch(userInputLocation(lat, lng, address));
   };
 };
 
 export const saveUserInputLocation = (userId, lat, lng) => {
-  console.log('b4 try catch in save user thunk', userId, lat, lng)
   return async (dispatch) => {
     try{
      
       const sessionId = store.getState().sessionReducer.id;
-      console.log('in save geocode thunk', userId,sessionId, lat, lng)
     if (sessionId) {
       
       const { data } = await axios.put(`/api/usersessions/${userId}/${sessionId}`, {

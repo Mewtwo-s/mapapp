@@ -97,7 +97,6 @@ router.get('/friends/:userId', async (req, res, next) => {
       let uniqueFriends = Object.keys(friendObject).map(friend => {
         return friendObject[friend];
     })
- console.log(uniqueFriends)
  res.send(uniqueFriends)
   } catch (err) {
     next(err)
@@ -163,7 +162,6 @@ router.post('/invite', async(req, res, next) => {
         attributes: ['id']
       }
     });
-    console.log(usersession)
     res.send(usersession);
   } catch(err) {
     next(err)
@@ -172,7 +170,6 @@ router.post('/invite', async(req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
-    console.log('triggered', req.body.code)
     let session = await Session.findOne({
       where: {
         code: req.body.code

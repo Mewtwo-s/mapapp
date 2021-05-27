@@ -64,18 +64,10 @@ router.put('/:sessionId', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    console.log('in post route--', req.body.travelMode)
     const user = await User.findByPk(req.body.hostId);
     const session = await Session.create(req.body);
     await user.addHost(session);
     await session.addUsers(user);
-    // const userSession = await userSession.findOne({
-    //   where: {
-    //     userId: req.body.hostId,
-    //     sessionId: session.id
-    //   }
-    // })
-    // userSession.update({accepted: true});
     res.status(201).send(session);
   } catch (err) {
     next(err);

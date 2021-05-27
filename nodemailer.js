@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 function runMailer (senderName, toEmail, gameCode, toName, userCode, userId) {
-  console.log('in node mailer', userId)
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {

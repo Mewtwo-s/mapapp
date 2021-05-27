@@ -114,10 +114,6 @@ const mapDispatch = dispatch => {
       const email = evt.target.email.value
       const password = evt.target.password.value
       const sessionCode = history.location.pathname.split('/')[history.location.pathname.split.length]
-      
-      if(sessionCode){
-        console.log('assign user and session')
-      }
    
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
@@ -125,10 +121,6 @@ const mapDispatch = dispatch => {
         const photo = evt.target.photo.value || ''
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))
-        
-        if(sessionCode){
-            console.log('assign user and session')
-          }
       }
       else{
         dispatch(authenticate(email, password, formName))
