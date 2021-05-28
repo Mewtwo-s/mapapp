@@ -182,7 +182,11 @@ const MapContainer = (props) => {
                     End Event
                   </Button>
                 )}
+                
               </div>
+              {props.session.status === "Active" && (
+                  <p>Click on the flags to open directions in Google Maps</p>
+                )}
               <PlaceStyles>
                 {props.session.status === "Pending" && topPlaces
                   ? topPlaces.map((place) => (

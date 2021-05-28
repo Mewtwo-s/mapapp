@@ -30,6 +30,7 @@ const Map = withScriptjs(
     const prevLocations = useRef();
     const [inputLoc, setInputLoc] = useState();
     const [usersForMarkers, setUsersForMarkers] = useState();
+    const [showDirectionButton, setDirectionButton] = useState(true)
 
     const markerLabelStyle = {
       backgroundColor: 'black',
@@ -78,6 +79,7 @@ const Map = withScriptjs(
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             setCurrentLine(result);
+            setDirectionButton(false)
           } else {
             props.directionsFailed(true);
           }
@@ -127,70 +129,11 @@ const Map = withScriptjs(
               userId: user.id,
             };
           }
-
-          // return (
-          //   location.lat && (
-          // <MarkerWithLabel
-          //   key={`user_${user.id}`}
-          //   icon={{
-          //     url: `${user.photo}`, // url
-          //     scaledSize: new google.maps.Size(40, 40), // scaled size
-          //   }}
-          //   position={{ lat: location.lat, lng: location.lng }}
-          //   labelAnchor={new google.maps.Point(0, 0)}
-          //   zIndex={100}
-          //   labelStyle={markerLabelStyle}
-          // >
-          //   {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
-          //   <div>{user.firstName}</div>
-          // </MarkerWithLabel>
-          //   )
-          // );
         });
       }
     };
 
-    // const renderOthers = () => {
-    //   // creates a list of objects with consolidated user
-    //   // and loc data for rendering
-    // const users = props.session.users;
-
-    // if (users && props.allLocations) {
-    //   const otherUsers = users
-    //     .filter((user) => user.id !== props.user.id)
-    //     .reduce((modifiedUsers, user) => {
-    //       // find user location
-    //       const loc = props.allLocations.find(
-    //         (loc) => loc.userId === user.id
-    //       );
-    //       if (loc) {
-    //         modifiedUsers.push({ ...user, lat: loc.lat, lng: loc.lng });
-    //       }
-    //       return modifiedUsers;
-    //     }, []);
-
-    //     // Create the marker to render
-
-    //     return otherUsers.map((user) => (
-    //       <MarkerWithLabel
-    //         key={`user_${user.id}`}
-    //         //icon={user.photo}
-    //         icon={{
-    //           url: `${user.photo}`, // url
-    //           scaledSize: new google.maps.Size(40, 40), // scaled size
-    //         }}
-    //         position={{ lat: user.lat, lng: user.lng }}
-    //         labelAnchor={new google.maps.Point(0, 0)}
-    //         zIndex={100}
-    //         labelStyle={markerLabelStyle}
-    //       >
-    //         {/* <img src={user.photo} style={{ height: '70px', width: '70px' }} /> */}
-    //         <div>{user.firstName}</div>
-    //       </MarkerWithLabel>
-    //     ));
-    //   }
-    // };
-
+    
     const myLocationIsValid = props.myLocation.lat;
     const sessionIsValid =
       Object.keys(props.session).length > 0 && props.session.lat;
@@ -260,23 +203,25 @@ const Map = withScriptjs(
       }
     }, [props.allUsersInSession, props.allLocations]);
 
-    // useEffect(()=>{
 
-    // },[props.allUsersInSession, props.allLocations])
+
     function test(){
       
       window.open(`https://www.google.com/maps/dir/${currentLine.request.origin.location.lat()},${currentLine.request.origin.location.lng()}/${currentLine.request.destination.location.lat()},${currentLine.request.destination.location.lng()}`);
     }
 
+
     return (
       <Container>
-   
+      <Button onClick={test} disabled={showDirectionButton}>Show Direction In Google Map</Button>
       {currentLine? <Marker
                 onClick={()=>{test()}}
-                icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/firedept.png"
+                icon={{
+                  url: "https://cdn.pixabay.com/photo/2016/09/06/04/48/checker-1648337__340.png",
+                  scaledSize: new google.maps.Size(80, 50), // scaled size
+                }}
                 position={{ lat: currentLine.request.destination.location.lat(), lng: currentLine.request.destination.location.lng() }}
               />:''}
-              
         {props.myLocation.address ? <UserInput handle={inputHandle} /> : ""}
         {myLocationIsValid && (
           <GoogleMap
@@ -289,12 +234,12 @@ const Map = withScriptjs(
               gestureHandling: 'greedy',
             }}
           >
-            {sessionIsValid && (
+            {/* {sessionIsValid && (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
                 position={{ lat: props.session.lat, lng: props.session.lng }}
               />
-            )}
+            )} */}
 
             {/* Draw markers for top places */}
 

@@ -1,65 +1,56 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Container } from '../GlobalStyles';
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { logout } from '../store';
+import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
+import {logout} from '../store';
 // import { ProgressPlugin } from 'webpack';
 import { updateSessionAction } from '../store/homeStatus';
 //import mapLogo from '../../public/mapLogo.png'  -> module not found 
-
-
-const Navbar = ({ handleClick, isLoggedIn, photo, firstName, updateSessionAction }) => {
-
+const Navbar = ({handleClick, isLoggedIn, photo, firstName, updateSessionAction}) => {
   const [open, setOpen] = useState(false)
-
   return (
-    <Nav>
-      <NavbarContainer>
+  <Nav>
+    <NavbarContainer>
         {/* <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1> */}
-        <Link to="/home" onClick={() => updateSessionAction(null)}>
-          <h1 className="logo">
-            Meedle
+        <NavLink to="/home" onClick={() => updateSessionAction(null)}>
+        <h1 className="logo">
+          Meedle
         </h1>
-        </Link>
-        
-        {
-          isLoggedIn &&
-          <div>{
-            photo ?
-              <ProfilePhoto src={`${photo}`} /> :
-              <Name>{firstName.slice(0, 1)}</Name>
-          }</div>
-        }
-
-        <div className="flexNav">
-          {isLoggedIn ? (
-            <NavMenu open={open}>
-              {/* The navbar will show these links after you log in */}
-              <NavLink to="/home" onClick={() => updateSessionAction(null)}>Home</NavLink>
-              <NavLink to="/home" onClick={handleClick}>
-                Logout
+        </NavLink>
+      <div className="flexNav">
+      {isLoggedIn ? (
+        <NavMenu open={open}>
+          {/* The navbar will show these links after you log in */}
+          <NavLink to="/home" onClick={() => updateSessionAction(null)}>Home</NavLink> 
+          <NavLink to="/home" onClick={handleClick}>
+            Logout
           </NavLink>
-            </NavMenu>
-          ) : (
-            <NavMenu open={open}>
-              {/* The navbar will show these links before you log in */}
-              <NavLink to="/login">Login</NavLink>
-              <NavLink to="/signup">Sign Up</NavLink>
-            </NavMenu>
-          )}
-
-          <StyledBurger open={open} onClick={() => setOpen(!open)}>
-            <div />
-            <div />
-            <div />
-          </StyledBurger>
-        </div>
-      </NavbarContainer>
-    </Nav>
-  )
-}
-
+        </NavMenu>
+      ) : (
+          <NavMenu open={open}>
+          {/* The navbar will show these links before you log in */}
+          <NavLink to="/login">Login</NavLink>
+          <NavLink to="/signup">Sign Up</NavLink>
+        </NavMenu>
+      )}
+      {
+          isLoggedIn && 
+          <div>{
+              photo ?
+              <ProfilePhoto src={`${photo}`} /> :
+              <Name>{firstName.slice(0,1)}</Name>
+          }</div>
+      }
+        <StyledBurger open={open} onClick={() => setOpen(!open)}>
+          <div />
+          <div />
+          <div />
+        </StyledBurger>
+</div>
+    </NavbarContainer>
+  </Nav>
+ )}
 /**
  * CONTAINER
  */
@@ -70,16 +61,14 @@ const mapState = state => {
     firstName: state.auth.firstName
   }
 }
-
 const mapDispatch = dispatch => {
   return {
     handleClick() {
       dispatch(logout())
     },
-    updateSessionAction: (action) => dispatch(updateSessionAction(action)),
+    updateSessionAction: (action)=> dispatch(updateSessionAction(action)),
   }
 }
-
 const Nav = styled.nav` 
   margin: 0px;
   position: sticky;
@@ -91,29 +80,25 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   @media screen and (max-width:600px){
     overflow: hidden;
     position: relative;
   }
 `;
-
-const NavbarContainer = styled(Container)`
+ const NavbarContainer = styled(Container)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   @media screen and (max-width:600px){
     display: flex;
     justify-content: space-between;
   }
   ${Container};
 `;
-
 const NavLink = styled(Link)`
   text-decoration: none;
   margin: 10px;
-  font-weight: bold;
+  // font-weight: bold;
   font-size: 18px;
   color: #0f3057;
   transition: all .2s ease;
@@ -128,20 +113,15 @@ const NavLink = styled(Link)`
     text-decoration: none;
     font-size: 17px;
     width: 100%;
-
     // &:hover { 
     //   background-color: #fff;
     // }
   }
-
 `;
-
-
 const NavMenu = styled.div`
   list-style: none;
   display: flex;
   flex-flow: row nowrap;
-  
   @media (max-width: 600px) {
     flex-flow: column nowrap;
     background-color: #e4efe7;
@@ -158,7 +138,6 @@ const NavMenu = styled.div`
     }
   }
 `;
-
 const StyledBurger = styled.div`
   width: 4rem;
   height: 4rem;
@@ -191,29 +170,19 @@ const StyledBurger = styled.div`
     }
   }
 `;
-
 const ProfilePhoto = styled.img`
   border: solid 1px #0f3057;
   border-radius: 50%;
   height: 50px;
   width: 50px;
-<<<<<<< HEAD
-  // margin-left: 10px;
-  @media screen and (max-width:600px){
-    height: 45px;
-    width: 45px;
-=======
   margin-left: 20px;
   margin-right: 20px;
   @media screen and (max-width:600px){
     height: 50px;
     width: 50px;
-    
->>>>>>> f28e11696d68c125e247d3b6516e9729aa21436e
     // display: none;
   }
 `
-
 const Name = styled.h1`
   border: solid 1px white;
   text-align:center;
@@ -223,5 +192,4 @@ const Name = styled.h1`
   width: 60px;
   background-color: #faf1e6;
 `
-
 export default connect(mapState, mapDispatch)(Navbar)
