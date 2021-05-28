@@ -9,8 +9,8 @@ function UserInput(props) {
     }
     return (
         <div>
-            <h2>You are annoying, aren't you?</h2>
-            <h4>Type your address in the searc box (currently default to Central Park)</h4>
+            <h2>We can't seem to find your location!</h2>
+            <h4>Type your address below. If left empty, it will default to central park!</h4>
 
             <form name="join" onSubmit={handleSubmit}>
 
