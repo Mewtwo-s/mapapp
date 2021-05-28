@@ -30,14 +30,21 @@ const MapContainer = (props) => {
   if (props.allUsersInSession && props.allUsersInSession.length>1) {
     friendsJoined = props.allUsersInSession
       .filter((user) => user.id !== props.user.id)
-      .map((user) => {user.firstName})
-      .join(", ");
-      if (friendsJoined.length === 0) {
-        if (props.allUsersInSession.length === 2) {
-        friendsJoined = `${props.allUsersInSession.length -1} friend pending`} 
-        else {
-          friendsJoined = `${props.allUsersInSession.length -1} friends pending`}
+      .map((user) => {
+        if (user.firstName === "Temp_account") {
+          return user.email + " (pending)"
+        } else {
+          return user.firstName
         }
+        
+      })
+      .join(", ");
+      // if (friendsJoined.length === 0) {
+      //   if (props.allUsersInSession.length === 2) {
+      //   friendsJoined = `${props.allUsersInSession.length -1} friend pending`} 
+      //   else {
+      //     friendsJoined = `${props.allUsersInSession.length -1} friends pending`}
+      //   }
      
   } else {
     friendsJoined ='Just you!';
