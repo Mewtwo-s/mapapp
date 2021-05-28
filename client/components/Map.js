@@ -213,8 +213,15 @@ const Map = withScriptjs(
 
     return (
       <Container>
-      <button onClick={test} disabled={showDirectionButton}>Show Direction In Google Map</button>
-             
+      <Button onClick={test} disabled={showDirectionButton}>Show Direction In Google Map</Button>
+      {currentLine? <Marker
+                onClick={()=>{test()}}
+                icon={{
+                  url: "https://cdn.pixabay.com/photo/2016/09/06/04/48/checker-1648337__340.png",
+                  scaledSize: new google.maps.Size(80, 50), // scaled size
+                }}
+                position={{ lat: currentLine.request.destination.location.lat(), lng: currentLine.request.destination.location.lng() }}
+              />:''}
         {props.myLocation.address ? <UserInput handle={inputHandle} /> : ""}
         {myLocationIsValid && (
           <GoogleMap
@@ -227,12 +234,12 @@ const Map = withScriptjs(
               gestureHandling: 'greedy',
             }}
           >
-            {sessionIsValid && (
+            {/* {sessionIsValid && (
               <Marker
                 icon="https://maps.google.com/mapfiles/ms/icons/pink-dot.png"
                 position={{ lat: props.session.lat, lng: props.session.lng }}
               />
-            )}
+            )} */}
 
             {/* Draw markers for top places */}
 
