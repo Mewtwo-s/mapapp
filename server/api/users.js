@@ -142,7 +142,7 @@ router.post('/invite', async(req, res, next) => {
     const session = await Session.findByPk(req.body.sessionId);
     // if not existing user
     if (!user) {
-      user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
+      user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT', photo:'https://www.pinclipart.com/picdir/big/523-5232047_ladybug-clipart-five-ladybug-five-transparent-free-cartoon.png'});
       await session.addUsers(user);
       runMailer(req.body.hostName, req.body.email, session.code, 'Guest', user.confirmationCode, user.id);
     }
