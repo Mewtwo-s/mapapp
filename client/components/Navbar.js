@@ -1,62 +1,64 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Container } from '../GlobalStyles';
-import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
-import {logout} from '../store';
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { logout } from '../store';
 // import { ProgressPlugin } from 'webpack';
 import { updateSessionAction } from '../store/homeStatus';
 //import mapLogo from '../../public/mapLogo.png'  -> module not found 
 
 
-const Navbar = ({handleClick, isLoggedIn, photo, firstName, updateSessionAction}) => {
+const Navbar = ({ handleClick, isLoggedIn, photo, firstName, updateSessionAction }) => {
 
   const [open, setOpen] = useState(false)
 
   return (
-  <Nav>
-    <NavbarContainer>
+    <Nav>
+      <NavbarContainer>
         {/* <h1 style={{ textShadow: '4px 3px 0px #fff, 9px 8px 0px rgba(0,0,0,0.15)' }}>Meedle</h1> */}
-        <NavLink to="/home" onClick={() => updateSessionAction(null)}>
-        <h1 className="logo">
-          Meedle
+        <Link to="/home" onClick={() => updateSessionAction(null)}>
+          <h1 className="logo">
+            Meedle
         </h1>
-        </NavLink>
-      <div className="flexNav">
-      {isLoggedIn ? (
-        <NavMenu open={open}>
-          {/* The navbar will show these links after you log in */}
-          <NavLink to="/home" onClick={() => updateSessionAction(null)}>Home</NavLink> 
-          <NavLink to="/home" onClick={handleClick}>
-            Logout
-          </NavLink>
-        </NavMenu>
-      ) : (
-          <NavMenu open={open}>
-          {/* The navbar will show these links before you log in */}
-          <NavLink to="/login">Login</NavLink>
-          <NavLink to="/signup">Sign Up</NavLink>
-        </NavMenu>
-      )}
-      {
-          isLoggedIn && 
+        </Link>
+        
+        {
+          isLoggedIn &&
           <div>{
-              photo ?
+            photo ?
               <ProfilePhoto src={`${photo}`} /> :
-              <Name>{firstName.slice(0,1)}</Name>
+              <Name>{firstName.slice(0, 1)}</Name>
           }</div>
-      }
-    
-      
-        <StyledBurger open={open} onClick={() => setOpen(!open)}>
-          <div />
-          <div />
-          <div />
-        </StyledBurger>
-</div>
-    </NavbarContainer>
-  </Nav>
- )}
+        }
+
+        <div className="flexNav">
+          {isLoggedIn ? (
+            <NavMenu open={open}>
+              {/* The navbar will show these links after you log in */}
+              <NavLink to="/home" onClick={() => updateSessionAction(null)}>Home</NavLink>
+              <NavLink to="/home" onClick={handleClick}>
+                Logout
+          </NavLink>
+            </NavMenu>
+          ) : (
+            <NavMenu open={open}>
+              {/* The navbar will show these links before you log in */}
+              <NavLink to="/login">Login</NavLink>
+              <NavLink to="/signup">Sign Up</NavLink>
+            </NavMenu>
+          )}
+
+          <StyledBurger open={open} onClick={() => setOpen(!open)}>
+            <div />
+            <div />
+            <div />
+          </StyledBurger>
+        </div>
+      </NavbarContainer>
+    </Nav>
+  )
+}
 
 /**
  * CONTAINER
@@ -74,7 +76,7 @@ const mapDispatch = dispatch => {
     handleClick() {
       dispatch(logout())
     },
-    updateSessionAction: (action)=> dispatch(updateSessionAction(action)),
+    updateSessionAction: (action) => dispatch(updateSessionAction(action)),
   }
 }
 
@@ -96,7 +98,7 @@ const Nav = styled.nav`
   }
 `;
 
- const NavbarContainer = styled(Container)`
+const NavbarContainer = styled(Container)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -111,7 +113,7 @@ const Nav = styled.nav`
 const NavLink = styled(Link)`
   text-decoration: none;
   margin: 10px;
-  // font-weight: bold;
+  font-weight: bold;
   font-size: 18px;
   color: #0f3057;
   transition: all .2s ease;
@@ -123,7 +125,7 @@ const NavLink = styled(Link)`
       color: #32e0c4;
   }
   @media screen and (max-width:600px){
-    text-decoration: none
+    text-decoration: none;
     font-size: 17px;
     width: 100%;
 
@@ -195,12 +197,19 @@ const ProfilePhoto = styled.img`
   border-radius: 50%;
   height: 50px;
   width: 50px;
+<<<<<<< HEAD
+  // margin-left: 10px;
+  @media screen and (max-width:600px){
+    height: 45px;
+    width: 45px;
+=======
   margin-left: 20px;
   margin-right: 20px;
   @media screen and (max-width:600px){
     height: 50px;
     width: 50px;
     
+>>>>>>> f28e11696d68c125e247d3b6516e9729aa21436e
     // display: none;
   }
 `

@@ -33,13 +33,13 @@ const AuthForm = props => {
               <Label htmlFor="email">
                 <small>Email *</small>
               </Label>
-              <Input name="email" type="email" required placeholder='required'/>
+              <Input name="email" type="email" required placeholder='joe@mail.com'/>
             </div>
             <div>
               <Label htmlFor="password">
                 <small>Password *</small>
               </Label>
-              <Input name="password" type="password" required placeholder='required'/>
+            <Input name="password" type="password" required placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"/>
             </div>
           </FormGroup>
        
@@ -51,13 +51,13 @@ const AuthForm = props => {
                 <Label htmlFor="firstName">
                   <small>First Name *</small>
                 </Label>
-                <Input name="firstName" type="text" required placeholder='required' />
+                <Input name="firstName" type="text" required placeholder='Joe' />
               </div>
               <div>
                 <Label htmlFor="lastName">
                   <small>Last Name *</small>
                 </Label>
-                <Input name="lastName" type="text" required placeholder='required'/>
+                <Input name="lastName" type="text" required placeholder='Smith'/>
               </div>
           </FormGroup> 
         
@@ -79,6 +79,12 @@ const AuthForm = props => {
          <Button type="submit" style={{padding: "0.25em 3em"}}>{displayName}</Button>
         </div>
       </form>
+
+      {
+        pathName === 'login' ? 
+          <p style={{textAlign:'center', color:'white'}}><small>Don't have an account? <Link to='/signup'>Sign Up here</Link></small> </p> :
+          <p style={{ textAlign: 'center', color: 'white' }}><small>Already have an account? <Link to='/login'>Login </Link></small> </p>
+      }
     </FormContainer>
   )
 }

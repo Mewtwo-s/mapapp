@@ -135,7 +135,7 @@ export const Input = styled.input`
   color: orange;
   padding: 5px 40px;
   border-radius: 3px;
-  color: #999;
+  color: #040c48;
   cursor: text;
   font-size: 14px;
   font-weight: 300;
@@ -148,7 +148,7 @@ export const Input = styled.input`
 
   &:focus::-webkit-input-placeholder {
   transition: opacity 0.4s 0.4s ease!important;
-  opacity: 0.40;
+  opacity: 0.30;
   }
 `;
 

@@ -68,6 +68,7 @@ const MapContainer = (props) => {
   };
 
   function handleMagic() {
+    console.log('handling magic')
     findMidpoint(props.allLocations);
   }
 
