@@ -270,13 +270,9 @@ const Map = withScriptjs(
 
     return (
       <Container>
+   
       {currentLine? <Marker
-                onClick={()=>{test(currentLine.request.origin.location.lat(), currentLine.request.origin.location.lng())}}
-                icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/firedept.png"
-                position={{ lat: currentLine.request.origin.location.lat(), lng: currentLine.request.origin.location.lng() }}
-              />:''}
-      {currentLine? <Marker
-                onClick={()=>{test(currentLine.request.destination.location.lat(), currentLine.request.destination.location.lng())}}
+                onClick={()=>{test()}}
                 icon="http://tancro.e-central.tv/grandmaster/markers/google-icons/mapfiles-ms-micons/firedept.png"
                 position={{ lat: currentLine.request.destination.location.lat(), lng: currentLine.request.destination.location.lng() }}
               />:''}
