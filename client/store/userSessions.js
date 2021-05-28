@@ -22,6 +22,11 @@ export const inviteAction = (user) => ({
    user
 })
 
+export const userJoinsSession = (user) => ({
+   type: INVITE_USER,
+   user
+})
+
 // export const userJoinSessionAction = (userSession) => ({
 //    type: USER_JOIN_SESSION,
 //    userSession
@@ -34,7 +39,6 @@ export const getSessionUsersThunkCreator = (sessionId) => {
        try {
           const response = await axios.get(`/api/usersessions/${sessionId}`)
           const sessionUsers = response.data
-          console.log(sessionUsers, 'sessionUsers thunk')
           dispatch(getSessionUsersRows(sessionUsers))
        } catch (error) {
           console.log(`Failed to get users for session ${sessionId}`)
@@ -67,27 +71,17 @@ export const arriveThunkCreator = (userId, sessionId) => {
    }
 }
 
-
-// export const userJoinSession = (userId, sessionId) => {
-//    return async (dispatch)=>{
-//       try{
-
-//          const {data} = await axios.get(`/api/usersessions/${sessionId}`)
-//          dispatch(getSessionUsersThunkCreator(data))
-
-//       }catch{
-//          console.log(`Failed to fetch userSession data`)
-//       }
-//    }
-// }
-
 export default function userSessionsReducer(state=[], action) {
    switch (action.type) {
     case GET_SESSION_USERS:
-       return action.sessionUsers   
+       return action.sessionUsers  
+   case INVITE_USER:
+      return [...state, action.user]
+   case USER_JOIN_SESSION:
+      return [...state, action.user]
     case ARRIVE: 
         return state.map(user => {
-           if (user.userId === action.userSession.userId) {
+           if (user.id === action.userSession.id) {
             return action.userSession} 
               else {
             return user

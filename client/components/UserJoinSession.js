@@ -9,7 +9,6 @@ import { Link,  BrowserRouter as Router,
 import { Login, Signup } from './AuthForm';
 
 function UserJoinSession(props) {
-    console.log('my history',useHistory)
     return (
     <div>
         <Link to='/signin'><Card>Existing User?</Card></Link>
@@ -35,7 +34,6 @@ const Card = styled.div`
     }`
 
 const mapState = state => {
-    console.log('state home', state)
     return {
         isLoggedIn: !!state.auth.id,
     }

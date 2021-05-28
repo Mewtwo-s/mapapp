@@ -97,7 +97,6 @@ router.get('/friends/:userId', async (req, res, next) => {
       let uniqueFriends = Object.keys(friendObject).map(friend => {
         return friendObject[friend];
     })
- console.log(uniqueFriends)
  res.send(uniqueFriends)
   } catch (err) {
     next(err)
@@ -146,15 +145,24 @@ router.post('/invite', async(req, res, next) => {
       user = await User.create({email: req.body.email, firstName: 'TEMP_ACCOUNT', lastName: 'TEMP_ACCOUNT', password: 'TEMP_ACCOUNT'});
       await session.addUsers(user);
       runMailer(req.body.hostName, req.body.email, session.code, 'Guest', user.confirmationCode, user.id);
-      res.send(user);
     }
     else{
       await session.addUsers(user);
       runMailer(req.body.hostName, req.body.email, session.code, user.firstName, user.confirmationCode);
-      res.send(user)
     }
-    
-    
+    const usersession = await User.findOne({
+      where: {
+        id: user.id
+      },
+      include: {
+        model: Session, 
+        where: {
+          id: req.body.sessionId
+        },
+        attributes: ['id']
+      }
+    });
+    res.send(usersession);
   } catch(err) {
     next(err)
   }
@@ -162,7 +170,6 @@ router.post('/invite', async(req, res, next) => {
 
 router.put('/add/:userId', async (req, res, next) => {
   try {
-    console.log('triggered', req.body.code)
     let session = await Session.findOne({
       where: {
         code: req.body.code

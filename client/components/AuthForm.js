@@ -120,21 +120,13 @@ const mapDispatch = dispatch => {
       const email = evt.target.email.value
       const password = evt.target.password.value
       const sessionCode = history.location.pathname.split('/')[history.location.pathname.split.length]
-      
-      if(sessionCode){
-        console.log('assign user and session')
-      }
    
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
-        const photo = evt.target.photo.value || ''
+        const photo = evt.target.photo.value || "https://www.pinclipart.com/picdir/big/523-5232047_ladybug-clipart-five-ladybug-five-transparent-free-cartoon.png"
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))
-        
-        if(sessionCode){
-            console.log('assign user and session')
-          }
       }
       else{
         dispatch(authenticate(email, password, formName))

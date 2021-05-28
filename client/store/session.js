@@ -2,12 +2,14 @@ import axios from 'axios';
 import { sessionStarted, clearAllLocations } from './locationSharing';
 import socket from '../socket';
 import {addASession, editASession } from './allSessions';
+import { userJoinsSession } from './userSessions';
 
 const GET_SESSION = 'GET_SESSION';
 const JOIN_SESSION = 'JOIN_SESSION';
 const CREATE_SESSION = 'CREATE_SESSION';
 const ACTIVATE_SESSION = 'ACTIVATE_SESSION';
 const END_SESSION = 'END_SESSION';
+const ADD_TRANSIT = 'ADD_TRANSIT';
 
 //action creators
 const getSession = (session) => {
@@ -44,6 +46,13 @@ const createSession = (session) => {
   };
 };
 
+const addTransit = (session) => {
+  return {
+    type: ADD_TRANSIT,
+    session,
+  };
+};
+
 
 //thunks
 export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) => {
@@ -62,6 +71,17 @@ export const activateSessionThunkCreator = (sessionId, lat, lng, locationName) =
   };
 };
 
+export const addTransitThunkCreator = (sessionId, transitType) => {
+
+  return async (dispatch) => {
+    const response = await axios.put(`/api/sessions/${sessionId}`, {
+      travelMode: transitType
+    });
+    const session = response.data;
+    dispatch(addTransit(session));
+  };
+};
+
 export const endSessionThunkCreator = (sessionId) => {
   return async (dispatch) => {
     const response = await axios.put(`/api/sessions/${sessionId}`, {
@@ -75,8 +95,6 @@ export const endSessionThunkCreator = (sessionId) => {
 };
 
 export const getSessionThunkCreator = (userId, code) => {
-
-
   return async (dispatch) => {
     try {
       const response = await axios.get(`/api/sessions/${code}`);
@@ -93,14 +111,14 @@ export const joinSessionThunkCreator = (userId, code, history) => {
 
   return async (dispatch) => {
     try {
-      console.log('in join session thunk')
       const response = await axios.put(`/api/users/add/${userId}`, {
         code: code
       });
       const session = response.data;
-      await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
+      const user = await axios.put(`/api/usersessions/${userId}/${session.id}`, {accepted: true})
       await dispatch(joinSession(session));
       dispatch(addASession(session))
+      await dispatch (userJoinsSession(user.data));
       socket.emit('updated-session', session)
       history.push(`/map/${code}`);
     } catch (err) {
@@ -114,7 +132,6 @@ export const createSessionThunkCreator = (hostId, travelMode, history) => {
   return async (dispatch) => {
 
     try {
-      console.log('in creat session thunk', travelMode)
       const response = await axios.post(`/api/sessions/`, { hostId: hostId});
       const session = response.data;
       await axios.put(`/api/usersessions/${hostId}/${session.id}`, {accepted: true})
@@ -138,6 +155,8 @@ export default function sessionReducer(session = {}, action) {
     case ACTIVATE_SESSION:
       return action.session;
     case END_SESSION:
+      return action.session;
+    case ADD_TRANSIT:
       return action.session;
     default:
       return session;

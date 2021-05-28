@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   createSessionThunkCreator,
   joinSessionThunkCreator,
+  addTransitThunkCreator
 } from '../store/session';
 import { stopWatchingMyLocation } from '../store/location';
 import { leaveRoom } from '../store/locationSharing';
@@ -22,7 +23,9 @@ export class JoinRoom extends React.Component {
       currentSession: null,
       travelMode: 'DRIVING',
       createSessionDisplay: null, 
-      friendAdded: null
+      friendAdded: null,
+      friendsInvited: [],
+      transitMessage: "Driving"
     };
     this.handleCreate = this.handleCreate.bind(this);
     this.handleAddFriendViaEmail = this.handleAddFriendViaEmail.bind(this)
@@ -30,6 +33,7 @@ export class JoinRoom extends React.Component {
     this.createSessionDisplay=this.createSessionDisplay.bind(this)
     this.addAFriend=this.addAFriend.bind(this)
     this.goBack=this.goBack.bind(this);
+    this.submitTravel=this.submitTravel.bind(this);
   }
 
   componentDidMount() {
@@ -37,6 +41,7 @@ export class JoinRoom extends React.Component {
   }
 
   handleChange(event) {
+    event.preventDefault();
     this.setState({
       [event.target.name]: event.target.value
   })
@@ -46,7 +51,8 @@ export class JoinRoom extends React.Component {
     evt.preventDefault();
     this.props.inviteFriend( this.props.session.id, evt.target.email.value, this.props.user.firstName)
     this.setState({
-      email: ''
+      email: '',
+      friendsInvited: [...this.state.friendsInvited, evt.target.email.value]
     })
   }
 
@@ -57,13 +63,14 @@ export class JoinRoom extends React.Component {
       this.props.leaveRoom(this.props.user.id, session.id);
       this.props.stopWatchingMyLocation();
     }
-
     await this.props.joinSession(this.props.user.id, evt.target.code.value);
   }
 
    handleChangeMode(e){
-    console.log('I SELECTED' , e.target.value)
-    this.setState({travelMode: e.target.value})
+    e.preventDefault();
+    this.setState({
+      travelMode: e.target.value
+    })
   }
 
   async handleCreate(evt) {
@@ -83,7 +90,8 @@ export class JoinRoom extends React.Component {
   createSessionDisplay(word) {
     this.setState({
       createSessionDisplay: word,
-      friendAdded: null
+      friendAdded: null,
+      friendsInvited: []
     })
   }
 
@@ -106,6 +114,24 @@ export class JoinRoom extends React.Component {
       friendAdded: null
     })
     this.props.updateSessionAction(null)
+  }
+
+  submitTravel () {
+    let transitMessage
+    let transitMode = this.state.travelMode
+    if (transitMode === "DRIVING") {
+      transitMessage = "Driving"
+    } else if (transitMode === "WALKING") {
+      transitMessage = "Walking"
+    }  else if (transitMode === "BICYCLING") {
+      transitMessage = "Cycling"
+    } else if (transitMode === "TRANSIT") {
+      transitMessage = "Transit"
+    }
+    this.props.addTransit(this.props.session.id, this.state.travelMode)
+    this.setState({
+      transitMessage: transitMessage
+    })
   }
  
   render() {
@@ -169,6 +195,8 @@ export class JoinRoom extends React.Component {
             <div className="clickToOpen">
             <form onSubmit={this.handleAddFriendViaEmail}>
               <h3>Invite a friend via email (one at a time)</h3>
+              {this.state.friendsInvited.length > 0 && `Added ${this.state.friendsInvited.join(", ")}`}
+              <p>{}</p>
               <div style={{ display: 'flex' }}>
                 <Input name="email" type="email" 
                     value={this.state.email}
@@ -200,16 +228,19 @@ export class JoinRoom extends React.Component {
             <Button onClick={() => this.createSessionDisplay("transportation")}>Edit transportation</Button>
             {this.state.createSessionDisplay === "transportation" &&
             <div className="clickToOpen">
-            <p> Choose your group's method of transportation:  
+            <p> {this.state.transitMessage && `You group's travel method is set to ${this.state.transitMessage}. Submit a selection below to change it.`} 
+         
             <span> 
               <Select name="travelMode" onChange={this.handleChangeMode} value={this.state.travelMode}>
-              <option value="DRIVING">Driving</option>
-              <option value="WALKING">Walking</option>
-                <option value="BICYCLING">Cycling</option>
-                <option value="TRANSIT">Transit</option>
+              <option name="Driving" value="DRIVING">Driving</option>
+              <option name="Walking" value="WALKING">Walking</option>
+                <option name="Cycling" value="BICYCLING">Cycling</option>
+                <option name="Transit" value="TRANSIT">Transit</option>
               </Select>
+              <Button onClick={this.submitTravel}>Submit</Button>
             </span> 
-          </p>
+            </p>
+          
             </div>
             }
             </div>
@@ -239,7 +270,8 @@ const mapDispatch = (dispatch, { history }) => {
     leaveRoom: (userId, sessionId) => dispatch(leaveRoom(userId, sessionId)),
     getFriends: (userId) => dispatch(getFriendsThunk(userId)),
     inviteFriend: (sessionId, email, hostName) => dispatch(inviteSessionUsersThunkCreator(sessionId, email, hostName)),
-    updateSessionAction: (action)=> dispatch(updateSessionAction(action))
+    updateSessionAction: (action)=> dispatch(updateSessionAction(action)),
+    addTransit: (sessionId, transit) => dispatch(addTransitThunkCreator(sessionId, transit))
   };
 };
 export default connect(mapState, mapDispatch)(JoinRoom);

@@ -64,7 +64,6 @@ const Navbar = ({ handleClick, isLoggedIn, photo, firstName, updateSessionAction
  * CONTAINER
  */
 const mapState = state => {
-  console.log('state auth nav', state.auth.photo)
   return {
     isLoggedIn: !!state.auth.id,
     photo: state.auth.photo,
@@ -87,6 +86,7 @@ const Nav = styled.nav`
   top: 0;
   height: 80px;
   background-color: #a5ecd7;
+  z-index: 3;
   // box-shadow: 0px 5px 20px rgb(48,181,204, 0.5); 
   display: flex;
   justify-content: space-between;

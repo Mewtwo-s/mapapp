@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 function runMailer (senderName, toEmail, gameCode, toName, userCode, userId) {
-  console.log('in node mailer', userId)
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -17,14 +16,14 @@ let transporter = nodemailer.createTransport({
   if(toName === 'Guest'){
 
     let mailOptions = {
-      from: 'mapappproduction@gmail.com',
+      from: '"Meedle App" <meedleapp@gmail.com>',
       to: toEmail,
       subject: 'Your friend invited you to meet',
       html: 
           `
           <p> Welcome To Meedle!</p>
           
-          <p> Your friend ${senderName} wants to meet up! Sign Up & Join the session <a href="https://meedleapp.herokuapp.com/signup/${gameCode}/${userId}">here</a></p>`
+          <p> Your friend ${senderName} wants to meet up! Sign up and join the session <a href="https://meedleapp.herokuapp.com/signup/${gameCode}/${userId}">here</a></p>`
     };
 
     transporter.sendMail(mailOptions, function(err, data) {
@@ -38,7 +37,7 @@ let transporter = nodemailer.createTransport({
   }
   else{
   let mailOptions = {
-    from: 'mapappproduction@gmail.com',
+    from: '"Meedle App" <meedleapp@gmail.com>',
     to: toEmail,
     subject: 'Your friend invited you to meet',
     html: 

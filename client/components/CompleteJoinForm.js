@@ -13,7 +13,6 @@ class CompleteJoinForm extends React.Component {
     await this.props.getTempUser(this.props.match.params.userCode)
   }
   render() {
-    console.log(this.props.user);
     const error = this.props.error;
     const isLoggedIn = this.props.isLoggedIn;
     const handleSubmit = this.props.handleSubmit;

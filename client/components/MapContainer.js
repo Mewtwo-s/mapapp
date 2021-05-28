@@ -30,16 +30,29 @@ const MapContainer = (props) => {
   if (props.allUsersInSession && props.allUsersInSession.length>1) {
     friendsJoined = props.allUsersInSession
       .filter((user) => user.id !== props.user.id)
-      .map((user) => user.firstName)
+      .map((user) => {
+        if (user.firstName === "Temp_account") {
+          return user.email + " (pending)"
+        } else {
+          return user.firstName
+        }
+        
+      })
       .join(", ");
-      console.log(friendsJoined);
-      console.log(props);
+      // if (friendsJoined.length === 0) {
+      //   if (props.allUsersInSession.length === 2) {
+      //   friendsJoined = `${props.allUsersInSession.length -1} friend pending`} 
+      //   else {
+      //     friendsJoined = `${props.allUsersInSession.length -1} friends pending`}
+      //   }
+     
   } else {
     friendsJoined ='Just you!';
   }
   const [joined, setJoin] = useState(false);
   const [topPlaces, setTopPlaces] = useState();
   const [midPoint, setMidPoint] = useState();
+  const [arrived, setArrived] = useState(false);
 
   const getPlaces = async (lat, lng) => {
     try {
@@ -65,6 +78,7 @@ const MapContainer = (props) => {
 
   function userArrives() {
     props.userArrives(props.user.id, props.session.id);
+    setArrived(true);
   }
 
   const findMidpoint = async (locations) => {
@@ -122,8 +136,11 @@ const MapContainer = (props) => {
 
   useEffect(() => {
     if (props.session.status === "Active") {
-      const allArrived = props.allUsersInSession.every(
-        (user) => user.arrived === true
+      const acceptedUsers = props.allUsersInSession.filter(
+        (user) => user.sessions[0].userSession.accepted === true
+      );
+      const allArrived = acceptedUsers.every(
+        (user) => user.sessions[0].userSession.arrived === true
       );
       //this is just super inaccurate and not very realistic
       // const allLocationsMatch = props.allUsersInSession.every(user => user.currentLat === props.session.lat && user.currentLng === props.session.lng);
@@ -132,7 +149,6 @@ const MapContainer = (props) => {
       }
     }
   }, [props.allUsersInSession]);
-
   return (
     <div>
       {props.directionsFailed === true && <DirectionsFailure />}
@@ -151,13 +167,13 @@ const MapContainer = (props) => {
                   <p> {`${friendsJoined}`} </p>
                 }
               </div>
-
+              {arrived === true && <p>You have arrived!</p> }
               <div style={{ display: "flex", justifyContent: "center" }}>
                 {props.session.status === "Pending" &&
                   props.session.hostId === props.user.id && (
-                    <Button onClick={handleMagic}> Show Meetup Spots! </Button>
+                    <Button onClick={handleMagic}>Select Your Meetup Spot</Button>
                   )}
-
+                
                 {props.session.status === "Active" && (
                   <Button onClick={userArrives}> I have arrived </Button>
                 )}
@@ -254,15 +270,17 @@ const mapDispatch = (dispatch) => {
 };
 
 const PlaceStyles = styled.div`
-  max-width: 900px;
+  // max-width: 900px;
   display: flex;
-  -webkit-justify-content: space-around;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 20px auto;
+  // -webkit-justify-content: space-around;
+  justify-content: center;
 
   @media screen and (max-width: 600px) {
     padding: 8px;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
   }
 `;
 
