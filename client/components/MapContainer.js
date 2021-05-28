@@ -52,6 +52,7 @@ const MapContainer = (props) => {
   const [joined, setJoin] = useState(false);
   const [topPlaces, setTopPlaces] = useState();
   const [midPoint, setMidPoint] = useState();
+  const [arrived, setArrived] = useState(false);
 
   const getPlaces = async (lat, lng) => {
     try {
@@ -76,6 +77,7 @@ const MapContainer = (props) => {
 
   function userArrives() {
     props.userArrives(props.user.id, props.session.id);
+    setArrived(true);
   }
 
   const findMidpoint = async (locations) => {
@@ -133,7 +135,10 @@ const MapContainer = (props) => {
 
   useEffect(() => {
     if (props.session.status === "Active") {
-      const allArrived = props.allUsersInSession.every(
+      const acceptedUsers = props.allUsersInSession.filter(
+        (user) => user.sessions[0].userSession.accepted === true
+      );
+      const allArrived = acceptedUsers.every(
         (user) => user.sessions[0].userSession.arrived === true
       );
       //this is just super inaccurate and not very realistic
@@ -161,13 +166,13 @@ const MapContainer = (props) => {
                   <p> {`${friendsJoined}`} </p>
                 }
               </div>
-
+              {arrived === true && <p>You have arrived!</p> }
               <div style={{ display: "flex", justifyContent: "center" }}>
                 {props.session.status === "Pending" &&
                   props.session.hostId === props.user.id && (
                     <Button onClick={handleMagic}>Select Your Meetup Spot</Button>
                   )}
-
+                
                 {props.session.status === "Active" && (
                   <Button onClick={userArrives}> I have arrived </Button>
                 )}

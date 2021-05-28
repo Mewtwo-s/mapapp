@@ -59,7 +59,7 @@ const User = db.define('user', {
   photo:{
     type: Sequelize.STRING,
     allowNull: true,
-    // defaultValue: 'http://maps.google.com/mapfiles/ms/icons/golfer.png'
+    // defaultValue: 'https://www.pinclipart.com/picdir/big/523-5232047_ladybug-clipart-five-ladybug-five-transparent-free-cartoon.png'
   },
   confirmationCode: {
     type: Sequelize.STRING

@@ -24,6 +24,7 @@ export class JoinRoom extends React.Component {
       travelMode: 'DRIVING',
       createSessionDisplay: null, 
       friendAdded: null,
+      friendsInvited: [],
       transitMessage: "Driving"
     };
     this.handleCreate = this.handleCreate.bind(this);
@@ -40,6 +41,7 @@ export class JoinRoom extends React.Component {
   }
 
   handleChange(event) {
+    event.preventDefault();
     this.setState({
       [event.target.name]: event.target.value
   })
@@ -49,7 +51,8 @@ export class JoinRoom extends React.Component {
     evt.preventDefault();
     this.props.inviteFriend( this.props.session.id, evt.target.email.value, this.props.user.firstName)
     this.setState({
-      email: ''
+      email: '',
+      friendsInvited: [...this.state.friendsInvited, evt.target.email.value]
     })
   }
 
@@ -60,7 +63,6 @@ export class JoinRoom extends React.Component {
       this.props.leaveRoom(this.props.user.id, session.id);
       this.props.stopWatchingMyLocation();
     }
-
     await this.props.joinSession(this.props.user.id, evt.target.code.value);
   }
 
@@ -88,7 +90,8 @@ export class JoinRoom extends React.Component {
   createSessionDisplay(word) {
     this.setState({
       createSessionDisplay: word,
-      friendAdded: null
+      friendAdded: null,
+      friendsInvited: []
     })
   }
 
@@ -192,6 +195,8 @@ export class JoinRoom extends React.Component {
             <div className="clickToOpen">
             <form onSubmit={this.handleAddFriendViaEmail}>
               <h3>Invite a friend via email (one at a time)</h3>
+              {this.state.friendsInvited.length > 0 && `Added ${this.state.friendsInvited.join(", ")}`}
+              <p>{}</p>
               <div style={{ display: 'flex' }}>
                 <Input name="email" type="email" 
                     value={this.state.email}

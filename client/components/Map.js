@@ -263,6 +263,9 @@ const Map = withScriptjs(
     // useEffect(()=>{
 
     // },[props.allUsersInSession, props.allLocations])
+
+
+    
     return (
       <Container>
         {props.myLocation.address ? <UserInput handle={inputHandle} /> : ''}

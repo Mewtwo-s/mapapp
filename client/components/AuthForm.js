@@ -118,7 +118,7 @@ const mapDispatch = dispatch => {
       if(formName==='signup'){
         const firstName = evt.target.firstName.value
         const lastName = evt.target.lastName.value
-        const photo = evt.target.photo.value || ''
+        const photo = evt.target.photo.value || "https://www.pinclipart.com/picdir/big/523-5232047_ladybug-clipart-five-ladybug-five-transparent-free-cartoon.png"
         dispatch(authenticate(email, password, formName, firstName,
           lastName, photo  ))
       }
