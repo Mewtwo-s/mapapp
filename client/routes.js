@@ -22,7 +22,7 @@ import TravelMode from './components/TravelMode';
 import UserJoinSession from './components/UserJoinSession';
 import Test from './components/Test';
 import FinishSignUp from './components/FinishSignUp';
-
+import About from './components/About'
 /**
  * COMPONENT
  */
@@ -39,6 +39,7 @@ class Routes extends Component {
         <Navbar />
         {isLoggedIn ? (
           <Switch>
+            <Route path="/about" component={About}/>
             <Route path="/friend/:gamecode" component={Test} />
             <Route exact path="/map/:code" component={MapContainer} />
             <Route exact path="/pastSessions" component={PastSessions} />
@@ -54,6 +55,7 @@ class Routes extends Component {
         ) : (
           <Switch>
             {/* <Route path="/map" component={MapContainer} /> */}
+            <Route path="/about" component={About}/>
             <Route exact path="/friend" component={Test}></Route>
             <Route path="/home" component={Login} />
             <Route path="/login" component={Login} />
