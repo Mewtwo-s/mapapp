@@ -12,26 +12,34 @@ Meedle is a live location sharing application that helps friends find an optimal
 #### Users
 - Any group of friends deciding meetup location, or simply wanting to keep track of each other's location
 #### Features
+- Tracker Realtime Geolocations
+- [x] Listen to realtime geo-location change
+- [x] Prompt users to manually input address when geo-location watching fail 
+![Image of userInput](https://github.com/Mewtwo-s/mapapp/blob/main/public/geolocaitonFail.png)
+
 - Create User Session: generate unique map session for group of friends to share live geo-locations
-![Image of Dashboard](https://github.com/karin6543/AlgoTracker/blob/master/public/dashboard.png)
+![Image of create](https://github.com/Mewtwo-s/mapapp/blob/main/public/create.png)
+
 
 - Generate Invites From One of The Following Options
 - [x] Session Code
 - [x] Email
-![Image of Dashboard](https://github.com/karin6543/AlgoTracker/blob/master/public/dashboard.png)
+![Image of invite](https://github.com/Mewtwo-s/mapapp/blob/main/public/invite.png)
 
 - Generate The Midpoint
 - [x] Once friends joined the share map, session host will be able to generate the 'midpoint', which is the optimal geocode calculated base on equal travel distance of multiple user's geolocation coordinates
-![Image of Benchmark](https://github.com/karin6543/AlgoTracker/blob/master/public/benchmark.png)
+![Image of midpoint](https://github.com/Mewtwo-s/mapapp/blob/main/public/midpoint.png)
 
 - Select Meetup Spot 
 - [x] The app will auto generate a list of coffee shops (max. 3) and allow the host to pick the final meeting spot
-![Image of Benchmark](https://github.com/karin6543/AlgoTracker/blob/master/public/benchmark.png)
+![Image of places](https://github.com/Mewtwo-s/mapapp/blob/main/public/places.png)
 
 - Generate Route And Find Directions
 - [x] Once meeting spot is selected, a route from user's current location to the meeting point will be automatically generated
+![Image of diection](https://github.com/Mewtwo-s/mapapp/blob/main/public/direction.png)
 - [x] Each individual user will be directed to google map for further tranportatio guides
-![Image of Benchmark](https://github.com/karin6543/AlgoTracker/blob/master/public/benchmark.png)
+![Image of googlemap](https://github.com/Mewtwo-s/mapapp/blob/main/public/googlemap.png)
+
 
 ## :construction: Feature Under Construction 
 - Progrssive Web App (PWA): transform the web-app into a PWA and leverage the caching features
