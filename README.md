@@ -9,28 +9,33 @@ Have you ever wanted to meet up with friends but can’t decide where? One frien
 Meedle is a live location sharing application that helps friends find an optimal place to meet in the middle. It keeps track of users’ real time geolocations, and uses the Google Maps API to generate a meeting place that will equalize travel time for all users. Meedle was built with React, Redux, Node.Js, Express, Socket.io, Turf.js, Nodemailer, postgreSQL, and Sequelize. Building this application, we learned how to track users’ geolocation, implement API security, and manage multi-user live data sharing.
 
 ## :thinking: Target Users & Main Features
-#### Users: Any group of friends deciding meetup location, or simply wanting to keep track of each other's location
+#### Users
+- Any group of friends deciding meetup location, or simply wanting to keep track of each other's location
 #### Features
-
 - Create User Session: generate unique map session for group of friends to share live geo-locations
-
 ![Image of Dashboard](https://github.com/karin6543/AlgoTracker/blob/master/public/dashboard.png)
 
-- Invite Friends & Guests
-- [x] Stack Line Chart: shows daily pass/fail distribution; Red - number of problem passed; Green - number of problem failed
-- [x] Tree Map: shows practice passing rate by problem category
+- Generate Invites From One of The Following Options
+- [x] Session Code
+- [x] Email
 ![Image of Dashboard](https://github.com/karin6543/AlgoTracker/blob/master/public/dashboard.png)
 
-- Generate Meetup Spot
-- [x] Donut chart: shows distribution of different error types
-![Image of Error](https://github.com/karin6543/AlgoTracker/blob/master/public/error.png)
+- Generate The Midpoint
+- [x] Once friends joined the share map, session host will be able to generate the 'midpoint', which is the optimal geocode calculated base on equal travel distance of multiple user's geolocation coordinates
+![Image of Benchmark](https://github.com/karin6543/AlgoTracker/blob/master/public/benchmark.png)
+
+- Select Meetup Spot 
+- [x] The app will auto generate a list of coffee shops (max. 3) and allow the host to pick the final meeting spot
+![Image of Benchmark](https://github.com/karin6543/AlgoTracker/blob/master/public/benchmark.png)
 
 - Generate Route And Find Directions
-- [x] Side-by-Side Bar Chart: compare user passing rate by category vs. avg LeetCode passing rate
+- [x] Once meeting spot is selected, a route from user's current location to the meeting point will be automatically generated
+- [x] Each individual user will be directed to google map for further tranportatio guides
 ![Image of Benchmark](https://github.com/karin6543/AlgoTracker/blob/master/public/benchmark.png)
 
 ## :construction: Feature Under Construction 
-- Allows user to select error message in browser and report to the application
+- Progrssive Web App (PWA): transform the web-app into a PWA and leverage the caching features
+- In-App notification: support in-app notifications
 
 
 ## :cake: Tech Stack
