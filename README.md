@@ -15,8 +15,8 @@ Meedle is a live location sharing application that helps friends find an optimal
 - Tracker Realtime Geolocations
 - [x] Listen to realtime geo-location change
 - [x] Prompt users to manually input address when geo-location watching fail 
-![Image of userInput](https://github.com/Mewtwo-s/mapapp/blob/main/public/geolocaitonFail.png)
-
+![Image of locationFail](https://github.com/Mewtwo-s/mapapp/blob/main/public/geolocaitonFail.png)
+![Image of userInput](https://github.com/Mewtwo-s/mapapp/blob/main/public/userInput.png)
 - Create User Session: generate unique map session for group of friends to share live geo-locations
 ![Image of create](https://github.com/Mewtwo-s/mapapp/blob/main/public/create.png)
 
