@@ -39,7 +39,7 @@ class Routes extends Component {
         <Navbar />
         {isLoggedIn ? (
           <Switch>
-            <Route path="/about" component={About}/>
+            <Route path="/home/about" component={About}/>
             <Route path="/friend/:gamecode" component={Test} />
             <Route exact path="/map/:code" component={MapContainer} />
             <Route exact path="/pastSessions" component={PastSessions} />
@@ -55,7 +55,7 @@ class Routes extends Component {
         ) : (
           <Switch>
             {/* <Route path="/map" component={MapContainer} /> */}
-            <Route path="/about" component={About}/>
+            <Route path="/about" component={About}></Route>
             <Route exact path="/friend" component={Test}></Route>
             <Route path="/home" component={Login} />
             <Route path="/login" component={Login} />
