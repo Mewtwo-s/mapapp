@@ -26,12 +26,14 @@ const Navbar = ({handleClick, isLoggedIn, photo, firstName, updateSessionAction}
           <NavLink to="/home" onClick={handleClick}>
             Logout
           </NavLink>
+          <NavLink to="/home/about">About</NavLink>
         </NavMenu>
       ) : (
           <NavMenu open={open}>
           {/* The navbar will show these links before you log in */}
           <NavLink to="/login">Login</NavLink>
           <NavLink to="/signup">Sign Up</NavLink>
+          <NavLink to="/about">About</NavLink>
         </NavMenu>
       )}
       {
