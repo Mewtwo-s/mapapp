@@ -1,8 +1,7 @@
 # 🗺️ Meedle
-https://meedleapp.herokuapp.com/
+![ezgif-3-45b013568bc5](https://user-images.githubusercontent.com/76498844/125206106-08067e80-e24b-11eb-83a4-4bd1789e5052.gif)
 
-## Video Walkthrough
-https://youtu.be/0-e_tC1C568
+[See it Live](https://meedleapp.herokuapp.com/) • [Video Walkthrough](https://youtu.be/0-e_tC1C568)
 
 ## :paperclip: Description
 Meedle is a location sharing app that finds an optimal spot to meet up
